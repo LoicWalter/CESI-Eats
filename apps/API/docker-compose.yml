@@ -1,0 +1,48 @@
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+      target: development
+    command: pnpm run start:dev api-gateway
+    env_file:
+      - ./.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '7000:7000'
+    networks:
+      - api
+
+  users-service:
+    build:
+      context: .
+      dockerfile: ./apps/users-service/Dockerfile
+      target: development
+    command: pnpm run start:dev users-service
+    env_file:
+      - ./.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - api
+
+  orders-service:
+    build:
+      context: .
+      dockerfile: ./apps/orders-service/Dockerfile
+      target: development
+    command: pnpm run start:dev orders-service
+    env_file:
+      - ./.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - api
+
+networks:
+  api:
+    driver: bridge

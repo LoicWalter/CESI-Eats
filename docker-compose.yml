@@ -1,0 +1,79 @@
+version: '3'
+
+services:
+  client:
+    container_name: client
+    build:
+      context: .
+      dockerfile: ./apps/client/Dockerfile
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - app_network
+
+  commercial:
+    container_name: commercial
+    build:
+      context: .
+      dockerfile: ./apps/commercial/Dockerfile
+    restart: always
+    ports:
+      - 3001:3000
+    networks:
+      - app_network
+
+  livreur:
+    container_name: livreur
+    build:
+      context: .
+      dockerfile: ./apps/livreur/Dockerfile
+    restart: always
+    ports:
+      - 3002:3000
+    networks:
+      - app_network
+
+  restaurateur:
+    container_name: restaurateur
+    build:
+      context: .
+      dockerfile: ./apps/restaurateur/Dockerfile
+    restart: always
+    ports:
+      - 3003:3000
+    networks:
+      - app_network
+
+  postgre-users:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: users-service
+    ports:
+      - '5434:5432'
+    restart: unless-stopped
+    networks:
+      - app_network
+
+  mongo-orders:
+    build:
+      context: ./apps/API/
+      dockerfile: ./libs/databases/src/orders/Dockerfile
+      args:
+        MONGO_VERSION: 6
+    environment:
+      MONGO_REPLICA_HOST: 127.0.0.1
+      MONGO_REPLICA_PORT: 27020
+      MONGO_COMMAND: 'mongosh'
+    ports:
+      - '27020:27020'
+    networks:
+      - app_network
+
+# Define a network, which allows containers to communicate
+# with each other, by using their container name as a hostname
+networks:
+  app_network:
+    external: true

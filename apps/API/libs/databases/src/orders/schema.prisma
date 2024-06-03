@@ -1,0 +1,17 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../../../../node_modules/@gen/client/orders"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL_ORDERS")
+}
+
+model Order {
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  name  String?
+  price Float?
+  email String?
+}
