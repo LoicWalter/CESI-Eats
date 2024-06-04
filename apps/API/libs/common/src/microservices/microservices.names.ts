@@ -1,5 +1,5 @@
 export enum Microservices {
   USERS = 'USERS',
-  ANALYTICS = 'ANALYTICS',
+  AUTH = 'AUTH',
   ORDERS = 'ORDERS',
 }

@@ -5,6 +5,7 @@ import { PrismaOrdersModule } from '@app/databases/orders/prisma/prisma-orders.m
 import { OrdersService } from './orders.service';
 import { OrdersController } from './orders.controller';
 import * as Joi from 'joi';
+import { RmqModule } from 'libs/common';
 
 @Module({
   imports: [
@@ -13,8 +14,11 @@ import * as Joi from 'joi';
       load: [configuration],
       validationSchema: Joi.object({
         DATABASE_URL_ORDERS: Joi.string().required(),
+        RABBIT_MQ_URI: Joi.string().required(),
+        RABBIT_MQ_ORDERS_QUEUE: Joi.string().required(),
       }),
     }),
+    RmqModule,
     PrismaOrdersModule,
   ],
   controllers: [OrdersController],
