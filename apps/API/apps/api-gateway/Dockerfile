@@ -14,6 +14,8 @@ RUN pnpm install
 
 COPY . .
 
+RUN pnpm run generate
+
 RUN pnpm run build
 
 FROM node:alpine as production
@@ -30,5 +32,7 @@ RUN pnpm install --only=production
 COPY . .
 
 COPY --from=development /usr/src/app/dist ./dist
+
+RUN pnpm run generate
 
 CMD ["node", "dist/apps/api-gateway/main"]

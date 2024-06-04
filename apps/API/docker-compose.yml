@@ -6,26 +6,32 @@ services:
       target: development
     command: pnpm run start:dev api-gateway
     env_file:
-      - ./.env
+      - ./.docker.env
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+    depends_on:
+      - rabbitmq
     ports:
       - '7000:7000'
     networks:
       - api
 
-  users-service:
+  auth-service:
     build:
       context: .
-      dockerfile: ./apps/users-service/Dockerfile
+      dockerfile: ./apps/auth-service/Dockerfile
       target: development
-    command: pnpm run start:dev users-service
+    command: pnpm run start:dev auth-service
     env_file:
-      - ./.env
+      - ./.docker.env
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+    depends_on:
+      - rabbitmq
+    ports:
+      - '7001:7001'
     networks:
       - api
 
@@ -36,10 +42,46 @@ services:
       target: development
     command: pnpm run start:dev orders-service
     env_file:
-      - ./.env
+      - ./.docker.env
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+    depends_on:
+      - rabbitmq
+    networks:
+      - api
+
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - '5672:5672'
+    networks:
+      - api
+
+  postgre-users:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: users
+    ports:
+      - '5434:5432'
+    restart: unless-stopped
+    networks:
+      - api
+
+  mongo-orders:
+    build:
+      context: .
+      dockerfile: ./libs/databases/src/orders/Dockerfile
+      args:
+        MONGO_VERSION: 6
+    environment:
+      MONGO_REPLICA_HOST: 127.0.0.1
+      MONGO_REPLICA_PORT: 27020
+      MONGO_COMMAND: 'mongosh'
+    ports:
+      - '27020:27020'
     networks:
       - api
 

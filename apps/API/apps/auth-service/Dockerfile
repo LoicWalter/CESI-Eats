@@ -14,7 +14,7 @@ RUN pnpm install
 
 COPY . .
 
-RUN pnpm run generate:users
+RUN pnpm run generate
 
 RUN pnpm run build
 
@@ -33,6 +33,6 @@ COPY . .
 
 COPY --from=development /usr/src/app/dist ./dist
 
-RUN pnpm run generate:users
+RUN pnpm run generate
 
-CMD ["node", "dist/apps/users-service/main"]
+CMD ["node", "dist/apps/auth-service/main"]
