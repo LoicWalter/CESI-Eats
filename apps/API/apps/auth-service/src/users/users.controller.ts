@@ -10,7 +10,7 @@ export class UsersController {
 
   @UseFilters(new UnprocessableEntityExceptionFilter())
   @MessagePattern({ cmd: UserMessage.CREATE_USER })
-  async createUser(data: CreateUserMessage) {
+  createUser(data: CreateUserMessage) {
     return this.usersService.createUser(data);
   }
 }

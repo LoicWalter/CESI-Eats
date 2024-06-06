@@ -24,7 +24,7 @@ export class UsersService {
     return newUser;
   }
 
-  private async addSignupInfosToUser(user: User, role: Role) {
+  private addSignupInfosToUser(user: User, role: Role) {
     if (user.roles.includes(role)) {
       throw new RpcException(ErrorsMessages.USER_ALREADY_EXISTS);
     }
@@ -39,8 +39,6 @@ export class UsersService {
   }
 
   async validateUser(email: string, password: string) {
-    console.log('email', email);
-    console.log('password', password);
     const user = await this.prisma.user.findFirst({ where: { email } });
     if (!user) {
       throw new UnauthorizedException(ErrorsMessages.INVALID_CREDENTIALS);
@@ -52,7 +50,7 @@ export class UsersService {
     return user;
   }
 
-  async getUserById(userId: string) {
+  getUserById(userId: string) {
     return this.prisma.user.findFirst({
       where: {
         id: userId,
@@ -60,7 +58,7 @@ export class UsersService {
     });
   }
 
-  async getUserByEmail(email: string): Promise<User | null> {
+  getUserByEmail(email: string): Promise<User | null> {
     return this.prisma.user.findFirst({
       where: {
         email,
