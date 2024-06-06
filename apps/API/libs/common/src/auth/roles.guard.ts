@@ -8,7 +8,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { Role } from '@gen/client/users';
 import { catchError, Observable, tap } from 'rxjs';
-import { AuthMessage, ROLES_KEY } from 'libs/common';
+import { AuthMessage, ErrorsMessages, ROLES_KEY } from 'libs/common';
 import { Microservices } from '../microservices/microservices.names';
 import { ClientProxy } from '@nestjs/microservices';
 
@@ -35,11 +35,11 @@ export class RolesGuard implements CanActivate {
       .pipe(
         tap((user: any) => {
           if (!requiredRoles.some((role) => user.roles?.includes(role))) {
-            throw new UnauthorizedException('User does not have the required roles.');
+            throw new UnauthorizedException(ErrorsMessages.USER_DONT_HAVE_REQUIRED_ROLES);
           }
         }),
         catchError(() => {
-          throw new UnauthorizedException('User does not have the required roles.');
+          throw new UnauthorizedException(ErrorsMessages.USER_DONT_HAVE_REQUIRED_ROLES);
         }),
       );
   }
@@ -53,7 +53,7 @@ export class RolesGuard implements CanActivate {
     }
 
     if (!authentication) {
-      throw new UnauthorizedException('No value was provided for the Authentication header.');
+      throw new UnauthorizedException(ErrorsMessages.AUTH_HEADER_NOT_PROVIDED);
     }
 
     return authentication;

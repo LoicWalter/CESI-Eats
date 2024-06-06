@@ -8,7 +8,7 @@ import {
 import { Microservices } from '../microservices/microservices.names';
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, Observable, tap } from 'rxjs';
-import { AuthMessage } from '../messages';
+import { ErrorsMessages, AuthMessage } from 'libs/common';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -25,7 +25,7 @@ export class JwtAuthGuard implements CanActivate {
           this.addUser(res, context);
         }),
         catchError(() => {
-          throw new UnauthorizedException('Invalid token.');
+          throw new UnauthorizedException(ErrorsMessages.INVALID_TOKEN);
         }),
       );
   }
@@ -39,7 +39,7 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     if (!authentication) {
-      throw new UnauthorizedException('No value was provided for the Authentication header.');
+      throw new UnauthorizedException(ErrorsMessages.AUTH_HEADER_NOT_PROVIDED);
     }
 
     return authentication;
