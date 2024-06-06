@@ -16,7 +16,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(user: User, response: Response) {
+  login(user: User, response: Response) {
     const tokenPayload: TokenPayload = {
       userId: user.id,
     };

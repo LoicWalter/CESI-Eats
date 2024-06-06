@@ -4,10 +4,6 @@ export enum AuthMessage {
   SIGNIN_USER = 'signin_user',
 }
 
-export enum ClientMessage {
-  CREATE_CLIENT = 'create_client',
-  GET_CLIENTS = 'get_clients',
-  GET_CLIENT = 'get_client',
-  UPDATE_CLIENT = 'update_client',
-  DELETE_CLIENT = 'delete_client',
+export enum UserMessage {
+  CREATE_USER = 'create_user',
 }
