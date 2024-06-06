@@ -1,0 +1,29 @@
+meta {
+  name: createRestaurant
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:7000/restaurants
+  body: json
+  auth: none
+}
+
+headers {
+  : 
+}
+
+body:json {
+  {
+    "name": "La bonne bouffe",
+    "owner": "15",
+    "priceRange": "20€-30€",
+    "currentOffer": 15,
+    "image": "image/png",
+    "phone": "+33612345678",
+    "address": "12 rue de la paix, 75000 Paris",
+    "siret": "12345678912345",
+    "category": "Fast-food"
+  }
+}

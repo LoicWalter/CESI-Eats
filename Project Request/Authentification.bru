@@ -1,0 +1,18 @@
+meta {
+  name: Authentification
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:7001/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "aaa@gmail.com",
+    "password": "aaaaaaaa"
+  }
+}

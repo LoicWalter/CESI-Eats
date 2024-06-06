@@ -51,6 +51,22 @@ services:
     networks:
       - api
 
+  restaurants-service:
+    build:
+      context: .
+      dockerfile: ./apps/restaurants-service/Dockerfile
+      target: development
+    command: pnpm run start:dev restaurants-service
+    env_file:
+      - ./.docker.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - rabbitmq
+    networks:
+      - api
+
   rabbitmq:
     image: rabbitmq
     ports:
@@ -84,6 +100,22 @@ services:
       - '27020:27020'
     networks:
       - api
+
+  mongo-restaurants:
+    build:
+      context: .
+      dockerfile: ./libs/databases/src/restaurants/Dockerfile
+      args:
+        MONGO_VERSION: 6
+    environment:
+      MONGO_REPLICA_HOST: 127.0.0.1
+      MONGO_REPLICA_PORT: 27021
+      MONGO_COMMAND: 'mongosh'
+    ports:
+      - '27021:27021'
+    networks:
+      - api
+
 
 networks:
   api:

@@ -14,6 +14,7 @@ import { signInDto } from '../dto/sign-in.dto';
 @Injectable()
 export class AuthGatewayService {
   constructor(@Inject(Microservices.AUTH) private readonly authService: ClientProxy) {}
+
   async signUpClient(dto: CreateClientDto) {
     const response = await firstValueFrom(
       this.authService.send(

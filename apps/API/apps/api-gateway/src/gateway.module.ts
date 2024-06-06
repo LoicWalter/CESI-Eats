@@ -12,6 +12,7 @@ import { AuthGatewayModule } from './auth-gateway/auth-gateway.module';
       isGlobal: true,
     }),
     RmqModule.register({ name: Microservices.ORDERS }),
+    RmqModule.register({ name: Microservices.RESTAURANTS }),
     RmqModule.register({ name: Microservices.AUTH }),
     AuthModule,
     AuthGatewayModule,
