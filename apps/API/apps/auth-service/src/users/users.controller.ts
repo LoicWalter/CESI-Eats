@@ -1,14 +1,16 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseFilters } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { MessagePattern } from '@nestjs/microservices';
-import { CreateClientMessage, ClientMessage } from 'libs/common';
+import { CreateUserMessage, UserMessage } from 'libs/common';
+import { UnprocessableEntityExceptionFilter } from 'apps/api-gateway/src/filter/rpc-422-exception.filter';
 
 @Controller()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @MessagePattern({ cmd: ClientMessage.CREATE_CLIENT })
-  async createUser(data: CreateClientMessage) {
+  @UseFilters(new UnprocessableEntityExceptionFilter())
+  @MessagePattern({ cmd: UserMessage.CREATE_USER })
+  async createUser(data: CreateUserMessage) {
     return this.usersService.createUser(data);
   }
 }

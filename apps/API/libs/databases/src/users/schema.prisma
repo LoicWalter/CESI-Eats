@@ -18,7 +18,7 @@ model User {
 
 enum Role {
   CLIENT
-  RESTAURANT
+  RESTAURATEUR
   LIVREUR
   DEV
   ADMIN
