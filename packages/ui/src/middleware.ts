@@ -6,11 +6,15 @@ export const commonMiddleware =
   (request: NextRequest): Response | undefined => {
     const currentUser = request.cookies.get(Cookies.User)?.value;
 
-    if (currentUser && request.nextUrl.pathname.startsWith(defaultWebRoutes.AUTH)) {
+    const authRoutes = [defaultWebRoutes.LOGIN, defaultWebRoutes.SIGNUP];
+
+    const isAuthRoute = authRoutes.some((route) => request.nextUrl.pathname.startsWith(route));
+
+    if (currentUser && isAuthRoute) {
       return Response.redirect(new URL(app, request.url));
     }
 
-    if (!currentUser && !request.nextUrl.pathname.startsWith(defaultWebRoutes.AUTH)) {
+    if (!currentUser && !isAuthRoute) {
       return Response.redirect(new URL(`${app}${defaultWebRoutes.LOGIN}`, request.url));
     }
   };

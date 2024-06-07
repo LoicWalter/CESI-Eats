@@ -2,6 +2,7 @@ export enum defaultWebRoutes {
   HOME = '/',
   CLIENT = '/client',
   LOGIN = '/auth/login',
+  LOGOUT = '/auth/logout',
   RESTAURATEUR = '/restaurateur',
   LIVREUR = '/livreur',
   COMMERCIAL = '/commercial',
