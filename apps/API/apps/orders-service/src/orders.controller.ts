@@ -13,7 +13,8 @@ export class OrdersController {
 
   @EventPattern(OrderEvent.CREATE_ORDER)
   async handleOrderCreated(@Payload() data: CreateOrderEvent, @Ctx() context: RmqContext) {
-    this.ordersService.createOrder(data);
+    const testData = this.ordersService.createOrder(data);
     this.rmqService.ack(context);
+    return testData;
   }
 }

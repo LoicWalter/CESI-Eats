@@ -93,7 +93,7 @@ services:
       args:
         MONGO_VERSION: 6
     environment:
-      MONGO_REPLICA_HOST: 127.0.0.1
+      MONGO_REPLICA_HOST: mongo-orders
       MONGO_REPLICA_PORT: 27020
       MONGO_COMMAND: 'mongosh'
     ports:
@@ -108,11 +108,11 @@ services:
       args:
         MONGO_VERSION: 6
     environment:
-      MONGO_REPLICA_HOST: 127.0.0.1
-      MONGO_REPLICA_PORT: 27021
+      MONGO_REPLICA_HOST: mongo-restaurants
+      MONGO_REPLICA_PORT: 27020
       MONGO_COMMAND: 'mongosh'
     ports:
-      - '27021:27021'
+      - '27021:27020'
     networks:
       - api
 

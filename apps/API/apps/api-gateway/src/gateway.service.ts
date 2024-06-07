@@ -17,9 +17,11 @@ export class GatewayService {
   }
 
   createOrder(createOrderDto: CreateOrderDto) {
-    this.ordersService.emit(
-      OrderEvent.CREATE_ORDER,
-      new CreateOrderEvent(createOrderDto.name, createOrderDto.price, createOrderDto.email),
+    return firstValueFrom(
+      this.ordersService.emit(
+        OrderEvent.CREATE_ORDER,
+        new CreateOrderEvent(createOrderDto.name, createOrderDto.price, createOrderDto.email),
+      ),
     );
   }
 
