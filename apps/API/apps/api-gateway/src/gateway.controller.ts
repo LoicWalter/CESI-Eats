@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { GatewayService } from './gateway.service';
 import { CreateOrderDto } from './dto';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
@@ -17,11 +17,5 @@ export class GatewayController {
   @Post('/orders')
   createOrder(@Body() createOrderDto: CreateOrderDto) {
     return this.gatewayService.createOrder(createOrderDto);
-  }
-
-  @Get('/')
-  @Roles(Role.CLIENT)
-  getHello() {
-    return this.gatewayService.getHello();
   }
 }

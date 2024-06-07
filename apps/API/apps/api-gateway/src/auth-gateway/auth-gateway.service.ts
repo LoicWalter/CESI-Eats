@@ -16,13 +16,12 @@ export class AuthGatewayService {
 
   async signUpUser(dto: CreateClientDto, role: Role) {
     try {
-      const reponse = await firstValueFrom(
+      return firstValueFrom(
         this.authService.send(
           { cmd: UserMessage.CREATE_USER },
           new CreateUserMessage(dto.email, dto.password, role),
         ),
       );
-      return reponse;
     } catch (error) {
       if (error.status === 422) {
         console.log('error', error);
