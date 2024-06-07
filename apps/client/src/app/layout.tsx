@@ -2,6 +2,7 @@ import './globals.css';
 import '@repo/ui/styles.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { Navbar } from '@repo/ui';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -13,7 +14,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.className} flex flex-row w-screen h-screen overflow-hidden`}>
+        <Navbar />
+        <div className="flex-1 overflow-auto">{children}</div>
+      </body>
     </html>
   );
 }
