@@ -1,67 +1,68 @@
-import { Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { CreateUserDto } from './dto/create-user.dto';
-import { User, Role } from '@gen/client/users';
+import { User } from '@gen/client/users';
 import { PrismaUsersService } from '@app/databases/users/prisma/prisma-users.service';
-import { CreateClientMessage } from 'libs/common';
+import { CreateUserMessage, ErrorsMessages } from 'libs/common';
+import { Role } from '@gen/client/users';
+import { RpcException } from '@nestjs/microservices';
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaUsersService) {}
 
-  async createUser(data: CreateClientMessage) {
-    const isRequestValid = await this.isCreateUserRequestValid(data);
-    if (!isRequestValid) {
-      return new UnprocessableEntityException('User already exists.');
+  async createUser(data: CreateUserMessage) {
+    const user = await this.getUserByEmail(data.email);
+    if (user) {
+      return this.addSignupInfosToUser(user, data.role);
     }
-    const user = await this.prisma.user.create({
+    const newUser = await this.prisma.user.create({
       data: {
         email: data.email,
         password: await bcrypt.hash(data.password, 10),
-        roles: [Role.CLIENT],
+        roles: [data.role],
       },
     });
-    return user;
+    return newUser;
   }
 
-  private async isCreateUserRequestValid(dto: CreateUserDto) {
-    let user: User;
-    try {
-      user = await this.prisma.user.findFirst({
-        where: {
-          email: dto.email,
-        },
-      });
-    } catch (err) {}
-
-    if (user) {
-      return false;
+  private addSignupInfosToUser(user: User, role: Role) {
+    if (user.roles.includes(role)) {
+      throw new RpcException(ErrorsMessages.USER_ALREADY_EXISTS);
     }
-    return true;
+    return this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        roles: [...user.roles, role],
+      },
+    });
   }
 
   async validateUser(email: string, password: string) {
-    console.log('email', email);
-    console.log('password', password);
     const user = await this.prisma.user.findFirst({ where: { email } });
     if (!user) {
-      throw new UnauthorizedException('Credentials are not valid.');
+      throw new UnauthorizedException(ErrorsMessages.INVALID_CREDENTIALS);
     }
     const passwordIsValid = await bcrypt.compare(password, user.password);
     if (!passwordIsValid) {
-      throw new UnauthorizedException('Credentials are not valid.');
+      throw new UnauthorizedException(ErrorsMessages.INVALID_CREDENTIALS);
     }
     return user;
   }
 
-  async getUser(getUserArgs: Partial<User>) {
+  getUserById(userId: string) {
     return this.prisma.user.findFirst({
-      where: this.removeRoles(getUserArgs),
+      where: {
+        id: userId,
+      },
     });
   }
 
-  private removeRoles(user: Partial<User>): Partial<Omit<User, 'roles'>> {
-    const userWithoutRoles = { ...user };
-    delete userWithoutRoles.roles;
-    return userWithoutRoles;
+  getUserByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findFirst({
+      where: {
+        email,
+      },
+    });
   }
 }
