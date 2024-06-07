@@ -3,25 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  --color-primary: #49ADF4;
+  --color-secondary: #005BC6;
+  --color-button-primary-default: #49ADF4;
+  --color-button-primary-pressed: #005BC6;
+  --color-button-primary-disabled: rgba(36, 124, 227, 0.5);
+  --color-button-secondary-border-default: #49ADF4;
+  --color-button-secondary-border-pressed: #005BC6;
+  --color-button-secondary-border-disabled: rgba(36, 124, 227, 0.5);
 }

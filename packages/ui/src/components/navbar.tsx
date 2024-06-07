@@ -1,51 +1,87 @@
 'use client';
 
-import { HomeMax, VerifiedUser, WhereToVoteOutlined } from '@mui/icons-material';
+import { AccountCircleOutlined, PersonOutline } from '@mui/icons-material';
 import React from 'react';
+import { Divider } from '@mui/material';
 import useOnHover from '../hooks/useOnHover';
 
-export function Navbar(): JSX.Element {
+interface NavbarProps {
+  logo: React.ReactElement;
+  iconArray: { icon: JSX.Element; text: string; id: string }[];
+}
+
+export function Navbar({ logo, iconArray }: NavbarProps): JSX.Element {
   const [hovered, bind] = useOnHover();
 
   return (
-    <div
-      className="sticky top-0 left-0 h-screen bg-gray-800 text-white flex flex-col items-center hover:w-40 transition-all duration-300 w-16"
-      {...bind}
-    >
-      <NavItem
-        hovered={hovered}
-        icon={<HomeMax />}
-        text="Home"
-      />
-      <NavItem
-        hovered={hovered}
-        icon={<VerifiedUser />}
-        text="Profile"
-      />
-      <NavItem
-        hovered={hovered}
-        icon={<WhereToVoteOutlined />}
-        text="Settings"
-      />
-    </div>
+    <>
+      <div className="flex md:hidden fixed bottom-0 w-full h-12 z-10 border-t-gray-4 border-[1px] bg-gray-5 text-gray-3">
+        <div className="flex flex-row justify-evenly w-full h-full">
+          {iconArray.map(({ icon, id }) => (
+            <>
+              <NavItem
+                icon={icon}
+                key={id}
+              />
+              <Divider
+                className="border-gray-4 my-2"
+                orientation="vertical"
+              />
+            </>
+          ))}
+          <NavItem icon={<PersonOutline />} />
+        </div>
+      </div>
+      <div
+        className="hidden sticky top-0 h-screen border-r-gray-4 border-[1px] bg-gray-5 text-gray-3 md:flex flex-col items-center hover:w-40 transition-all duration-300 w-16 z-20"
+        {...bind}
+      >
+        <div className="my-3">{logo}</div>
+        <Divider
+          className="w-full border-gray-4"
+          color=""
+        />
+        <div className="flex flex-col justify-between w-full h-full">
+          <div>
+            {iconArray.map(({ icon, text, id }) => (
+              <NavItem
+                hovered={hovered}
+                icon={icon}
+                key={id}
+                text={text}
+              />
+            ))}
+          </div>
+          <div>
+            <NavItem
+              hovered={hovered}
+              icon={<AccountCircleOutlined />}
+              text="Connexion"
+            />
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
 function NavItem({
   icon,
-  text,
-  hovered,
+  text = '',
+  hovered = false,
 }: {
   icon: JSX.Element;
-  text: string;
-  hovered: boolean;
+  text?: string;
+  hovered?: boolean;
 }): JSX.Element {
   return (
-    <div className="group flex items-center w-full p-4 hover:bg-gray-700">
-      <div className="text-xl">{icon}</div>
-      <div className={`text-sm ml-4 transition-all ${hovered ? 'opacity-100' : 'opacity-0'}`}>
-        {text}
-      </div>
+    <div className="flex items-center p-5 hover:bg-primary hover:text-gray-5">
+      <div>{icon}</div>
+      {text !== '' && (
+        <div className={`text-sm ml-4 transition-all ${hovered ? 'opacity-100' : 'opacity-0'}`}>
+          {text}
+        </div>
+      )}
     </div>
   );
 }
