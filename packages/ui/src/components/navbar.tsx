@@ -18,16 +18,13 @@ export function Navbar({ logo, iconArray }: NavbarProps): JSX.Element {
       <div className="flex md:hidden fixed bottom-0 w-full h-12 z-10 border-t-gray-4 border-[1px] bg-gray-5 text-gray-3">
         <div className="flex flex-row justify-evenly w-full h-full">
           {iconArray.map(({ icon, id }) => (
-            <>
-              <NavItem
-                icon={icon}
-                key={id}
-              />
+            <React.Fragment key={id}>
+              <NavItem icon={icon} />
               <Divider
                 className="border-gray-4 my-2"
                 orientation="vertical"
               />
-            </>
+            </React.Fragment>
           ))}
           <NavItem icon={<PersonOutline />} />
         </div>

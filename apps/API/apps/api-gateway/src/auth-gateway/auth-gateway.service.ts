@@ -16,14 +16,16 @@ export class AuthGatewayService {
 
   async signUpUser(dto: CreateClientDto, role: Role) {
     try {
-      return firstValueFrom(
+      const reponse = await firstValueFrom(
         this.authService.send(
           { cmd: UserMessage.CREATE_USER },
           new CreateUserMessage(dto.email, dto.password, role),
         ),
       );
+      return reponse;
     } catch (error) {
       if (error.status === 422) {
+        console.log('error', error);
         throw new UnprocessableEntityException(ErrorsMessages.USER_ALREADY_EXISTS);
       }
       throw new InternalServerErrorException(error.message);

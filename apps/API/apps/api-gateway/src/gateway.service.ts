@@ -8,8 +8,9 @@ import { CreateOrderDto } from './dto/create-order.dto';
 export class GatewayService {
   constructor(@Inject(Microservices.ORDERS) private readonly ordersService: ClientProxy) {}
 
-  getHello(): string {
-    return 'Hello World!';
+  getHello(): { message: string } {
+    console.log('Hello World!');
+    return { message: 'Hello World!' };
   }
 
   createOrder(createOrderDto: CreateOrderDto) {

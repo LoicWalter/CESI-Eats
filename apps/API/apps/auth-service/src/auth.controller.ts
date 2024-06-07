@@ -29,6 +29,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @MessagePattern(AuthMessage.VALIDATE_USER)
   validateUser(@CurrentUser() user: User) {
+    console.log('user', user);
     return user;
   }
 }
