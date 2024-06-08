@@ -24,6 +24,7 @@ export class AuthGatewayService {
       );
     } catch (error) {
       if (error.status === 422) {
+        console.log('error', error);
         throw new UnprocessableEntityException(ErrorsMessages.USER_ALREADY_EXISTS);
       }
       throw new InternalServerErrorException(error.message);

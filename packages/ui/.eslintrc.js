@@ -1,7 +1,5 @@
-const { rules } = require('../config-eslint/next');
-
 module.exports = {
-  extends: ['@repo/eslint-config/react.js'],
+  extends: ['@repo/eslint-config/next.js'],
   rules: {
     'unicorn/filename-case': [
       'error',

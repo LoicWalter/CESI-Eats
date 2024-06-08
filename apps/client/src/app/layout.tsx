@@ -10,7 +10,7 @@ import {
   HomeOutlined,
   ShoppingBagOutlined,
 } from '@mui/icons-material';
-import * as Logo from './favicon.ico';
+import Logo from './favicon.ico';
 
 const inter = Inter({ subsets: ['latin'] });
 
