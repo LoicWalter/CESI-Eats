@@ -7,4 +7,6 @@ export enum ErrorsMessages {
   INVALID_TOKEN = 'Invalid token.',
   INVALID_REFRESH = 'Invalid refresh token.',
   AUTH_HEADER_NOT_PROVIDED = 'No value was provided for the Authentication header.',
+  FILE_TOO_LARGE = 'File is too large.',
+  INVALID_FILE_TYPE = 'Invalid file type.',
 }

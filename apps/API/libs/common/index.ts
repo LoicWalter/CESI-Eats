@@ -10,4 +10,6 @@ export * from './src/messages/';
 
 export * from './src/microservices/';
 
+export * from '../../apps/api-gateway/src/pipes';
+
 export * from './src/rmq/';
