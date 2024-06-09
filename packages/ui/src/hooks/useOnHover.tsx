@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-function useOnHover(): [boolean, { onMouseEnter: () => void; onMouseLeave: () => void }] {
+export function useOnHover(): [boolean, { onMouseEnter: () => void; onMouseLeave: () => void }] {
   const [hovered, setHovered] = useState(false);
 
   const bind = {
@@ -16,5 +16,3 @@ function useOnHover(): [boolean, { onMouseEnter: () => void; onMouseLeave: () =>
 
   return [hovered, bind];
 }
-
-export default useOnHover;

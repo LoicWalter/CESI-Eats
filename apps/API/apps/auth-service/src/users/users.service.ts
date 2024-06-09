@@ -49,6 +49,7 @@ export class UsersService {
         email: data.dto.email,
         password: await bcrypt.hash(data.dto.password, 10),
         profilePicture: data.profilePicture,
+        roles: [data.role],
       },
     });
     return newUser;

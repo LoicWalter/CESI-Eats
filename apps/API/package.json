@@ -1,10 +1,13 @@
 {
-  "name": "api",
+  "name": "@api/cesieats",
   "version": "0.0.1",
   "description": "",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "exports": {
+    ".": "./export.ts"
+  },
   "packageManager": "pnpm@9.1.2",
   "scripts": {
     "build": "nest build",
