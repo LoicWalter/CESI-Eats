@@ -12,10 +12,6 @@ export class GatewayService {
     @Inject(Microservices.RESTAURANTS) private readonly restaurantsService: ClientProxy,
   ) {}
 
-  getHello(): string {
-    return 'Hello World!';
-  }
-
   createOrder(createOrderDto: CreateOrderDto) {
     return firstValueFrom(
       this.ordersService.emit(

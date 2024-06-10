@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from '@gen/client/users';
-import { catchError, Observable, tap } from 'rxjs';
-import { AuthMessage, ROLES_KEY } from 'libs/common';
+import { Observable } from 'rxjs';
+import { ErrorsMessages, getCurrentUserByContext, ROLES_KEY } from 'libs/common';
 import { Microservices } from '../microservices/microservices.names';
 import { ClientProxy } from '@nestjs/microservices';
 
@@ -29,33 +29,17 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
-    const authentication = this.getAuthentication(context);
-    return this.authService
-      .send(AuthMessage.VALIDATE_USER, { Authentication: authentication })
-      .pipe(
-        tap((user: any) => {
-          if (!requiredRoles.some((role) => user.roles?.includes(role))) {
-            throw new UnauthorizedException('User does not have the required roles.');
-          }
-        }),
-        catchError(() => {
-          throw new UnauthorizedException('User does not have the required roles.');
-        }),
-      );
-  }
+    const userRoles = getCurrentUserByContext(context).roles;
 
-  private getAuthentication(context: ExecutionContext) {
-    let authentication: string;
-    if (context.getType() === 'rpc') {
-      authentication = context.switchToRpc().getData().Authentication;
-    } else if (context.getType() === 'http') {
-      authentication = context.switchToHttp().getRequest().cookies?.Authentication;
+    if (!userRoles) {
+      throw new UnauthorizedException(ErrorsMessages.USER_DONT_HAVE_REQUIRED_ROLES);
     }
 
-    if (!authentication) {
-      throw new UnauthorizedException('No value was provided for the Authentication header.');
-    }
+    const hasRole = requiredRoles.some((role) => userRoles?.includes(role));
 
-    return authentication;
+    if (!hasRole) {
+      throw new UnauthorizedException(ErrorsMessages.USER_DONT_HAVE_REQUIRED_ROLES);
+    }
+    return true;
   }
 }
