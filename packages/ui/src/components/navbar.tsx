@@ -15,7 +15,8 @@ export function Navbar({ logo, iconArray }: NavbarProps): JSX.Element {
 
   return (
     <>
-      <div className="flex md:hidden fixed bottom-0 w-full h-12 z-10 border-t-gray-4 border-[1px] bg-gray-5 text-gray-3">
+      {/* Phone */}
+      <div className="flex md:hidden fixed bottom-0 w-full h-12 z-10 border-t-gray-4 border-r-[1px] bg-gray-5 text-gray-3 select-none">
         <div className="flex flex-row justify-evenly w-full h-full">
           {iconArray.map(({ icon, id }) => (
             <React.Fragment key={id}>
@@ -29,8 +30,9 @@ export function Navbar({ logo, iconArray }: NavbarProps): JSX.Element {
           <NavItem icon={<PersonOutline />} />
         </div>
       </div>
+      {/* Computer */}
       <div
-        className="hidden sticky top-0 h-screen border-r-gray-4 border-[1px] bg-gray-5 text-gray-3 md:flex flex-col items-center hover:w-40 transition-all duration-300 w-16 z-20"
+        className="hidden sticky top-0 h-screen border-r-gray-4 border-r-[1px] bg-gray-5 text-gray-3 md:flex flex-col items-center hover:w-40 transition-all duration-300 w-16 z-20 select-none"
         {...bind}
       >
         <div className="my-3">{logo}</div>
