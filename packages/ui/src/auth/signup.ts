@@ -1,7 +1,7 @@
 'use server';
 import { redirect } from 'next/navigation';
 import { defaultWebRoutes } from '../constants';
-import { Requester, getErrorMessage } from '../utils/api-requests';
+import { post, getErrorMessage } from '../utils/api-requests';
 import { PrismaUsers } from '@api/cesieats';
 
 enum UserTypes {
@@ -11,7 +11,7 @@ enum UserTypes {
 }
 
 const createUser = (userType: UserTypes) => async (_: any, data: Record<string, any>) => {
-  const { res, parsedRes } = await Requester.post<PrismaUsers.User>(`auth/signup/${userType}`, {
+  const { res, parsedRes } = await post<PrismaUsers.User>(`auth/signup/${userType}`, {
     body: JSON.stringify(data),
   });
   if (!res.ok) {

@@ -4,16 +4,13 @@ import { jwtDecode } from 'jwt-decode';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { Cookies, defaultWebRoutes } from '@repo/ui';
-import { Requester, getErrorMessage } from '../utils/api-requests';
+import { post, getErrorMessage } from '../utils/api-requests';
 import { PrismaUsers } from '@api/cesieats';
 
 export async function login(_: any, data: Record<string, any>) {
-  const { res, parsedRes } = await Requester.post<PrismaUsers.User>(
-    'http://localhost:7001/auth/login',
-    {
-      body: JSON.stringify(data),
-    },
-  );
+  const { res, parsedRes } = await post<PrismaUsers.User>('http://localhost:7001/auth/login', {
+    body: JSON.stringify(data),
+  });
   if (!res.ok) {
     return { error: getErrorMessage(parsedRes) };
   }
