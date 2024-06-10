@@ -1,8 +1,8 @@
 'use server';
-import { post } from './utils';
 import { redirect } from 'next/navigation';
-import { FormError } from './utils';
 import { defaultWebRoutes } from '../constants';
+import { post, getErrorMessage } from '../utils/api-requests';
+import { PrismaUsers } from '@api/cesieats';
 
 enum UserTypes {
   CLIENT = 'client',
@@ -10,13 +10,12 @@ enum UserTypes {
   LIVREUR = 'livreur',
 }
 
-const createUser = (userType: UserTypes) => async (_prevState: FormError, formData: FormData) => {
-  const { error } = (await post(
-    `http://localhost:7000/auth/signup/${userType}`,
-    formData,
-  )) as FormError;
-  if (error) {
-    return { error };
+const createUser = (userType: UserTypes) => async (_: any, data: Record<string, any>) => {
+  const { res, parsedRes } = await post<PrismaUsers.User>(`auth/signup/${userType}`, {
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    return { error: getErrorMessage(parsedRes) };
   }
   redirect(defaultWebRoutes.LOGIN);
 };

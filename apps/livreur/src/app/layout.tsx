@@ -5,7 +5,7 @@ import { Inter } from 'next/font/google';
 import { Navbar } from '@repo/ui';
 import Image from 'next/image';
 import { HomeOutlined, RestaurantOutlined } from '@mui/icons-material';
-import * as Logo from './favicon.ico';
+import Logo from './favicon.ico';
 
 const inter = Inter({ subsets: ['latin'] });
 

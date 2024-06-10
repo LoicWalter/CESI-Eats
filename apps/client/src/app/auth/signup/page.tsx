@@ -2,30 +2,108 @@
 
 import React from 'react';
 import { useFormState } from 'react-dom';
-import { createClientUser } from '@repo/ui';
+import { HelperText, createClientUser } from '@repo/ui';
+import { Formik } from 'formik';
+import { Button, FormControl, IconButton, Input, InputAdornment, InputLabel } from '@mui/material';
+import * as Yup from 'yup';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+
+interface FormValues {
+  email: string;
+  password: string;
+}
 
 function Signup(): JSX.Element {
   const [state, formAction] = useFormState(createClientUser, { error: '' });
+  const [showPassword, setShowPassword] = React.useState(false);
+  const schema = Yup.object().shape({
+    email: Yup.string().email().required(),
+    password: Yup.string().required(),
+  });
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
   return (
-    <div>
+    <div className="w-52 flex flex-col justify-center items-center">
       <h1>Signup</h1>
       <p>{state.error}</p>
-      <form
-        action={formAction}
-        className="flex flex-col"
+      <Formik
+        initialValues={{ email: '', password: '' }}
+        validationSchema={schema}
+        onSubmit={(values: FormValues) => formAction(values)}
       >
-        <input
-          placeholder="email"
-          type="email"
-          name="email"
-        />
-        <input
-          placeholder="Password"
-          type="password"
-          name="password"
-        />
-        <button type="submit">Signup</button>
-      </form>
+        {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col"
+          >
+            <FormControl
+              fullWidth
+              sx={{ m: 1 }}
+              variant="standard"
+            >
+              <InputLabel
+                htmlFor="email"
+                error={Boolean(errors.email && touched.email)}
+              >
+                Email
+              </InputLabel>
+              <Input
+                id="email"
+                name="email"
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={Boolean(errors.email && touched.email)}
+              />
+              {Boolean(errors.email && touched.email) && (
+                <HelperText error>{errors.email}</HelperText>
+              )}
+            </FormControl>
+            <FormControl
+              fullWidth
+              sx={{ m: 1 }}
+              variant="standard"
+            >
+              <InputLabel
+                htmlFor="password"
+                error={Boolean(errors.password && touched.password)}
+              >
+                Password
+              </InputLabel>
+              <Input
+                id="password"
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                value={values.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={Boolean(errors.password && touched.password)}
+              />
+              {Boolean(errors.password && touched.password) && (
+                <HelperText error>{errors.password}</HelperText>
+              )}
+            </FormControl>
+
+            <Button type="submit">Signup</Button>
+          </form>
+        )}
+      </Formik>
     </div>
   );
 }

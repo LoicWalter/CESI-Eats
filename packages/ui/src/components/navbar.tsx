@@ -3,7 +3,7 @@
 import { AccountCircleOutlined, PersonOutline } from '@mui/icons-material';
 import React from 'react';
 import { Divider } from '@mui/material';
-import useOnHover from '../hooks/useOnHover';
+import { useOnHover } from '../hooks/useOnHover';
 
 interface NavbarProps {
   logo: React.ReactElement;
