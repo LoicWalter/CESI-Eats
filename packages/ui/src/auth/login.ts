@@ -3,11 +3,13 @@
 import { jwtDecode } from 'jwt-decode';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { Cookies, defaultWebRoutes } from '@repo/ui';
-import { post, getErrorMessage } from '../utils/api-requests';
+import { Cookies, defaultWebRoutes, FormErrors, getErrorMessage, post } from '@repo/ui';
 import { PrismaUsers } from '@api/cesieats';
 
-export async function login(_: any, data: Record<string, any>) {
+export async function login(
+  _currentState: FormErrors,
+  data: Record<string, any>,
+): Promise<FormErrors> {
   const { res, parsedRes } = await post<PrismaUsers.User>('http://localhost:7001/auth/login', {
     body: JSON.stringify(data),
   });

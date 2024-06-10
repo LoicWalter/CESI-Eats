@@ -79,17 +79,3 @@ export async function _delete<T>(
     ...options,
   });
 }
-
-export async function getErrorMessage(response: any) {
-  if (response.message) {
-    if (Array.isArray(response.message)) {
-      return formatErrorMessage(response.message[0]);
-    }
-    return formatErrorMessage(response.message);
-  }
-  return 'Unknown error occured.';
-}
-
-function formatErrorMessage(message: string) {
-  return message.charAt(0).toUpperCase() + message.slice(1);
-}

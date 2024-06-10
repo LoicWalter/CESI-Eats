@@ -1,7 +1,7 @@
 'use server';
 import { redirect } from 'next/navigation';
 import { defaultWebRoutes } from '../constants';
-import { post, getErrorMessage } from '../utils/api-requests';
+import { post, getErrorMessage } from '@repo/ui';
 import { PrismaUsers } from '@api/cesieats';
 
 enum UserTypes {
