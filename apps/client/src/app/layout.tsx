@@ -43,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
             />
           }
         />
+
         <div className="flex-1 overflow-y-auto overflow-x-hidden mb-12 md:mb-0">{children}</div>
       </body>
     </html>
