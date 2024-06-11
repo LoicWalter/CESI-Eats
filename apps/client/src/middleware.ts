@@ -2,6 +2,7 @@ import { commonMiddleware, defaultWebRoutes } from '@repo/ui';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest): Response | undefined {
+  return;
   return commonMiddleware(defaultWebRoutes.CLIENT)(request);
 }
 
