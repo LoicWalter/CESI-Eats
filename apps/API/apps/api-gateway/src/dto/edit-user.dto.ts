@@ -19,12 +19,4 @@ export class EditUserDto {
   @IsString()
   @IsOptional()
   password?: string;
-
-  @ApiProperty({
-    description: 'User profile picture',
-    example: 'profile.jpg',
-    type: 'Image',
-  })
-  @IsOptional()
-  profilePicture?: Express.Multer.File;
 }

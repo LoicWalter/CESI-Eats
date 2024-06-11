@@ -2,74 +2,76 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   Length,
   IsNumberString,
-  IsMimeType,
   IsNotEmpty,
   IsNumber,
   IsString,
   IsPhoneNumber,
+  IsOptional,
 } from 'class-validator';
 
-export class CreateRestaurantDto {
+export class EditRestaurantDto {
   @ApiProperty({
     description: 'Restaurant name',
     example: 'La bonne bouffe',
     type: String,
   })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  name: string;
+  name?: string;
 
   @ApiProperty({
     description: 'ID of the restaurant owner',
     example: '1526845',
     type: String,
   })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  owner: string;
+  owner?: string;
 
   @ApiProperty({
     description: 'Restaurant price range',
     example: '20€-30€',
     type: String,
   })
+  @IsOptional()
   @IsString()
-  priceRange: string;
+  priceRange?: string;
 
   @ApiProperty({
     description: 'Phone number of the restaurant',
     example: '+33612345678',
     type: String,
   })
+  @IsOptional()
   @IsPhoneNumber()
   @IsString()
-  @IsNotEmpty()
-  phone: string;
+  phone?: string;
 
   @ApiProperty({
     description: 'Address of the restaurant',
     example: '12 rue de la paix, 75000 Paris',
     type: String,
   })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  address: string;
+  address?: string;
 
   @ApiProperty({
     description: 'SIRET number of the restaurant',
     example: '12345678912345',
     type: String,
   })
+  @IsOptional()
   @IsNumberString()
   @Length(14)
-  @IsNotEmpty()
-  siret: string;
+  siret?: string;
 
   @ApiProperty({
     description: 'Category of the restaurant',
     example: 'Fast-food',
     type: String,
   })
+  @IsOptional()
   @IsString()
-  category: string;
+  category?: string;
 }

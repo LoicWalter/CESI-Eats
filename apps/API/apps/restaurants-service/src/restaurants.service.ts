@@ -1,6 +1,6 @@
 import { PrismaRestaurantsService } from '@app/databases/restaurants/prisma/prisma-restaurants.service';
 import { Injectable } from '@nestjs/common';
-import { CreateRestaurantMessage } from 'libs/common';
+import { CreateRestaurantMessage, EditRestaurantMessage } from 'libs/common';
 
 @Injectable()
 export class RestaurantsService {
@@ -10,16 +10,41 @@ export class RestaurantsService {
     console.log('Creating restaurant :', data);
     return this.prisma.restaurant.create({
       data: {
-        name: data.name,
-        owner: data.owner,
-        priceRange: data.priceRange,
-        currentOffer: data.currentOffer,
-        image: data.image,
-        phone: data.phone,
-        address: data.address,
-        siret: data.siret,
-        category: data.category,
+        name: data.dto.name,
+        owner: data.dto.owner,
+        priceRange: data.dto.priceRange,
+        phone: data.dto.phone,
+        address: data.dto.address,
+        siret: data.dto.siret,
+        category: data.dto.category,
+        restaurantPicture: data.restaurantPicture,
       },
     });
+  }
+
+  editRestaurant(data: EditRestaurantMessage) {
+    console.log('Updating restaurant :', data);
+    return this.prisma.restaurant.update({
+      where: { id: data.id },
+      data: {
+        ...data.dto,
+        restaurantPicture: data.restaurantPicture,
+      },
+    });
+  }
+
+  deleteRestaurant(id: string) {
+    console.log('Deleting restaurant :', id);
+    return this.prisma.restaurant.delete({ where: { id } });
+  }
+
+  getRestaurant(id: string) {
+    console.log('Getting restaurant :', id);
+    return this.prisma.restaurant.findUnique({ where: { id } });
+  }
+
+  getAllRestaurants() {
+    console.log('Getting all restaurants');
+    return this.prisma.restaurant.findMany();
   }
 }
