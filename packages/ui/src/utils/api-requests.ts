@@ -3,6 +3,7 @@
 import { cookies } from 'next/headers';
 import { Cookies } from '../constants';
 import { PrismaUsers } from '@api/cesieats';
+import { redirect } from 'next/navigation';
 
 type ResponseWith<T> = { res: Response; parsedRes: T };
 
@@ -16,9 +17,14 @@ async function getUrl(path: string): Promise<string> {
 }
 
 async function request<T>(path: string, options: RequestInit): Promise<ResponseWith<T>> {
-  const res = await fetch(await getUrl(path), options);
-  const parsedRes = await res.json();
-  return { res, parsedRes };
+  try {
+    const res = await fetch(await getUrl(path), options);
+    const parsedRes = await res.json();
+    return { res, parsedRes };
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 async function getHeaders(withFile: boolean = false): Promise<Headers> {
@@ -78,4 +84,17 @@ export async function _delete<T>(
     headers: await getHeaders(),
     ...options,
   });
+}
+
+export async function getUserInfosFromCookie(): Promise<Partial<PrismaUsers.User> | undefined> {
+  const userCookie = cookies().get(Cookies.User);
+  return JSON.parse(userCookie?.value || '{}');
+}
+
+export async function redirectWithGetParams(path: string, params: Record<string, string>) {
+  const url = new URL(await getUrl(path));
+  Object.entries(params).forEach(([key, value]) => {
+    url.searchParams.set(key, value);
+  });
+  redirect(url.toString());
 }
