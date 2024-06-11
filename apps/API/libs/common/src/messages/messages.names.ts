@@ -8,3 +8,11 @@ export enum UserMessage {
   CREATE_USER = 'create_user',
   EDIT_USER = 'edit_user',
 }
+
+export enum RestaurantMessage {
+  CREATE_RESTAURANT = 'create_restaurant',
+  GET_RESTAURANTS = 'get_restaurants',
+  GET_RESTAURANT = 'get_restaurant',
+  EDIT_RESTAURANT = 'edit_restaurant',
+  DELETE_RESTAURANT = 'delete_restaurant',
+}
