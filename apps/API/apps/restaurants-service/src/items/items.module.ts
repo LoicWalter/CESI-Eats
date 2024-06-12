@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { RestaurantsController } from './restaurants.controller';
-import { RestaurantsService } from './restaurants.service';
+import { ItemsController } from './items.controller';
+import { ItemsService } from './items.service';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaRestaurantsModule } from '@app/databases/restaurants/prisma/prisma-restaurants.module';
-import configuration from './config/configuration';
+import configuration from '../config/configuration';
 import * as Joi from 'joi';
 import { RmqModule } from 'libs/common';
 
@@ -18,10 +18,9 @@ import { RmqModule } from 'libs/common';
         RABBIT_MQ_RESTAURANTS_QUEUE: Joi.string().required(),
       }),
     }),
-    RmqModule,
     PrismaRestaurantsModule,
   ],
-  controllers: [RestaurantsController],
-  providers: [RestaurantsService],
+  controllers: [ItemsController],
+  providers: [ItemsService],
 })
-export class RestaurantsModule {}
+export class ItemsModule {}

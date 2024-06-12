@@ -6,3 +6,5 @@ export * from './sign-in.dto';
 export * from './create-livreur.dto';
 export * from './create-restaurateur.dto';
 export * from './edit-user.dto';
+export * from './create-item.dto';
+export * from './edit-item.dto';

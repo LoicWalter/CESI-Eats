@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { RestaurantsModule } from './restaurants.module';
+import { RestaurantsModule } from './restaurants/restaurants.module';
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { Microservices, RmqService } from 'libs/common';
 

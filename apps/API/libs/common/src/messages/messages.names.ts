@@ -16,3 +16,11 @@ export enum RestaurantMessage {
   EDIT_RESTAURANT = 'edit_restaurant',
   DELETE_RESTAURANT = 'delete_restaurant',
 }
+
+export enum ItemMessage {
+  CREATE_ITEM = 'create_item',
+  GET_ITEMS = 'get_items',
+  GET_ITEM = 'get_item',
+  EDIT_ITEM = 'edit_item',
+  DELETE_ITEM = 'delete_item',
+}
