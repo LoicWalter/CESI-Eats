@@ -40,14 +40,15 @@ export class UsersService {
   }
 
   async createUser(data: CreateUserMessage) {
+    const { password, ...rest } = data.dto;
     const user = await this.getUserByEmail(data.dto.email);
     if (user) {
       return this.editUser(new EditUserMessage(user, data.dto, data.profilePicture), data.role);
     }
     const newUser = await this.prisma.user.create({
       data: {
-        email: data.dto.email,
-        password: await bcrypt.hash(data.dto.password, 10),
+        password: await bcrypt.hash(password, 10),
+        ...rest,
         profilePicture: data.profilePicture,
         roles: [data.role],
       },

@@ -17,6 +17,7 @@ async function getUrl(path: string): Promise<string> {
 }
 
 async function request<T>(path: string, options: RequestInit): Promise<ResponseWith<T>> {
+  console.log('Requesting:', path, options);
   try {
     const res = await fetch(await getUrl(path), options);
     const parsedRes = await res.json();
@@ -33,8 +34,6 @@ async function getHeaders(withFile: boolean = false): Promise<Headers> {
   headers.set('Cookie', `${Cookies.Authentication}=${authCookie?.value}`);
   if (!withFile) {
     headers.set('Content-Type', 'application/json');
-  } else {
-    headers.set('Content-Type', 'multipart/form-data');
   }
   return headers;
 }
@@ -97,4 +96,8 @@ export async function redirectWithGetParams(path: string, params: Record<string,
     url.searchParams.set(key, value);
   });
   redirect(url.toString());
+}
+
+export async function redirectTo(path: string) {
+  redirect(path);
 }
