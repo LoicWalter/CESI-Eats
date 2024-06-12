@@ -32,11 +32,11 @@ export function PaymentForm({ formik }: PaymentFormProps) {
   };
 
   return (
-    <div className="py-2 px-2">
+    <div className="ui-py-2 ui-px-2">
       <div>
         <Typography
           variant="h4"
-          className="fw-500 text-center pb-2"
+          className="ui-fw-500 ui-text-center ui-pb-2"
         >
           Carte de crédit
         </Typography>
@@ -51,9 +51,9 @@ export function PaymentForm({ formik }: PaymentFormProps) {
               xs={12}
               sm={12}
             >
-              <div className="pb-2">
+              <div className="ui-pb-2">
                 <InputLabel
-                  className="text-gray-2"
+                  className="ui-text-gray-2"
                   htmlFor="Nom sur la carte"
                   error={Boolean(formik.errors.cardName && formik.touched.cardName)}
                 >
@@ -79,8 +79,8 @@ export function PaymentForm({ formik }: PaymentFormProps) {
               xs={12}
               sm={12}
             >
-              <div className="pb-2">
-                <InputLabel className="text-gray-2">Numéro de la carte</InputLabel>
+              <div className="ui-pb-2">
+                <InputLabel className="ui-text-gray-2">Numéro de la carte</InputLabel>
                 <Input
                   fullWidth
                   id="cardNumber"
@@ -112,7 +112,7 @@ export function PaymentForm({ formik }: PaymentFormProps) {
               xs={12}
               sm={6}
             >
-              <InputLabel className="text-gray-2">Date d'expiration</InputLabel>
+              <InputLabel className="ui-text-gray-2">Date d'expiration</InputLabel>
               <Input
                 variant="outlined"
                 fullWidth
@@ -143,7 +143,7 @@ export function PaymentForm({ formik }: PaymentFormProps) {
               xs={12}
               sm={6}
             >
-              <InputLabel className="text-gray-2">CVV</InputLabel>
+              <InputLabel className="ui-text-gray-2">CVV</InputLabel>
               <Input
                 variant="outlined"
                 fullWidth

@@ -61,7 +61,7 @@ const card = (
   }
   cardNumber = cardNumber.replace(/^.{14}/g, '**** **** ****').trim();
   return (
-    <div className="w-full flex flex-row gap-6">
+    <div className="ui-w-full ui-flex ui-flex-row ui-gap-6">
       <div>{cardNumber}</div>
       <div>{cardDate}</div>
     </div>
@@ -160,12 +160,12 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
       {(formik) => (
         <form
           onSubmit={formik.handleSubmit}
-          className="flex w-full"
+          className="ui-flexui- w-full"
         >
-          <div className="flex flex-col w-full gap-12 p-12">
-            <div className="justify-center align-center flex">{picture}</div>
-            <div className="flex flex-col md:flex-row md:gap-24 gap-4">
-              <div className="flex flex-col gap-6 w-full md:w-2/5">
+          <div className="ui-flex ui-flex-col ui-w-full ui-gap-12 ui-p-12">
+            <div className="ui-justify-center ui-align-center ui-flex">{picture}</div>
+            <div className="ui-flex ui-flex-col md:ui-flex-row md:ui-gap-24 ui-gap-4">
+              <div className="ui-flex ui-flex-col ui-gap-6 ui-w-full md:ui-w-2/5">
                 <div>
                   <Typography variant="h4">Informations essentielles</Typography>
                   {Object.entries(keys).map(([key, value], index) => (
@@ -177,7 +177,7 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
                       <InputLabel
                         htmlFor={key}
                         error={Boolean(formik.errors[key] && formik.touched[key])}
-                        className="text-xl"
+                        className="ui-text-xl"
                       >
                         {value}
                       </InputLabel>
@@ -223,7 +223,7 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
                   ))}
                 </div>
               </div>
-              <div className="flex flex-col w-full md:w-1/2 gap-4 justify-end">
+              <div className="ui-flex ui-flex-col ui-w-full md:ui-w-1/2 ui-gap-4 ui-justify-end">
                 <FormControl
                   fullWidth
                   variant="standard"
@@ -231,7 +231,7 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
                   <Typography variant="h6">Adresse favorite</Typography>
                   <Select
                     fullWidth
-                    className="overflow-ellipsis"
+                    className="ui-overflow-ellipsis"
                     labelId="demo-simple-select-standard-label"
                     id="demo-simple-select-standard"
                     value={user.adress}
@@ -243,7 +243,7 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
                     </MenuItem>
                   </Select>
                 </FormControl>
-                <div className="flex flex-col gap-2">
+                <div className="ui-flex ui-flex-col ui-gap-2">
                   <Typography variant="h6">Parrainage</Typography>
                   {Object.entries(parrainage).map(([key, value], index) => (
                     <React.Fragment key={key}>
@@ -251,21 +251,21 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
                       <Divider />
                     </React.Fragment>
                   ))}
-                  <div className="flex flex-row gap-2 items-center">
+                  <div className="ui-flex ui-flex-row ui-gap-2 ui-items-center">
                     <Typography variant="body1">Parrainer un ami</Typography>
 
-                    <IconButton className="p-0">
+                    <IconButton className="ui-p-0">
                       <PersonAdd />
                     </IconButton>
                   </div>
                   <Divider />
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="ui-flex ui-flex-col ui-gap-2">
                   <Typography variant="h6">Carte banquaire</Typography>
-                  <div className="flex flex-row gap-2 items-center">
-                    <div className="justify-between flex flex-row w-full">
-                      <div className="flex flex-row gap-2">
-                        <CreditCard className="opacity-55" />
+                  <div className="ui-flex ui-flex-row ui-gap-2 ui-items-center">
+                    <div className="ui-justify-between ui-flex ui-flex-row ui-w-full">
+                      <div className="ui-flex ui-flex-row ui-gap-2">
+                        <CreditCard className="ui-opacity-55" />
 
                         <Typography variant="body1">
                           {card(
@@ -277,7 +277,7 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
                         </Typography>
                       </div>
                       <IconButton
-                        className="p-0"
+                        className="ui-p-0"
                         onClick={handleClickOpen}
                       >
                         <Edit />
@@ -285,12 +285,12 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
                       <Modal
                         open={open}
                         onClose={handleClose}
-                        className="flex justify-center items-center "
+                        className="ui-flex ui-justify-center ui-items-center "
                         title="Ajouter une carte banquaire"
                       >
-                        <div className="bg-gray-5 m-8 p-8 rounded-lg relative">
+                        <div className="ui-bg-gray-5 ui-m-8 ui-p-8 ui-rounded-lg ui-relative">
                           <IconButton
-                            className="absolute top-4 right-4"
+                            className="ui-absolute ui-top-4 ui-right-4"
                             onClick={handleClose}
                           >
                             <Close />
@@ -298,7 +298,7 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
                           <PaymentForm formik={formik} />
                           <Button
                             variant="outlined"
-                            className="bg-primary text-white hover:bg-secondary rounded-lg border-primary hover:border-secondary w-full py-2 mt-8"
+                            className="ui-bg-primary ui-text-white hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary ui-w-full ui-py-2 ui-mt-8"
                             onClick={handleClose}
                           >
                             Enregistrer
@@ -311,17 +311,17 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
                 </div>
               </div>
             </div>
-            <div className="flex flex-row items-center gap-2 justify-end w-full">
+            <div className="ui-flex ui-flex-row ui-items-center ui-gap-2 ui-justify-end ui-w-full">
               <Button
                 variant="outlined"
-                className="text-primary hover:text-secondary md:w-1/5 w-full border-primary rounded-lg hover:border-secondary "
+                className="ui-text-primary hover:ui-text-secondary md:ui-w-1/5 ui-w-full ui-border-primary ui-rounded-lg hover:ui-border-secondary "
               >
                 Annuler
               </Button>
               <Button
                 variant="outlined"
                 type="submit"
-                className="bg-primary text-white hover:bg-secondary rounded-lg border-primary hover:border-secondary md:w-1/5 w-full"
+                className="ui-bg-primary ui-text-white hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary md:ui-w-1/5 ui-w-full"
               >
                 Enregistrer
               </Button>
