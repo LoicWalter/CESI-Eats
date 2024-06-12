@@ -10,24 +10,37 @@ import {
   InputAdornment,
   InputLabel,
   MenuItem,
+  Modal,
   Select,
   SelectChangeEvent,
-  TextField,
   Typography,
 } from '@mui/material';
 import { Formik } from 'formik';
+import * as Yup from 'yup';
 import { HelperText } from './helperText';
 import {
+  Close,
+  CreditCard,
   Edit,
   EditOff,
   PersonAdd,
-  ShowChart,
   Visibility,
   VisibilityOff,
 } from '@mui/icons-material';
+import { PaymentForm } from './payement';
 
 interface UserProps {
-  user: { username: string; email: string; mobile: string; password: string };
+  user: {
+    username: string;
+    email: string;
+    mobile: string;
+    password: string;
+    adress: string;
+    cardName: string;
+    cardNumber: string;
+    expiryDate: string;
+    cvv: string;
+  };
   picture: React.ReactElement;
 }
 
@@ -35,6 +48,24 @@ const parrainage = {
   1: 'Cholé Vermeil',
   2: 'Patris Duval',
   3: 'Veronique Dumont',
+};
+
+const card = (
+  cardName: string | null,
+  cardNumber: string | null,
+  cardDate: string | null,
+  cvv: string | null,
+) => {
+  if (!cardName || !cardNumber || !cardDate || !cvv) {
+    return 'Ajouter une carte banquaire';
+  }
+  cardNumber = cardNumber.replace(/^.{14}/g, '**** **** ****').trim();
+  return (
+    <div className="w-full flex flex-row gap-6">
+      <div>{cardNumber}</div>
+      <div>{cardDate}</div>
+    </div>
+  );
 };
 
 export function Profil({ user, picture }: UserProps): JSX.Element {
@@ -53,6 +84,45 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
   });
   const [showPassword, setShowPassword] = React.useState(false);
 
+  const schema = Yup.object().shape({
+    username: Yup.string().required(),
+    email: Yup.string().email().required(),
+    mobile: Yup.string().required(),
+    password: Yup.string().required(),
+    cardNumber: Yup.string()
+      // .matches(/^[0-9]{16}$/, "Invalid card number")
+      .required('Card number is required'),
+    // expiryDate: yup.string().required("Expiry date is required"),
+    expiryDate: Yup.string()
+      .required('Expiry date is required')
+      .test('valid-month', 'Invalid month', function (value) {
+        if (!value) {
+          return false;
+        }
+
+        const [month] = value.split('/').map((item) => parseInt(item, 10));
+
+        return month >= 1 && month <= 12;
+      })
+      .test('is-future-date', 'Expiry date must be in the future', function (value) {
+        if (!value) {
+          return false;
+        }
+
+        const currentDate = new Date();
+        const [month, year] = value.split('/').map((item) => parseInt(item, 10));
+
+        // Adding 1 to the month because JavaScript months are zero-indexed
+        const expiryDate = new Date(year + 2000, month, 1);
+
+        return expiryDate > currentDate;
+      }),
+    name: Yup.string().required('Name is required'),
+    cvv: Yup.string()
+      .matches(/^[0-9]{3,4}$/, 'Invalid CVV')
+      .required('CVV is required'),
+  });
+
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -68,6 +138,10 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
   const handleClickUpdate = (field: string) =>
     setUpdate((update) => ({ ...update, [field]: !update[field] }));
 
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   return (
     <Formik
       initialValues={{
@@ -75,18 +149,23 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
         email: user.email,
         mobile: user.mobile,
         password: user.password,
+        adress: user.adress,
+        cardName: user.cardName,
+        cardNumber: user.cardNumber,
+        expiryDate: user.expiryDate,
+        cvv: user.cvv,
       }}
       onSubmit={(values: Record<string, any>) => console.log(values)}
     >
-      {({ values, handleChange, handleBlur, handleSubmit }) => (
+      {(formik) => (
         <form
-          onSubmit={handleSubmit}
+          onSubmit={formik.handleSubmit}
           className="flex w-full"
         >
           <div className="flex flex-col w-full gap-12 p-12">
-            <div className="flex flex-row gap-24">
-              <div className="flex flex-col gap-12 w-1/3">
-                <div>{picture}</div>
+            <div className="justify-center align-center flex">{picture}</div>
+            <div className="flex flex-col md:flex-row md:gap-24 gap-4">
+              <div className="flex flex-col gap-6 w-full md:w-2/5">
                 <div>
                   <Typography variant="h4">Informations essentielles</Typography>
                   {Object.entries(keys).map(([key, value], index) => (
@@ -95,11 +174,17 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
                       sx={{ m: 1 }}
                       variant="standard"
                     >
-                      <Typography variant="h6">{value}</Typography>
+                      <InputLabel
+                        htmlFor={key}
+                        error={Boolean(formik.errors[key] && formik.touched[key])}
+                        className="text-xl"
+                      >
+                        {value}
+                      </InputLabel>
                       <Input
                         id={key}
                         name={key}
-                        value={values[key]}
+                        value={formik.values[key]}
                         disabled={!update[key]}
                         type={key === 'password' && !showPassword ? 'password' : 'text'}
                         endAdornment={
@@ -127,17 +212,18 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
                             </InputAdornment>
                           </>
                         }
-                        onChange={handleChange}
-                        onBlur={handleBlur}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={Boolean(formik.errors[key] && formik.touched[key])}
                       />
-                      {/* {errors.username && touched.username && (
-                  <HelperText severity="error">{errors.username}</HelperTex>
-                )} */}
+                      {Boolean(formik.errors[key] && formik.touched[key]) && (
+                        <HelperText error>errors[key]</HelperText>
+                      )}
                     </FormControl>
                   ))}
                 </div>
               </div>
-              <div className="flex flex-col mt-30 w-1/2 gap-4">
+              <div className="flex flex-col w-full md:w-1/2 gap-4 justify-end">
                 <FormControl
                   fullWidth
                   variant="standard"
@@ -148,66 +234,94 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
                     className="overflow-ellipsis"
                     labelId="demo-simple-select-standard-label"
                     id="demo-simple-select-standard"
-                    value={adress}
+                    value={user.adress}
                     onChange={handleChangeAdress}
                     label="Adresse favorite"
                   >
-                    <MenuItem value="">
-                      <em>None</em>
+                    <MenuItem value={user.adress}>
+                      {user.adress ? user.adress : <em>None</em>}
                     </MenuItem>
-                    <MenuItem
-                      value={1}
-                      sx={{ whiteSpace: 'normal', wordWrap: 'break-all' }}
-                    >
-                      21 avenue du général de Gaulle Esplanade Strasbourg 67600
-                    </MenuItem>
-                    <MenuItem
-                      value={2}
-                      sx={{ whiteSpace: 'normal', wordWrap: 'break-all' }}
-                    >
-                      51 Rue des cerises Eckbolsheim 67201
-                    </MenuItem>
-                    <MenuItem value={3}>2 allée des foulons Lingolsheim 67380</MenuItem>
                   </Select>
                 </FormControl>
                 <div className="flex flex-col gap-2">
                   <Typography variant="h6">Parrainage</Typography>
                   {Object.entries(parrainage).map(([key, value], index) => (
-                    <>
-                      <Typography
-                        key={key}
-                        variant="body1"
-                      >
-                        {value}
-                      </Typography>
+                    <React.Fragment key={key}>
+                      <Typography variant="body1">{value}</Typography>
                       <Divider />
-                    </>
+                    </React.Fragment>
                   ))}
                   <div className="flex flex-row gap-2 items-center">
                     <Typography variant="body1">Parrainer un ami</Typography>
 
-                    <IconButton>
+                    <IconButton className="p-0">
                       <PersonAdd />
                     </IconButton>
                   </div>
                   <Divider />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <Typography variant="h6">Moyen de payement favoris</Typography>
+                  <Typography variant="h6">Carte banquaire</Typography>
+                  <div className="flex flex-row gap-2 items-center">
+                    <div className="justify-between flex flex-row w-full">
+                      <div className="flex flex-row gap-2">
+                        <CreditCard className="opacity-55" />
+
+                        <Typography variant="body1">
+                          {card(
+                            formik.values.cardName,
+                            formik.values.cardNumber,
+                            formik.values.expiryDate,
+                            formik.values.cvv,
+                          )}
+                        </Typography>
+                      </div>
+                      <IconButton
+                        className="p-0"
+                        onClick={handleClickOpen}
+                      >
+                        <Edit />
+                      </IconButton>
+                      <Modal
+                        open={open}
+                        onClose={handleClose}
+                        className="flex justify-center items-center "
+                        title="Ajouter une carte banquaire"
+                      >
+                        <div className="bg-gray-5 m-8 p-8 rounded-lg relative">
+                          <IconButton
+                            className="absolute top-4 right-4"
+                            onClick={handleClose}
+                          >
+                            <Close />
+                          </IconButton>
+                          <PaymentForm formik={formik} />
+                          <Button
+                            variant="outlined"
+                            className="bg-primary text-white hover:bg-secondary rounded-lg border-primary hover:border-secondary w-full py-2 mt-8"
+                            onClick={handleClose}
+                          >
+                            Enregistrer
+                          </Button>
+                        </div>
+                      </Modal>
+                    </div>
+                  </div>
+                  <Divider />
                 </div>
               </div>
             </div>
             <div className="flex flex-row items-center gap-2 justify-end w-full">
               <Button
                 variant="outlined"
-                className="bg-gray-5 text-primary hover:text-secondary w-1/5 border-primary rounded-lg hover:border-secondary hover:bg-gray-5"
+                className="text-primary hover:text-secondary md:w-1/5 w-full border-primary rounded-lg hover:border-secondary "
               >
                 Annuler
               </Button>
               <Button
                 variant="outlined"
                 type="submit"
-                className="bg-primary text-white hover:bg-secondary rounded-lg border-primary hover:border-secondary w-1/5"
+                className="bg-primary text-white hover:bg-secondary rounded-lg border-primary hover:border-secondary md:w-1/5 w-full"
               >
                 Enregistrer
               </Button>
