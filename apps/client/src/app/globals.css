@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #DD231B;
-  --color-secondary: #A8130A;
-  --color-button-primary-default: #DD231B;
-  --color-button-primary-pressed: #A8130A;
+  --color-primary: #dd231b;
+  --color-secondary: #a8130a;
+  --color-button-primary-default: #dd231b;
+  --color-button-primary-pressed: #a8130a;
   --color-button-primary-disabled: rgba(221, 35, 27, 0.5);
-  --color-button-secondary-border-default: #DD231B;
-  --color-button-secondary-border-pressed: #A8130A;
+  --color-button-secondary-border-default: #dd231b;
+  --color-button-secondary-border-pressed: #a8130a;
   --color-button-secondary-border-disabled: rgba(221, 35, 27, 0.5);
 }
