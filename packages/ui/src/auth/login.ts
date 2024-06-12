@@ -10,6 +10,7 @@ export async function login(
   _currentState: FormErrors,
   data: Record<string, any>,
 ): Promise<FormErrors> {
+  console.log('Logging in:', data);
   const { res, parsedRes } = await post<PrismaUsers.User>('http://localhost:7001/auth/login', {
     body: JSON.stringify(data),
   });

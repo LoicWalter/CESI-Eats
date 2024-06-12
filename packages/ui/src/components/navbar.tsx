@@ -106,7 +106,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
                   forceDefault={user === undefined}
                 />
               }
-              text={user?.email ?? 'Se connecter'}
+              text={user?.name ?? 'Se connecter'}
               href={user === undefined ? '/auth/login' : '/profile'}
               noSidePadding
             />

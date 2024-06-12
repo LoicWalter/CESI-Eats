@@ -62,5 +62,3 @@ export class AuthGatewayService {
     }
   }
 }
-
-//! finir l'enregistrement des fichiers + authentification a refacto

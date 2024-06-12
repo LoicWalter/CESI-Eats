@@ -17,4 +17,5 @@ export const config = {
      */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
+  unstable_allowDynamic: ['**/node_modules/lodash/_root.js'],
 };
