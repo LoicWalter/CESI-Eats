@@ -19,4 +19,15 @@ model restaurant {
   siret             String? @unique
   category          String?
   restaurantPicture String?
+  items             item[]
+}
+
+model item {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  name         String?    @unique
+  description  String?
+  price        Float?
+  itemPicture  String?
+  restaurant   restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId String     @db.ObjectId
 }

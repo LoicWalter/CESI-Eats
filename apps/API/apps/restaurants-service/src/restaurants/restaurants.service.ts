@@ -10,13 +10,7 @@ export class RestaurantsService {
     console.log('Creating restaurant :', data);
     return this.prisma.restaurant.create({
       data: {
-        name: data.dto.name,
-        owner: data.dto.owner,
-        priceRange: data.dto.priceRange,
-        phone: data.dto.phone,
-        address: data.dto.address,
-        siret: data.dto.siret,
-        category: data.dto.category,
+        ...data.dto,
         restaurantPicture: data.restaurantPicture,
       },
     });

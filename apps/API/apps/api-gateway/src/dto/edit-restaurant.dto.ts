@@ -1,13 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  Length,
-  IsNumberString,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  IsPhoneNumber,
-  IsOptional,
-} from 'class-validator';
+import { Length, IsNumberString, IsString, IsPhoneNumber, IsOptional } from 'class-validator';
 
 export class EditRestaurantDto {
   @ApiProperty({
