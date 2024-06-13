@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 const items = [
   { icon: <HomeOutlined />, text: 'Accueil', id: '1', href: '/' },
   { icon: <FavoriteBorderOutlined />, text: 'Favoris', id: '2', href: '/favorites' },
-  { icon: <ExploreOutlined />, text: 'Recherche', id: '3', href: '/recherche' },
+  { icon: <ExploreOutlined />, text: 'Recherche', id: '3', href: '/commande' },
   { icon: <ShoppingBagOutlined />, text: 'Panier', id: '4', href: '/panier' },
 ];
 
