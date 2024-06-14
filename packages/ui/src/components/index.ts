@@ -11,3 +11,4 @@ export * from './signupPage';
 export * from './styledTextField';
 export * from './clickableImageInput';
 export * from './phoneInput';
+export * from './payement';
