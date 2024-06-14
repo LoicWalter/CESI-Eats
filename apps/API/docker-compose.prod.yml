@@ -1,0 +1,113 @@
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+    env_file:
+      - ./.docker.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - rabbitmq
+    ports:
+      - '7000:7000'
+    networks:
+      - api
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: ./apps/auth-service/Dockerfile
+    env_file:
+      - ./.docker.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - rabbitmq
+    ports:
+      - '7001:7001'
+    networks:
+      - api
+
+  orders-service:
+    build:
+      context: .
+      dockerfile: ./apps/orders-service/Dockerfile
+    env_file:
+      - ./.docker.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - rabbitmq
+    networks:
+      - api
+
+  restaurants-service:
+    build:
+      context: .
+      dockerfile: ./apps/restaurants-service/Dockerfile
+    env_file:
+      - ./.docker.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - rabbitmq
+    networks:
+      - api
+
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - '5672:5672'
+    networks:
+      - api
+
+  postgre-users:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: users
+    ports:
+      - '5434:5432'
+    restart: unless-stopped
+    networks:
+      - api
+
+  mongo-orders:
+    build:
+      context: .
+      dockerfile: ./libs/databases/src/orders/Dockerfile
+      args:
+        MONGO_VERSION: 6
+    environment:
+      MONGO_REPLICA_HOST: mongo-orders
+      MONGO_REPLICA_PORT: 27020
+      MONGO_COMMAND: 'mongosh'
+    ports:
+      - '27020:27020'
+    networks:
+      - api
+
+  mongo-restaurants:
+    build:
+      context: .
+      dockerfile: ./libs/databases/src/restaurants/Dockerfile
+      args:
+        MONGO_VERSION: 6
+    environment:
+      MONGO_REPLICA_HOST: mongo-restaurants
+      MONGO_REPLICA_PORT: 27020
+      MONGO_COMMAND: 'mongosh'
+    ports:
+      - '27021:27020'
+    networks:
+      - api
+
+networks:
+  api:
+    driver: bridge

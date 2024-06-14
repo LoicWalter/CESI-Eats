@@ -59,15 +59,15 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
             icon={
               <ImageWithDefaultOnError
                 alt="Profile picture"
-                className="ui-w-8 ui-h-8 ui-rounded-full"
-                src="http://localhost:7000/auth/profile-picture/"
+                className="ui-w-8 ui-h-8 ui-rounded-full ui-aspect-square ui-object-cover ui-object-center"
+                src={`http://localhost:7000/auth/profilePicture/${user?.profilePicture}`}
                 defaultReactNode={<PersonOutline />}
                 width={32}
                 height={32}
                 forceDefault={user === undefined}
               />
             }
-            href={user === undefined ? '/auth/login' : '/profile'}
+            href={user === undefined ? '/auth/login' : '/profil'}
           />
         </div>
       </div>
@@ -98,8 +98,8 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
               icon={
                 <ImageWithDefaultOnError
                   alt="Profile picture"
-                  className="ui-w-8 ui-h-8 ui-rounded-full"
-                  src="http://localhost:7000/auth/profile-picture/"
+                  className="ui-w-8 ui-h-8 ui-rounded-full ui-aspect-square ui-object-cover ui-object-center"
+                  src={`http://localhost:7000/auth/profilePicture/${user?.profilePicture}`}
                   defaultReactNode={<AccountCircleOutlined />}
                   width={24}
                   height={24}
@@ -107,7 +107,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
                 />
               }
               text={user?.name ?? 'Se connecter'}
-              href={user === undefined ? '/auth/login' : '/profile'}
+              href={user === undefined ? '/auth/login' : '/profil'}
               noSidePadding
             />
           </div>

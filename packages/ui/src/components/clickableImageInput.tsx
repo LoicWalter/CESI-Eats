@@ -7,9 +7,10 @@ import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 interface ClickableImageInputProps {
   handleFile: (file: File) => void;
   name: string;
+  defaultValue?: React.ReactNode;
 }
 
-export function ClickableImageInput({ name, handleFile }: ClickableImageInputProps) {
+export function ClickableImageInput({ name, handleFile, defaultValue }: ClickableImageInputProps) {
   const [file, setFile] = useState<File | null>(null);
   // Create a reference to the hidden file input element
   const hiddenFileInput = useRef<HTMLInputElement>(null);
@@ -35,8 +36,10 @@ export function ClickableImageInput({ name, handleFile }: ClickableImageInputPro
           <img
             src={URL.createObjectURL(file)}
             alt="profile"
-            className="ui-w-40 ui-h-40 ui-rounded-full ui-object-cover ui-aspect-square ui-object-center"
+            className="ui-w-48 ui-h-48 ui-rounded-full ui-object-cover ui-aspect-square ui-object-center"
           />
+        ) : defaultValue ? (
+          defaultValue
         ) : (
           <AccountCircleOutlined className="ui-w-40 ui-h-40 ui-text-primary" />
         )}
