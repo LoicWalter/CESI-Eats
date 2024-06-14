@@ -10,7 +10,19 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(cuid())
-  email    String @unique
-  password String
+  id             String  @id @default(cuid())
+  email          String  @unique
+  password       String
+  profilePicture String?
+  name           String
+  phoneNumber    String
+  roles          Role[]
+}
+
+enum Role {
+  CLIENT
+  RESTAURATEUR
+  LIVREUR
+  DEV
+  ADMIN
 }
