@@ -83,4 +83,3 @@ services:
 
 networks:
   api:
-    driver: bridge
