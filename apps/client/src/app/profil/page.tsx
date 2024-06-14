@@ -16,18 +16,7 @@ const user = {
 };
 
 function page() {
-  return (
-    <Profil
-      picture={
-        <Image
-          alt="profil"
-          className="rounded-full aspect-square object-cover object-center h-64 w-64 justify-center"
-          src={MaPhoto}
-        />
-      }
-      user={user}
-    />
-  );
+  return <Profil />;
 }
 
 export default page;

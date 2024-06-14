@@ -1,72 +1,75 @@
 services:
   gateway:
+    container_name: api-gateway
     build:
       context: .
       dockerfile: ./apps/api-gateway/Dockerfile
     env_file:
       - ./.docker.env
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
     depends_on:
       - rabbitmq
     ports:
       - '7000:7000'
+    restart: always
     networks:
       - api
 
   auth-service:
+    container_name: auth-service
     build:
       context: .
       dockerfile: ./apps/auth-service/Dockerfile
     env_file:
-      - ./.docker.env
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./.prod.env
     depends_on:
       - rabbitmq
+      - gateway
+      - postgre-users
     ports:
       - '7001:7001'
+    restart: always
     networks:
       - api
 
   orders-service:
+    container_name: orders-service
     build:
       context: .
       dockerfile: ./apps/orders-service/Dockerfile
     env_file:
-      - ./.docker.env
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./.prod.env
     depends_on:
       - rabbitmq
+      - gateway
+    restart: always
     networks:
       - api
 
   restaurants-service:
+    container_name: restaurants-service
     build:
       context: .
       dockerfile: ./apps/restaurants-service/Dockerfile
     env_file:
-      - ./.docker.env
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./.prod.env
     depends_on:
       - rabbitmq
+      - gateway
+    restart: always
     networks:
       - api
 
   rabbitmq:
+    container_name: rabbitmq
     image: rabbitmq
     ports:
       - '5672:5672'
+    restart: always
     networks:
       - api
 
   postgre-users:
+    container_name: postgre-users
     image: postgres:13
     environment:
       POSTGRES_USER: postgres
@@ -74,40 +77,9 @@ services:
       POSTGRES_DB: users
     ports:
       - '5434:5432'
-    restart: unless-stopped
-    networks:
-      - api
-
-  mongo-orders:
-    build:
-      context: .
-      dockerfile: ./libs/databases/src/orders/Dockerfile
-      args:
-        MONGO_VERSION: 6
-    environment:
-      MONGO_REPLICA_HOST: mongo-orders
-      MONGO_REPLICA_PORT: 27020
-      MONGO_COMMAND: 'mongosh'
-    ports:
-      - '27020:27020'
-    networks:
-      - api
-
-  mongo-restaurants:
-    build:
-      context: .
-      dockerfile: ./libs/databases/src/restaurants/Dockerfile
-      args:
-        MONGO_VERSION: 6
-    environment:
-      MONGO_REPLICA_HOST: mongo-restaurants
-      MONGO_REPLICA_PORT: 27020
-      MONGO_COMMAND: 'mongosh'
-    ports:
-      - '27021:27020'
+    restart: always
     networks:
       - api
 
 networks:
   api:
-    driver: bridge

@@ -7,6 +7,7 @@ export enum AuthMessage {
 export enum UserMessage {
   CREATE_USER = 'create_user',
   EDIT_USER = 'edit_user',
+  GET_USER = 'get_user',
 }
 
 export enum RestaurantMessage {

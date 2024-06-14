@@ -11,6 +11,7 @@ import {
   Microservices,
   ErrorsMessages,
   EditUserMessage,
+  GetUserMessage,
 } from 'libs/common';
 import { firstValueFrom, of } from 'rxjs';
 import { Role, User } from '@gen/client/users';
@@ -40,8 +41,19 @@ export class AuthGatewayService {
     }
   }
 
-  getProfilePicture(user: User, res: any) {
-    return of(res.sendFile(join(process.cwd(), 'uploads/profileimages/' + user.profilePicture)));
+  getProfilePicture(id: string, res: any) {
+    return of(res.sendFile(join(process.cwd(), 'uploads/profileimages/' + id)));
+  }
+
+  async getUser(id: string) {
+    try {
+      const response = await firstValueFrom(
+        this.authService.send({ cmd: UserMessage.GET_USER }, new GetUserMessage(id)),
+      );
+      return response;
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 
   async signUpUser(dto: CreateUserDto, role: Role, profilePicture?: Express.Multer.File) {
