@@ -104,20 +104,38 @@ const Container = styled.div`
   }
 `;
 
-export function AddressAutocomplete() {
-  return (
-    <GeoapifyContext apiKey="9c3b443ce01249f2b3f66c6681aa0b38">
-      <div className="ui-flex ui-flex-row ui-w-full ui-justify-center ui-items-center ui-gap-3">
-        <LocationOn />
-        <Container className="ui-w-full">
-          <GeoapifyGeocoderAutocomplete
-            placeholder="Choisir une adresse"
-            lang="fr"
-            debounceDelay={100}
-            limit={5}
-          />
-        </Container>
-      </div>
-    </GeoapifyContext>
-  );
+interface AddressAutocompleteProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export function AddressAutocomplete({ value, onChange }: AddressAutocompleteProps) {
+  // async function sendGeocoderRequest(
+  //   value: any,
+  //   geocoder: { sendGeocoderRequest: (arg0: any) => any },
+  // ) {
+  //   const place = await geocoder.sendGeocoderRequest(value);
+  //   if (!place) {
+  //     return;
+  //   }
+  //   onChange(place?.properties?.formatted);
+  // }
+  // return (
+  //   <GeoapifyContext apiKey="9c3b443ce01249f2b3f66c6681aa0b38">
+  //     <div className="ui-flex ui-flex-row ui-w-full ui-justify-center ui-items-center ui-gap-3">
+  //       <LocationOn />
+  //       <Container className="ui-w-full">
+  //         <GeoapifyGeocoderAutocomplete
+  //           sendGeocoderRequestFunc={sendGeocoderRequest}
+  //           value={value}
+  //           placeholder="Choisir une adresse"
+  //           lang="fr"
+  //           debounceDelay={100}
+  //           limit={1}
+  //           filterByCountryCode={['fr']}
+  //         />
+  //       </Container>
+  //     </div>
+  //   </GeoapifyContext>
+  // );
 }

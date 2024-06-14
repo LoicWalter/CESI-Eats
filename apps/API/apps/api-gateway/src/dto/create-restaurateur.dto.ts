@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
 
 export class CreateRestaurateurDto {
   @ApiProperty({
@@ -37,4 +37,13 @@ export class CreateRestaurateurDto {
   @IsNotEmpty()
   @IsPhoneNumber()
   phoneNumber: string;
+
+  @ApiProperty({
+    description: 'User parrain id',
+    type: 'string',
+    format: 'string',
+  })
+  @IsString()
+  @IsOptional()
+  parrainId?: string;
 }

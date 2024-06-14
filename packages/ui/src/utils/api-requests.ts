@@ -17,7 +17,6 @@ async function getUrl(path: string): Promise<string> {
 }
 
 async function request<T>(path: string, options: RequestInit): Promise<ResponseWith<T>> {
-  console.log('Requesting:', path, options);
   try {
     const res = await fetch(await getUrl(path), options);
     const parsedRes = await res.json();
@@ -65,12 +64,10 @@ export async function patch<T>(
   options: Omit<RequestInit, 'headers'>,
   withFile: boolean = false,
 ): Promise<ResponseWith<T>> {
-  const { body, ...rest } = options;
   return request(path, {
     method: 'PATCH',
     headers: await getHeaders(withFile),
-    body: JSON.stringify(body),
-    ...rest,
+    ...options,
   });
 }
 
@@ -85,9 +82,46 @@ export async function _delete<T>(
   });
 }
 
-export async function getUserInfosFromCookie(): Promise<Partial<PrismaUsers.User> | undefined> {
+export async function getUserById(id: string): Promise<PrismaUsers.User | undefined> {
+  const { res, parsedRes } = await get<
+    PrismaUsers.Prisma.UserGetPayload<{
+      include: { filleuls: true };
+    }>
+  >(`auth/users/${id}`, {});
+  if (!res.ok) {
+    return undefined;
+  }
+  return parsedRes;
+}
+
+export async function setUserCookie(user: Partial<PrismaUsers.User>) {
+  cookies().set({
+    name: Cookies.User,
+    value: JSON.stringify(user),
+    secure: true,
+    httpOnly: false,
+  });
+}
+
+export async function getUserInfosFromCookie(): Promise<
+  | Partial<
+      PrismaUsers.Prisma.UserGetPayload<{
+        include: { filleuls: true };
+      }>
+    >
+  | undefined
+> {
   const userCookie = cookies().get(Cookies.User);
-  return JSON.parse(userCookie?.value || '{}');
+  const parsedCookie = JSON.parse(userCookie?.value || '{}');
+  if (!parsedCookie.id) {
+    return undefined;
+  }
+
+  const refreshedUser = await getUserById(parsedCookie.id);
+  if (refreshedUser) {
+    setUserCookie(refreshedUser);
+  }
+  return refreshedUser;
 }
 
 export async function redirectWithGetParams(path: string, params: Record<string, string>) {

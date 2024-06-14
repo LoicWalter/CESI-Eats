@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { useFormState } from 'react-dom';
-import { login, redirectTo, StyledTextField } from '@repo/ui';
+import { login, redirectTo, StyledTextField, StyledButton, StyledOutlinedButton } from '@repo/ui';
 import { Formik } from 'formik';
-import { Alert, Button, IconButton, Typography } from '@mui/material';
+import { Alert, IconButton, Typography } from '@mui/material';
 import * as Yup from 'yup';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
@@ -103,21 +103,21 @@ export function LoginPage({ logo }: LoginPageProps): JSX.Element {
             />
 
             <div className="ui-flex ui-flex-row ui-w-full ui-justify-between ui-gap-4 ui-items-center ui-mt-6">
-              <Button
-                className="ui-w-1/2 ui-border-primary ui-text-primary ui-rounded-xl hover:ui-border-secondary hover:ui-text-secondary"
+              <StyledOutlinedButton
+                className="ui-w-1/2 ui-border-primary ui-text-primary ui-rounded-xl"
                 type="button"
                 onClick={() => redirectTo('/auth/signup')}
                 variant="outlined"
               >
                 S'inscrire
-              </Button>
-              <Button
+              </StyledOutlinedButton>
+              <StyledButton
                 type="submit"
-                className="ui-w-1/2 ui-bg-primary ui-text-white ui-rounded-xl hover:ui-bg-secondary"
+                className="ui-w-1/2 ui-bg-primary ui-text-white ui-rounded-xl"
                 variant="contained"
               >
                 Se connecter
-              </Button>
+              </StyledButton>
             </div>
           </form>
         )}

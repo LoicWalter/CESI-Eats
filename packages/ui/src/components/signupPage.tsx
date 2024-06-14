@@ -5,6 +5,8 @@ import { useFormState } from 'react-dom';
 import {
   ClickableImageInput,
   PhoneInput,
+  StyledButton,
+  StyledOutlinedButton,
   StyledTextField,
   createClientUser,
   redirectTo,
@@ -13,21 +15,32 @@ import { Formik } from 'formik';
 import { Button, IconButton, Typography } from '@mui/material';
 import * as Yup from 'yup';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useSearchParams } from 'next/navigation';
 
 interface FormValues {
-  'profile-picture': File | null;
+  profilePicture: File | null;
   name: string;
   phoneNumber: string;
   email: string;
   password: string;
   confirmPassword: string;
 }
+
+interface SignupPageProps {
+  action: (
+    _: any,
+    data: FormData,
+  ) => Promise<{
+    error: string;
+  }>;
+}
 const phoneRegExp = /^(\+|00)[1-9][0-9 \-\(\)\.]{7,32}$/;
 
-export function SignupPage(): JSX.Element {
-  const [state, formAction] = useFormState(createClientUser, { error: '' });
+export function SignupPage({ action }: SignupPageProps): JSX.Element {
+  const [state, formAction] = useFormState(action, { error: '' });
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+  const searchParams = useSearchParams();
 
   const schema = Yup.object().shape({
     name: Yup.string().required('Le nom est requis.'),
@@ -59,7 +72,7 @@ export function SignupPage(): JSX.Element {
       {state?.error ? <p>{state.error}</p> : null}
       <Formik
         initialValues={{
-          'profile-picture': null,
+          profilePicture: null,
           name: '',
           phoneNumber: '',
           email: '',
@@ -70,12 +83,12 @@ export function SignupPage(): JSX.Element {
         onSubmit={(values: FormValues) => {
           console.log(values);
           const formData = new FormData();
+          const parrain = searchParams.get('parrainId');
+          if (parrain) {
+            formData.append('parrainId', parrain);
+          }
           Object.entries(values).forEach(([key, value]) => {
-            if (value instanceof File) {
-              formData.append(key, value);
-            } else {
-              formData.append(key, value);
-            }
+            formData.append(key, value);
           });
           formAction(formData);
         }}
@@ -86,8 +99,8 @@ export function SignupPage(): JSX.Element {
             className="ui-flex ui-flex-col ui-gap-4 ui-w-full ui-justify-center items-center"
           >
             <ClickableImageInput
-              name="profile-picture"
-              handleFile={(file) => setFieldValue('profile-picture', file)}
+              name="profilePicture"
+              handleFile={(file) => setFieldValue('profilePicture', file)}
             />
 
             <StyledTextField
@@ -189,21 +202,21 @@ export function SignupPage(): JSX.Element {
             />
 
             <div className="ui-flex ui-flex-row ui-w-full ui-justify-between ui-gap-4 ui-items-center ui-mt-6">
-              <Button
-                className="ui-w-1/2 ui-border-primary ui-text-primary ui-rounded-xl hover:ui-border-secondary hover:ui-text-secondary"
+              <StyledOutlinedButton
+                className="ui-w-1/2 ui-border-primary ui-text-primary ui-rounded-xl"
                 type="button"
-                onClick={() => redirectTo('/auth/signup')}
+                onClick={() => redirectTo('/auth/login')}
                 variant="outlined"
               >
                 Se connecter
-              </Button>
-              <Button
+              </StyledOutlinedButton>
+              <StyledButton
                 type="submit"
-                className="ui-w-1/2 ui-bg-primary ui-text-white ui-rounded-xl hover:ui-bg-secondary"
+                className="ui-w-1/2 ui-bg-primary ui-text-white ui-rounded-xl"
                 variant="contained"
               >
                 S'inscrire
-              </Button>
+              </StyledButton>
             </div>
           </form>
         )}

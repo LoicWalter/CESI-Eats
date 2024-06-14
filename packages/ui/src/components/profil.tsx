@@ -1,138 +1,136 @@
 'use client';
 
-import React from 'react';
-import {
-  Button,
-  Divider,
-  FormControl,
-  IconButton,
-  Input,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Modal,
-  Select,
-  SelectChangeEvent,
-  Typography,
-} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Button, Divider, IconButton, Modal, Typography } from '@mui/material';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { HelperText } from './helperText';
 import {
   Close,
   CreditCard,
   Edit,
   EditOff,
   PersonAdd,
+  PersonOutline,
   Visibility,
   VisibilityOff,
 } from '@mui/icons-material';
 import { PaymentForm } from './payement';
-
-interface UserProps {
-  user: {
-    username: string;
-    email: string;
-    mobile: string;
-    password: string;
-    adress: string;
-    cardName: string;
-    cardNumber: string;
-    expiryDate: string;
-    cvv: string;
-  };
-  picture: React.ReactElement;
-}
-
-const parrainage = {
-  1: 'Cholé Vermeil',
-  2: 'Patris Duval',
-  3: 'Veronique Dumont',
-};
+import { PrismaUsers } from '@api/cesieats';
+import { getUserInfosFromCookie, ImageWithDefaultOnError } from '../utils';
+import { usePathname } from 'next/navigation';
+import { ClickableImageInput } from './clickableImageInput';
+import { StyledTextField } from './styledTextField';
+//@ts-ignore
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { PhoneInput } from './phoneInput';
+import { useFormState } from 'react-dom';
+import { editUser } from '../actions';
 
 const card = (
-  cardName: string | null,
+  cardOwner: string | null,
   cardNumber: string | null,
-  cardDate: string | null,
-  cvv: string | null,
+  cardExpiration: string | null,
+  cardCvc: string | null,
 ) => {
-  if (!cardName || !cardNumber || !cardDate || !cvv) {
+  if (!cardOwner || !cardNumber || !cardExpiration || !cardCvc) {
     return 'Ajouter une carte banquaire';
   }
   cardNumber = cardNumber.replace(/^.{14}/g, '**** **** ****').trim();
   return (
     <div className="ui-w-full ui-flex ui-flex-row ui-gap-6">
-      <div>{cardNumber}</div>
-      <div>{cardDate}</div>
+      <Typography variant="body1">{cardNumber}</Typography>
+      <Typography variant="body1">{cardExpiration}</Typography>
     </div>
   );
 };
 
-export function Profil({ user, picture }: UserProps): JSX.Element {
-  const keys: Record<string, string> = {
-    username: "Nom d'utilisateur",
-    email: 'Email',
-    mobile: 'Mobile',
-    password: 'Mot de passe',
-  };
+const phoneRegExp = /^(\+|00)[1-9][0-9 \-\(\)\.]{7,32}$/;
+
+const schema = Yup.object().shape({
+  name: Yup.string().required('Le nom est requis.'),
+  email: Yup.string().email().required("L'email est requis."),
+  phoneNumber: Yup.string()
+    .matches(phoneRegExp, 'Le numéro de téléphone est invalide.')
+    .required('Le numéro de téléphone est requis'),
+  password: Yup.string(),
+  cardNumber: Yup.string().matches(/^[0-9]{16}$/, 'Le numéro de carte est invalide'),
+  cardExpiration: Yup.string()
+    .test('valid-month', 'Le mois est invalide', function (value) {
+      if (!value) {
+        return false;
+      }
+
+      const [month] = value.split('/').map((item) => parseInt(item, 10));
+
+      return month >= 1 && month <= 12;
+    })
+    .test('is-future-date', "La date d'expiration doit être future", function (value) {
+      if (!value) {
+        return false;
+      }
+
+      const currentDate = new Date();
+      const [month, year] = value.split('/').map((item) => parseInt(item, 10));
+
+      // Adding 1 to the month because JavaScript months are zero-indexed
+      const expiryDate = new Date(year + 2000, month, 1);
+
+      return expiryDate > currentDate;
+    }),
+  cardOwner: Yup.string(),
+  cardCvc: Yup.string().matches(/^[0-9]{3,4}$/, 'Le code de sécurité est invalide'),
+});
+
+export interface FormValues {
+  email: string;
+  password: string;
+  profilePicture: File | null;
+  name: string;
+  phoneNumber: string;
+  address: string;
+  cardNumber: string;
+  cardExpiration: string;
+  cardCvc: string;
+  cardOwner: string;
+}
+
+export function Profil(): JSX.Element {
+  const [state, formAction] = useFormState(editUser, { error: '' });
+  const [isCopied, setIsCopied] = useState(false);
+  const [user, setUser] = useState<
+    Partial<
+      PrismaUsers.Prisma.UserGetPayload<{
+        include: { filleuls: true };
+      }>
+    >
+  >();
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const user = await getUserInfosFromCookie();
+      if (!user?.id) {
+        setUser(undefined);
+        return;
+      }
+      setUser(user);
+    };
+    getUser();
+  }, [pathname]);
 
   const [update, setUpdate] = React.useState<Record<string, boolean>>({
-    username: false,
+    name: false,
     email: false,
-    mobile: false,
+    phoneNumber: false,
     password: false,
   });
   const [showPassword, setShowPassword] = React.useState(false);
-
-  const schema = Yup.object().shape({
-    username: Yup.string().required(),
-    email: Yup.string().email().required(),
-    mobile: Yup.string().required(),
-    password: Yup.string().required(),
-    cardNumber: Yup.string()
-      // .matches(/^[0-9]{16}$/, "Invalid card number")
-      .required('Card number is required'),
-    // expiryDate: yup.string().required("Expiry date is required"),
-    expiryDate: Yup.string()
-      .required('Expiry date is required')
-      .test('valid-month', 'Invalid month', function (value) {
-        if (!value) {
-          return false;
-        }
-
-        const [month] = value.split('/').map((item) => parseInt(item, 10));
-
-        return month >= 1 && month <= 12;
-      })
-      .test('is-future-date', 'Expiry date must be in the future', function (value) {
-        if (!value) {
-          return false;
-        }
-
-        const currentDate = new Date();
-        const [month, year] = value.split('/').map((item) => parseInt(item, 10));
-
-        // Adding 1 to the month because JavaScript months are zero-indexed
-        const expiryDate = new Date(year + 2000, month, 1);
-
-        return expiryDate > currentDate;
-      }),
-    name: Yup.string().required('Name is required'),
-    cvv: Yup.string()
-      .matches(/^[0-9]{3,4}$/, 'Invalid CVV')
-      .required('CVV is required'),
-  });
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-  };
-
-  const [adress, setAdress] = React.useState('');
-
-  const handleChangeAdress = (event: SelectChangeEvent) => {
-    setAdress(event.target.value);
   };
 
   const handleClickUpdate = (field: string) =>
@@ -145,118 +143,236 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
   return (
     <Formik
       initialValues={{
-        username: user.username,
-        email: user.email,
-        mobile: user.mobile,
-        password: user.password,
-        adress: user.adress,
-        cardName: user.cardName,
-        cardNumber: user.cardNumber,
-        expiryDate: user.expiryDate,
-        cvv: user.cvv,
+        email: user?.email || '',
+        password: '',
+        profilePicture: null,
+        name: user?.name || '',
+        phoneNumber: user?.phoneNumber || '',
+        address: user?.address || '',
+        cardNumber: user?.cardNumber || '',
+        cardExpiration: user?.cardExpiration || '',
+        cardCvc: user?.cardCvc || '',
+        cardOwner: user?.cardOwner || '',
       }}
-      onSubmit={(values: Record<string, any>) => console.log(values)}
+      onSubmit={(values: FormValues) => {
+        console.log(values);
+
+        //remove empty fields
+        Object.keys(values).forEach((key) => {
+          if (!values[key as keyof FormValues]) {
+            delete values[key as keyof FormValues];
+          }
+        });
+
+        const formData = new FormData();
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
+        formAction(formData);
+      }}
+      validationSchema={schema}
+      enableReinitialize={true}
     >
       {(formik) => (
         <form
           onSubmit={formik.handleSubmit}
-          className="ui-flexui- w-full"
+          className="ui-flex ui-w-full"
         >
           <div className="ui-flex ui-flex-col ui-w-full ui-gap-12 ui-p-12">
-            <div className="ui-justify-center ui-align-center ui-flex">{picture}</div>
-            <div className="ui-flex ui-flex-col md:ui-flex-row md:ui-gap-24 ui-gap-4">
+            <div className="ui-justify-center ui-align-center ui-flex">
+              <ClickableImageInput
+                name="profilePicture"
+                handleFile={(file) => formik.setFieldValue('profilePicture', file)}
+                defaultValue={
+                  <ImageWithDefaultOnError
+                    alt="profil"
+                    className="ui-rounded-full ui-aspect-square ui-object-cover ui-object-center ui-h-48 ui-w-48 ui-justify-center"
+                    src={`http://localhost:7000/auth/profilePicture/${user?.profilePicture}`}
+                    defaultReactNode={<PersonOutline className="ui-h-48 ui-w-48" />}
+                    width={64}
+                    height={64}
+                    forceDefault={user === undefined}
+                  />
+                }
+              />
+            </div>
+            {state?.error ? <p>{state.error}</p> : null}
+
+            <div className="ui-flex ui-flex-col md:ui-flex-row md:ui-gap-24 ui-gap-4 md:ui-justify-center">
               <div className="ui-flex ui-flex-col ui-gap-6 ui-w-full md:ui-w-2/5">
-                <div>
-                  <Typography variant="h4">Informations essentielles</Typography>
-                  {Object.entries(keys).map(([key, value], index) => (
-                    <FormControl
-                      fullWidth
-                      sx={{ m: 1 }}
-                      variant="standard"
-                    >
-                      <InputLabel
-                        htmlFor={key}
-                        error={Boolean(formik.errors[key] && formik.touched[key])}
-                        className="ui-text-xl"
-                      >
-                        {value}
-                      </InputLabel>
-                      <Input
-                        id={key}
-                        name={key}
-                        value={formik.values[key]}
-                        disabled={!update[key]}
-                        type={key === 'password' && !showPassword ? 'password' : 'text'}
-                        endAdornment={
-                          <>
-                            {key === 'password' && (
-                              <InputAdornment position="end">
-                                <IconButton
-                                  aria-label="toggle password visibility"
-                                  onClick={handleClickShowPassword}
-                                  onMouseDown={handleMouseDownPassword}
-                                  edge="end"
-                                >
-                                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
-                              </InputAdornment>
-                            )}
-                            <InputAdornment position="end">
-                              <IconButton
-                                aria-label="update"
-                                onClick={() => handleClickUpdate(key)}
-                                edge="end"
-                              >
-                                {update[key] ? <EditOff /> : <Edit />}
-                              </IconButton>
-                            </InputAdornment>
-                          </>
-                        }
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={Boolean(formik.errors[key] && formik.touched[key])}
-                      />
-                      {Boolean(formik.errors[key] && formik.touched[key]) && (
-                        <HelperText error>errors[key]</HelperText>
-                      )}
-                    </FormControl>
-                  ))}
-                </div>
-              </div>
-              <div className="ui-flex ui-flex-col ui-w-full md:ui-w-1/2 ui-gap-4 ui-justify-end">
-                <FormControl
-                  fullWidth
+                <Typography variant="h4">Informations essentielles</Typography>
+                <StyledTextField
+                  key="name"
+                  id="name"
+                  name="name"
+                  label="Nom d'utilisateur"
+                  value={formik.values.name}
+                  disabled={!update.name}
                   variant="standard"
-                >
-                  <Typography variant="h6">Adresse favorite</Typography>
-                  <Select
-                    fullWidth
-                    className="ui-overflow-ellipsis"
-                    labelId="demo-simple-select-standard-label"
-                    id="demo-simple-select-standard"
-                    value={user.adress}
-                    onChange={handleChangeAdress}
-                    label="Adresse favorite"
-                  >
-                    <MenuItem value={user.adress}>
-                      {user.adress ? user.adress : <em>None</em>}
-                    </MenuItem>
-                  </Select>
-                </FormControl>
+                  type="text"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={Boolean(formik.errors.name && formik.touched.name)}
+                  helperText={formik.touched.name && formik.errors.name ? formik.errors.name : ''}
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton
+                        aria-label="update"
+                        onClick={() => handleClickUpdate('name')}
+                        edge="end"
+                      >
+                        {update['name'] ? <EditOff /> : <Edit />}
+                      </IconButton>
+                    ),
+                  }}
+                />
+                <StyledTextField
+                  key="email"
+                  id="email"
+                  name="email"
+                  label="Email"
+                  value={formik.values.email}
+                  disabled={!update.email}
+                  variant="standard"
+                  type="email"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={Boolean(formik.errors.email && formik.touched.email)}
+                  helperText={
+                    formik.touched.email && formik.errors.email ? formik.errors.email : ''
+                  }
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton
+                        aria-label="update"
+                        onClick={() => handleClickUpdate('email')}
+                        edge="end"
+                      >
+                        {update['email'] ? <EditOff /> : <Edit />}
+                      </IconButton>
+                    ),
+                  }}
+                />
+                <PhoneInput
+                  key="phoneNumber"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  label="Numéro de téléphone"
+                  value={formik.values.phoneNumber}
+                  disabled={!update.phoneNumber}
+                  variant="standard"
+                  type="tel"
+                  onChange={(e) => {
+                    formik.setFieldValue('phoneNumber', e);
+                  }}
+                  onBlur={formik.handleBlur}
+                  error={Boolean(formik.errors.phoneNumber && formik.touched.phoneNumber)}
+                  helperText={
+                    formik.touched.phoneNumber && formik.errors.phoneNumber
+                      ? formik.errors.phoneNumber
+                      : ''
+                  }
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton
+                        aria-label="update"
+                        onClick={() => handleClickUpdate('phoneNumber')}
+                        edge="end"
+                      >
+                        {update['phoneNumber'] ? <EditOff /> : <Edit />}
+                      </IconButton>
+                    ),
+                  }}
+                />
+                <StyledTextField
+                  key="password"
+                  id="password"
+                  name="password"
+                  label="Mot de passe"
+                  value={formik.values.password}
+                  disabled={!update.password}
+                  variant="standard"
+                  type={showPassword ? 'text' : 'password'}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={Boolean(formik.errors.password && formik.touched.password)}
+                  helperText={
+                    formik.touched.password && formik.errors.password ? formik.errors.password : ''
+                  }
+                  InputProps={{
+                    endAdornment: (
+                      <div className="ui-flex ui-flex-row ui-gap-2">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                        <IconButton
+                          aria-label="update"
+                          onClick={() => handleClickUpdate('password')}
+                          edge="end"
+                        >
+                          {update['password'] ? <EditOff /> : <Edit />}
+                        </IconButton>
+                      </div>
+                    ),
+                  }}
+                />
+              </div>
+              <div className="ui-flex ui-flex-col ui-gap-6 ui-w-full md:ui-w-2/5">
+                <Typography variant="h4">Informations complémentaires</Typography>
+                <StyledTextField
+                  key="address"
+                  id="address"
+                  name="address"
+                  label="Adresse"
+                  value={formik.values.address}
+                  variant="standard"
+                  type="text"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={Boolean(formik.errors.address && formik.touched.address)}
+                  helperText={
+                    formik.touched.address && formik.errors.address ? formik.errors.address : ''
+                  }
+                />
                 <div className="ui-flex ui-flex-col ui-gap-2">
                   <Typography variant="h6">Parrainage</Typography>
-                  {Object.entries(parrainage).map(([key, value], index) => (
-                    <React.Fragment key={key}>
-                      <Typography variant="body1">{value}</Typography>
+                  {user?.filleuls?.map((filleul) => (
+                    <React.Fragment key={filleul.id}>
+                      <Typography
+                        variant="body1"
+                        className="ui-p-2"
+                      >
+                        {filleul.name}
+                      </Typography>
                       <Divider />
                     </React.Fragment>
                   ))}
                   <div className="ui-flex ui-flex-row ui-gap-2 ui-items-center">
-                    <Typography variant="body1">Parrainer un ami</Typography>
-
-                    <IconButton className="ui-p-0">
-                      <PersonAdd />
-                    </IconButton>
+                    <CopyToClipboard
+                      text={`http://localhost:3000/client/auth/signup?parrainId=${user?.id}`}
+                      onCopy={() => {
+                        setIsCopied(true);
+                        setTimeout(() => setIsCopied(false), 3000);
+                      }}
+                    >
+                      <span className="ui-flex ui-flex-row ui-gap-2 ui-items-center hover:ui-bg-gray-4 ui-rounded-lg ui-p-2 ui-cursor-pointer">
+                        <Typography variant="body1">Parrainer un ami</Typography>
+                        <PersonAdd className="ui-p-0" />
+                      </span>
+                    </CopyToClipboard>
+                    {isCopied && (
+                      <Typography
+                        variant="body1"
+                        className="ui-text-green-500"
+                      >
+                        Lien d'invitation copié !
+                      </Typography>
+                    )}
                   </div>
                   <Divider />
                 </div>
@@ -266,15 +382,12 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
                     <div className="ui-justify-between ui-flex ui-flex-row ui-w-full">
                       <div className="ui-flex ui-flex-row ui-gap-2">
                         <CreditCard className="ui-opacity-55" />
-
-                        <Typography variant="body1">
-                          {card(
-                            formik.values.cardName,
-                            formik.values.cardNumber,
-                            formik.values.expiryDate,
-                            formik.values.cvv,
-                          )}
-                        </Typography>
+                        {card(
+                          formik.values.cardOwner,
+                          formik.values.cardNumber,
+                          formik.values.cardExpiration,
+                          formik.values.cardCvc,
+                        )}
                       </div>
                       <IconButton
                         className="ui-p-0"
@@ -309,22 +422,22 @@ export function Profil({ user, picture }: UserProps): JSX.Element {
                   </div>
                   <Divider />
                 </div>
+                <div className="ui-flex ui-flex-row ui-items-center ui-gap-2 ui-w-full">
+                  <Button
+                    variant="outlined"
+                    className="ui-text-primary hover:ui-text-secondary ui-w-full ui-border-primary ui-rounded-lg hover:ui-border-secondary "
+                  >
+                    Annuler
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    type="submit"
+                    className="ui-bg-primary ui-text-white hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary ui-w-full"
+                  >
+                    Enregistrer
+                  </Button>
+                </div>
               </div>
-            </div>
-            <div className="ui-flex ui-flex-row ui-items-center ui-gap-2 ui-justify-end ui-w-full">
-              <Button
-                variant="outlined"
-                className="ui-text-primary hover:ui-text-secondary md:ui-w-1/5 ui-w-full ui-border-primary ui-rounded-lg hover:ui-border-secondary "
-              >
-                Annuler
-              </Button>
-              <Button
-                variant="outlined"
-                type="submit"
-                className="ui-bg-primary ui-text-white hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary md:ui-w-1/5 ui-w-full"
-              >
-                Enregistrer
-              </Button>
             </div>
           </div>
         </form>
