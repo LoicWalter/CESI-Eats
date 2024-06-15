@@ -1,13 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import {
-  IsBoolean,
-  IsBooleanString,
-  IsEmail,
-  IsOptional,
-  IsPhoneNumber,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsEmail, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
 
 export class EditUserDto {
   @ApiProperty({

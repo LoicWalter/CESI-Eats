@@ -1,5 +1,4 @@
 export enum ErrorsMessages {
-<<<<<<< HEAD
   USER_ALREADY_EXISTS = 'Cet utilisateur est déjà enregistré.',
   USER_SUSPENDED = 'Ce compte est suspendu.',
   USER_NOT_FOUND = 'Utilisateur introuvable.',
@@ -11,20 +10,8 @@ export enum ErrorsMessages {
   AUTH_HEADER_NOT_PROVIDED = 'Authorization header non fourni.',
   FILE_TOO_LARGE = 'Fichier trop volumineux.',
   INVALID_FILE_TYPE = 'Type de fichier invalide.',
-=======
-  USER_ALREADY_EXISTS = 'User already exists.',
-  USER_NOT_FOUND = 'User not found.',
-  USER_NOT_FOUND_IN_CONTEXT = 'No user found in context.',
-  INVALID_CREDENTIALS = 'Credentials are not valid.',
-  USER_DONT_HAVE_REQUIRED_ROLES = 'This user does not have the required roles.',
-  INVALID_TOKEN = 'Invalid token.',
-  INVALID_REFRESH = 'Invalid refresh token.',
-  AUTH_HEADER_NOT_PROVIDED = 'No value was provided for the Authentication header.',
-  FILE_TOO_LARGE = 'File is too large.',
-  INVALID_FILE_TYPE = 'Invalid file type.',
-  ITEM_NOT_FOUND = 'Item not found.',
-  MENU_NOT_FOUND = 'Menu not found.',
-  RESTAURANT_NOT_FOUND = 'Restaurant not found.',
-  USER_IS_NOT_OWNER = 'User is not the owner of this restaurant.',
->>>>>>> origin/main-development
+  ITEM_NOT_FOUND = 'Article introuvable.',
+  MENU_NOT_FOUND = 'Menu introuvable.',
+  RESTAURANT_NOT_FOUND = 'Restaurant introuvable.',
+  USER_IS_NOT_OWNER = "Cet utilisateur n'est pas propriétaire.",
 }
