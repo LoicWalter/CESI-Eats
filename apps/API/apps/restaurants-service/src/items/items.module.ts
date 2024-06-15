@@ -5,7 +5,6 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaRestaurantsModule } from '@app/databases/restaurants/prisma/prisma-restaurants.module';
 import configuration from '../config/configuration';
 import * as Joi from 'joi';
-import { RmqModule } from 'libs/common';
 
 @Module({
   imports: [
