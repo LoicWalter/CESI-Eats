@@ -12,15 +12,6 @@ export class CreateRestaurantDto {
   name: string;
 
   @ApiProperty({
-    description: 'ID of the restaurant owner',
-    example: '1526845',
-    type: String,
-  })
-  @IsString()
-  @IsNotEmpty()
-  owner: string;
-
-  @ApiProperty({
     description: 'Restaurant price range',
     example: '20€-30€',
     type: String,

@@ -28,5 +28,6 @@ export class EditItemDto {
   })
   @Type(() => Number)
   @IsNumber()
+  @IsOptional()
   price: number;
 }

@@ -8,3 +8,5 @@ export * from './create-restaurateur.dto';
 export * from './edit-user.dto';
 export * from './create-item.dto';
 export * from './edit-item.dto';
+export * from './create-menu.dto';
+export * from './edit-menu.dto';

@@ -9,4 +9,8 @@ export enum ErrorsMessages {
   AUTH_HEADER_NOT_PROVIDED = 'No value was provided for the Authentication header.',
   FILE_TOO_LARGE = 'File is too large.',
   INVALID_FILE_TYPE = 'Invalid file type.',
+  ITEM_NOT_FOUND = 'Item not found.',
+  MENU_NOT_FOUND = 'Menu not found.',
+  RESTAURANT_NOT_FOUND = 'Restaurant not found.',
+  USER_IS_NOT_OWNER = 'User is not the owner of this restaurant.',
 }
