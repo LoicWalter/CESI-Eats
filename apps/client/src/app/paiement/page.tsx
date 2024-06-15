@@ -25,12 +25,10 @@ interface CommandeProps {
   picture: StaticImageData;
   address: string;
   deliveryAddress: string;
-  card: {
-    cardName: string | null;
-    cardNumber: string | null;
-    expiryDate: string | null;
-    cvv: string | null;
-  };
+  cardOwner: string | null;
+  cardNumber: string | null;
+  cardExpiration: string | null;
+  cardCvc: string | null;
   items: {
     name: string;
     price: number;
@@ -44,12 +42,10 @@ const commande: CommandeProps = {
   picture: BuffaloGrill,
   address: 'Rue de Lyon, N83, 67640 Fegersheim',
   deliveryAddress: '2 allée des Foulons, Lingolsheim 67380',
-  card: {
-    cardName: '',
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-  },
+  cardOwner: '',
+  cardNumber: '',
+  cardExpiration: '',
+  cardCvc: '',
   items: [
     {
       name: 'Super Famous Burger Bacon',
@@ -60,12 +56,12 @@ const commande: CommandeProps = {
 };
 
 const card = (
-  cardName: string | null,
+  cardOwner: string | null,
   cardNumber: string | null,
   cardDate: string | null,
-  cvv: string | null,
+  cardCvc: string | null,
 ) => {
-  if (!cardName || !cardNumber || !cardDate || !cvv) {
+  if (!cardOwner || !cardNumber || !cardDate || !cardCvc) {
     return 'Ajouter une carte banquaire';
   }
   cardNumber = cardNumber.replace(/^.{14}/g, '**** **** ****').trim();
@@ -82,7 +78,7 @@ export default function OrderDetails() {
     cardNumber: Yup.string()
       // .matches(/^[0-9]{16}$/, "Invalid card number")
       .required('Card number is required'),
-    expiryDate: Yup.string()
+    cardExpiration: Yup.string()
       .required('Expiry date is required')
       .test('valid-month', 'Invalid month', function (value) {
         if (!value) {
@@ -102,14 +98,14 @@ export default function OrderDetails() {
         const [month, year] = value.split('/').map((item) => parseInt(item, 10));
 
         // Adding 1 to the month because JavaScript months are zero-indexed
-        const expiryDate = new Date(year + 2000, month, 1);
+        const cardExpiration = new Date(year + 2000, month, 1);
 
-        return expiryDate > currentDate;
+        return cardExpiration > currentDate;
       }),
     name: Yup.string().required('Name is required'),
-    cvv: Yup.string()
-      .matches(/^[0-9]{3,4}$/, 'Invalid CVV')
-      .required('CVV is required'),
+    cardCvc: Yup.string()
+      .matches(/^[0-9]{3,4}$/, 'Invalid cardCvc')
+      .required('cardCvc is required'),
   });
 
   const [open, setOpen] = React.useState(false);
@@ -124,7 +120,10 @@ export default function OrderDetails() {
         picture: commande.picture,
         address: commande.address,
         deliveryAddress: commande.deliveryAddress,
-        card: commande.card,
+        cardOwner: commande.cardOwner,
+        cardNumber: commande.cardNumber,
+        cardExpiration: commande.cardExpiration,
+        cardCvc: commande.cardCvc,
         items: commande.items,
         serviceFee: commande.serviceFee,
       }}
@@ -168,7 +167,7 @@ export default function OrderDetails() {
                       >
                         <div className="md:text-2xl sm:text-xl text-lg">{commande.restaurant}</div>
                       </Typography>
-                      <Typography variant="body1">
+                      <Typography variant="h5">
                         <div className="md:text-base text-sm">{commande.address}</div>
                       </Typography>
                     </div>
@@ -216,10 +215,10 @@ export default function OrderDetails() {
 
                                   <Typography variant="body1">
                                     {card(
-                                      formik.values.card.cardName,
-                                      formik.values.card.cardNumber,
-                                      formik.values.card.expiryDate,
-                                      formik.values.card.cvv,
+                                      formik.values.cardOwner,
+                                      formik.values.cardNumber,
+                                      formik.values.cardExpiration,
+                                      formik.values.cardCvc,
                                     )}
                                   </Typography>
                                 </div>

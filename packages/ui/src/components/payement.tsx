@@ -3,13 +3,19 @@ import { FormikProps } from 'formik';
 import { Grid, InputAdornment, Typography } from '@mui/material';
 import { CalendarToday, CreditCard } from '@mui/icons-material';
 import { StyledTextField } from './styledTextField';
-import { FormValues } from './profil';
 
-interface PaymentFormProps {
-  formik: FormikProps<FormValues>;
+type FormValues<T> = {
+  cardNumber: string | null;
+  cardExpiration: string | null;
+  cardCvc: string | null;
+  cardOwner: string | null;
+} & T;
+
+interface PaymentFormProps<T> {
+  formik: FormikProps<FormValues<T>>;
 }
 
-export function PaymentForm({ formik }: PaymentFormProps) {
+export function PaymentForm<T extends Record<string, any>>({ formik }: PaymentFormProps<T>) {
   const formatCardNumber = (value: string) =>
     value
       ?.replace(/\D/g, '')
@@ -30,11 +36,6 @@ export function PaymentForm({ formik }: PaymentFormProps) {
       return formattedValue;
     }
   };
-
-  // cardNumber: string | null;
-  // cardExpiration: string | null;
-  // cardCvc: string | null;
-  // cardOwner: string | null;
 
   return (
     <div className="ui-py-2 ui-px-2">
@@ -62,13 +63,13 @@ export function PaymentForm({ formik }: PaymentFormProps) {
                   label="Nom du titulaire de la carte"
                   id="cardOwner"
                   name="cardOwner"
-                  value={formik.values.cardOwner.replace(/\d+/g, '')}
+                  value={formik.values.cardOwner?.replace(/\d+/g, '')}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={Boolean(formik.touched.cardOwner && formik.errors.cardOwner)}
                   helperText={
                     formik.touched.cardOwner && formik.errors.cardOwner
-                      ? formik.errors.cardOwner
+                      ? (formik.errors.cardOwner as string)
                       : ''
                   }
                   placeholder="Nom du titulaire de la carte"
@@ -86,7 +87,7 @@ export function PaymentForm({ formik }: PaymentFormProps) {
                   label="Numéro de carte"
                   id="cardNumber"
                   name="cardNumber"
-                  value={formatCardNumber(formik.values.cardNumber)}
+                  value={formatCardNumber(formik.values.cardNumber || '')}
                   onChange={(e) => {
                     formik.setFieldValue('cardNumber', e.target.value.replace(/\s/g, ''));
                   }}
@@ -94,7 +95,7 @@ export function PaymentForm({ formik }: PaymentFormProps) {
                   error={Boolean(formik.touched.cardNumber && formik.errors.cardNumber)}
                   helperText={
                     formik.touched.cardNumber && formik.errors.cardNumber
-                      ? formik.errors.cardNumber
+                      ? (formik.errors.cardNumber as string)
                       : ''
                   }
                   placeholder="Numéro de carte"
@@ -118,7 +119,7 @@ export function PaymentForm({ formik }: PaymentFormProps) {
                 label="Date d'expiration"
                 id="cardExpiration"
                 name="cardExpiration"
-                value={formatExpiryDate(formik.values.cardExpiration)}
+                value={formatExpiryDate(formik.values.cardExpiration || '')}
                 onChange={(e) => {
                   formik.setFieldValue('cardExpiration', e.target.value.replace(/\s/g, ''));
                 }}
@@ -126,7 +127,7 @@ export function PaymentForm({ formik }: PaymentFormProps) {
                 error={Boolean(formik.touched.cardExpiration && formik.errors.cardExpiration)}
                 helperText={
                   formik.touched.cardExpiration && formik.errors.cardExpiration
-                    ? formik.errors.cardExpiration
+                    ? (formik.errors.cardExpiration as string)
                     : ''
                 }
                 placeholder="MM/YY"
@@ -154,7 +155,9 @@ export function PaymentForm({ formik }: PaymentFormProps) {
                 onBlur={formik.handleBlur}
                 error={Boolean(formik.touched.cardCvc && formik.errors.cardCvc)}
                 helperText={
-                  formik.touched.cardCvc && formik.errors.cardCvc ? formik.errors.cardCvc : ''
+                  formik.touched.cardCvc && formik.errors.cardCvc
+                    ? (formik.errors.cardCvc as string)
+                    : ''
                 }
                 placeholder="123"
               />
