@@ -26,12 +26,8 @@ export const commonMiddleware =
       return Response.redirect(new URL(app, request.url));
     }
 
-    if (userRole.includes(role)) {
-      return Response.redirect(new URL(`${app}${defaultWebRoutes.LOGOUT}`, request.url));
-    }
-
     if (routesNeedRole.some((route) => currentPathName.startsWith(route))) {
-      if (!userRole.includes(role)) {
+      if(!userRole || !userRole.includes(role)) {
         return Response.redirect(new URL(`${app}${defaultWebRoutes.LOGIN}`, request.url));
       }
     }
