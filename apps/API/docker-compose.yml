@@ -86,37 +86,6 @@ services:
     networks:
       - api
 
-  mongo-orders:
-    build:
-      context: .
-      dockerfile: ./libs/databases/src/orders/Dockerfile
-      args:
-        MONGO_VERSION: 6
-    environment:
-      MONGO_REPLICA_HOST: mongo-orders
-      MONGO_REPLICA_PORT: 27020
-      MONGO_COMMAND: 'mongosh'
-    ports:
-      - '27020:27020'
-    networks:
-      - api
-
-  mongo-restaurants:
-    build:
-      context: .
-      dockerfile: ./libs/databases/src/restaurants/Dockerfile
-      args:
-        MONGO_VERSION: 6
-    environment:
-      MONGO_REPLICA_HOST: mongo-restaurants
-      MONGO_REPLICA_PORT: 27020
-      MONGO_COMMAND: 'mongosh'
-    ports:
-      - '27021:27020'
-    networks:
-      - api
-
-
 networks:
   api:
     driver: bridge
