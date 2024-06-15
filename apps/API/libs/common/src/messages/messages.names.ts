@@ -2,6 +2,7 @@ export enum AuthMessage {
   VALIDATE_USER = 'validate_user',
   GET_CURRENT_USER = 'get_current_user',
   SIGNIN_USER = 'signin_user',
+  VALIDATE_API_KEY = 'validate_api_key',
 }
 
 export enum UserMessage {

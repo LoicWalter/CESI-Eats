@@ -1,23 +1,12 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from '@gen/client/users';
 import { Observable } from 'rxjs';
 import { ErrorsMessages, getCurrentUserByContext, ROLES_KEY } from 'libs/common';
-import { Microservices } from '../microservices/microservices.names';
-import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(
-    private reflector: Reflector,
-    @Inject(Microservices.AUTH) private authService: ClientProxy,
-  ) {}
+  constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [

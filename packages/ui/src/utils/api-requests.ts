@@ -31,6 +31,7 @@ async function getHeaders(withFile: boolean = false): Promise<Headers> {
   const headers = new Headers();
   const authCookie = cookies().get(Cookies.Authentication);
   headers.set('Cookie', `${Cookies.Authentication}=${authCookie?.value}`);
+  headers.set('x-api-key', process.env.NEXT_PUBLIC_API_KEY || '');
   if (!withFile) {
     headers.set('Content-Type', 'application/json');
   }
