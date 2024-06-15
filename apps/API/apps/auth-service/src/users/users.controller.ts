@@ -24,4 +24,14 @@ export class UsersController {
   getUserById(data: GetUserMessage) {
     return this.usersService.getUserById(data.id);
   }
+
+  @MessagePattern({ cmd: UserMessage.GET_ALL_USERS })
+  getUsers() {
+    return this.usersService.getUsers();
+  }
+
+  @MessagePattern({ cmd: UserMessage.DELETE_USER })
+  deleteUser(data: { id: string }) {
+    return this.usersService.deleteUser(data.id);
+  }
 }

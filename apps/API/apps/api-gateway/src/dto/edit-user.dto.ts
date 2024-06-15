@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+  IsBoolean,
+  IsBooleanString,
+  IsEmail,
+  IsOptional,
+  IsPhoneNumber,
+  IsString,
+} from 'class-validator';
 
 export class EditUserDto {
   @ApiProperty({
@@ -83,4 +91,18 @@ export class EditUserDto {
   @IsString()
   @IsOptional()
   cardCvc?: string;
+
+  @ApiProperty({
+    description: 'Suspension status',
+    example: 'true',
+    type: Boolean,
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    return value;
+  })
+  suspended?: boolean;
 }

@@ -1,3 +1,9 @@
+import DatagridContainers from './components/datagridContainers';
+
 export default function Page(): JSX.Element {
-  return <main></main>;
+  return (
+    <main>
+      <DatagridContainers />
+    </main>
+  );
 }

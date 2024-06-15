@@ -1,4 +1,5 @@
-import React from 'react';
+'use client';
+
 import { Button } from '@mui/material';
 import styled from '@emotion/styled';
 
