@@ -10,7 +10,6 @@ async function bootstrap() {
   app.connectMicroservice<RmqOptions>(rmqService.getOptions(Microservices.AUTH, true));
   app.useGlobalPipes(new ValidationPipe());
   await app.startAllMicroservices();
-  app.setGlobalPrefix('users-api');
   await app.listen(7001);
 }
 bootstrap();
