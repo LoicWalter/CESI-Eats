@@ -3,13 +3,21 @@
 import { jwtDecode } from 'jwt-decode';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { Cookies, defaultWebRoutes, FormErrors, getErrorMessage, post } from '@repo/ui';
+import {
+  Cookies,
+  defaultWebRoutes,
+  FormErrors,
+  getErrorMessage,
+  post,
+  setUserCookie,
+} from '@repo/ui';
 import { PrismaUsers } from '@api/cesieats';
 
 export async function login(
   _currentState: FormErrors,
   data: Record<string, any>,
 ): Promise<FormErrors> {
+  console.log('Logging in:', data);
   const { res, parsedRes } = await post<PrismaUsers.User>('http://localhost:7001/auth/login', {
     body: JSON.stringify(data),
   });
@@ -20,7 +28,7 @@ export async function login(
   redirect(defaultWebRoutes.HOME);
 }
 
-const setCookies = (response: Response, content: Record<string, any>) => {
+const setCookies = async (response: Response, content: Record<string, any>) => {
   const setCookieHeader = response.headers.get('Set-Cookie');
   if (!setCookieHeader) return;
   const token = setCookieHeader.split(';')[0].split('=')[1];
@@ -33,11 +41,5 @@ const setCookies = (response: Response, content: Record<string, any>) => {
     expires: new Date(decodedToken.exp! * 1000),
   });
 
-  cookies().set({
-    name: Cookies.User,
-    value: JSON.stringify(content),
-    secure: true,
-    httpOnly: false,
-    expires: new Date(decodedToken.exp! * 1000),
-  });
+  await setUserCookie(content);
 };

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Patch,
   Post,
   Res,
@@ -20,7 +21,7 @@ import { diskStorage } from 'multer';
 import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
-export const storage = {
+export const profileStorage = {
   storage: diskStorage({
     destination: 'uploads/profileimages',
     filename: (req, file, cb) => {
@@ -38,7 +39,7 @@ export class AuthGatewayController {
   constructor(private readonly authGatewayService: AuthGatewayService) {}
 
   @ApiBody({ type: CreateClientDto })
-  @UseInterceptors(FileInterceptor('profile-picture', storage))
+  @UseInterceptors(FileInterceptor('profilePicture', profileStorage))
   @Post('/signup/client')
   signUpClient(
     @Body() dto: CreateClientDto,
@@ -49,7 +50,7 @@ export class AuthGatewayController {
   }
 
   @ApiBody({ type: CreateLivreurDto })
-  @UseInterceptors(FileInterceptor('profile-picture', storage))
+  @UseInterceptors(FileInterceptor('profilePicture', profileStorage))
   @Post('/signup/livreur')
   signUpLivreur(
     @Body() dto: CreateLivreurDto,
@@ -60,7 +61,7 @@ export class AuthGatewayController {
   }
 
   @ApiBody({ type: CreateRestaurateurDto })
-  @UseInterceptors(FileInterceptor('profile-picture', storage))
+  @UseInterceptors(FileInterceptor('profilePicture', profileStorage))
   @Post('/signup/restaurateur')
   signUpRestaurateur(
     @Body() dto: CreateRestaurateurDto,
@@ -71,7 +72,7 @@ export class AuthGatewayController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('profile-picture', storage))
+  @UseInterceptors(FileInterceptor('profilePicture', profileStorage))
   @Patch('/users')
   updateUser(
     @CurrentUser() user: User,
@@ -83,8 +84,14 @@ export class AuthGatewayController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/profile-picture')
-  getProfilePicture(@CurrentUser() user: User, @Res() res) {
-    return this.authGatewayService.getProfilePicture(user, res);
+  @Get('/users/:id')
+  getUser(@Param('id') id: string) {
+    return this.authGatewayService.getUser(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/profilePicture/:id')
+  getProfilePicture(@Res() res, @Param('id') id: string) {
+    return this.authGatewayService.getProfilePicture(id, res);
   }
 }

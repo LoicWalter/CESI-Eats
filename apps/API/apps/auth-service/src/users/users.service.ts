@@ -40,18 +40,39 @@ export class UsersService {
   }
 
   async createUser(data: CreateUserMessage) {
+    const { password, parrainId, ...rest } = data.dto;
     const user = await this.getUserByEmail(data.dto.email);
     if (user) {
+      if (user.roles.includes(data.role)) {
+        throw new RpcException(ErrorsMessages.USER_ALREADY_EXISTS);
+      }
       return this.editUser(new EditUserMessage(user, data.dto, data.profilePicture), data.role);
     }
+
     const newUser = await this.prisma.user.create({
       data: {
-        email: data.dto.email,
-        password: await bcrypt.hash(data.dto.password, 10),
+        password: await bcrypt.hash(password, 10),
+        ...rest,
         profilePicture: data.profilePicture,
         roles: [data.role],
       },
     });
+
+    if (parrainId) {
+      const newUserWithParrain = await this.prisma.user.update({
+        where: {
+          id: newUser.id,
+        },
+        data: {
+          parrainId,
+        },
+        include: {
+          filleuls: true,
+        },
+      });
+      return newUserWithParrain;
+    }
+
     return newUser;
   }
 
@@ -71,6 +92,9 @@ export class UsersService {
     return this.prisma.user.findFirst({
       where: {
         id: userId,
+      },
+      include: {
+        filleuls: true,
       },
     });
   }
