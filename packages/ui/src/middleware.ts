@@ -31,7 +31,7 @@ export const commonMiddleware =
     }
 
     if (routesNeedRole.some((route) => currentPathName.startsWith(route))) {
-      if(!userRole && !userRole.includes(role)) {
+      if(!userRole || !userRole.includes(role)) {
         return Response.redirect(new URL(`${app}${defaultWebRoutes.LOGIN}`, request.url));
       }
     }
