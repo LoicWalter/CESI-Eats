@@ -7,13 +7,13 @@ import { redirect } from 'next/navigation';
 
 type ResponseWith<T> = { res: Response; parsedRes: T };
 
-const BASE_URL = 'http://localhost:7000';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 async function getUrl(path: string): Promise<string> {
   if (path.startsWith('http')) {
     return path;
   }
-  return `${BASE_URL}/${path}`;
+  return `${BASE_URL}${path}`;
 }
 
 async function request<T>(path: string, options: RequestInit): Promise<ResponseWith<T>> {
@@ -87,7 +87,7 @@ export async function getUserById(id: string): Promise<PrismaUsers.User | undefi
     PrismaUsers.Prisma.UserGetPayload<{
       include: { filleuls: true };
     }>
-  >(`auth/users/${id}`, {});
+  >(`/auth/users/${id}`, {});
   if (!res.ok) {
     return undefined;
   }

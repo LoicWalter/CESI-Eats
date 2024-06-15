@@ -8,9 +8,15 @@ interface ClickableImageInputProps {
   handleFile: (file: File) => void;
   name: string;
   defaultValue?: React.ReactNode;
+  smallIcon?: boolean;
 }
 
-export function ClickableImageInput({ name, handleFile, defaultValue }: ClickableImageInputProps) {
+export function ClickableImageInput({
+  name,
+  handleFile,
+  defaultValue,
+  smallIcon,
+}: ClickableImageInputProps) {
   const [file, setFile] = useState<File | null>(null);
   // Create a reference to the hidden file input element
   const hiddenFileInput = useRef<HTMLInputElement>(null);
@@ -36,7 +42,7 @@ export function ClickableImageInput({ name, handleFile, defaultValue }: Clickabl
           <img
             src={URL.createObjectURL(file)}
             alt="profile"
-            className="ui-w-48 ui-h-48 ui-rounded-full ui-object-cover ui-aspect-square ui-object-center"
+            className={`${smallIcon ? 'ui-w-8 ui-h-8' : 'ui-w-48 ui-h-48'} ui-rounded-full ui-object-cover ui-aspect-square ui-object-center`}
           />
         ) : defaultValue ? (
           defaultValue

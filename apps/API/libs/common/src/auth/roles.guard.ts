@@ -29,10 +29,13 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
-    const userRoles = getCurrentUserByContext(context).roles;
-
+    const userRoles = getCurrentUserByContext(context)?.roles;
     if (!userRoles) {
       throw new UnauthorizedException(ErrorsMessages.USER_DONT_HAVE_REQUIRED_ROLES);
+    }
+
+    if (userRoles.includes(Role.ADMIN)) {
+      return true;
     }
 
     const hasRole = requiredRoles.some((role) => userRoles?.includes(role));

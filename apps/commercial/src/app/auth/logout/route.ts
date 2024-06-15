@@ -8,7 +8,7 @@ export async function GET() {
     .forEach((cookie) => {
       cookies().delete(cookie.name);
     });
-  redirect(defaultWebRoutes.CLIENT);
+  redirect(defaultWebRoutes.COMMERCIAL);
 }
 
 export async function POST() {
@@ -17,5 +17,5 @@ export async function POST() {
     .forEach((cookie) => {
       cookies().delete(cookie.name);
     });
-  redirect(defaultWebRoutes.CLIENT);
+  redirect(defaultWebRoutes.COMMERCIAL);
 }
