@@ -17,6 +17,7 @@ import { CreateClientDto, CreateLivreurDto, CreateRestaurateurDto, EditUserDto }
 import { Role } from '@gen/client/users';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
+  ApiKeyGuard,
   CurrentUser,
   JwtAuthGuard,
   ProfileFileValidationPipe,
@@ -41,9 +42,15 @@ export const profileStorage = {
 };
 
 @Controller('/auth')
+@UseGuards(ApiKeyGuard)
 @ApiTags('AuthGateway')
 export class AuthGatewayController {
   constructor(private readonly authGatewayService: AuthGatewayService) {}
+
+  @Get('/test')
+  test() {
+    return 'Hello from Gateway';
+  }
 
   @ApiBody({ type: CreateClientDto })
   @UseInterceptors(FileInterceptor('profilePicture', profileStorage))

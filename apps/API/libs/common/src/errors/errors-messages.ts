@@ -14,4 +14,6 @@ export enum ErrorsMessages {
   MENU_NOT_FOUND = 'Menu introuvable.',
   RESTAURANT_NOT_FOUND = 'Restaurant introuvable.',
   USER_IS_NOT_OWNER = "Cet utilisateur n'est pas propriétaire.",
+  INVALID_API_KEY = 'Clé API invalide.',
+  API_KEY_NOT_PROVIDED = 'Clé API non fournie.',
 }

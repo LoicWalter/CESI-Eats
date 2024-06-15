@@ -8,7 +8,6 @@ import {
   Param,
   Patch,
   Post,
-  Put,
   Res,
   UploadedFile,
   UseGuards,
@@ -24,8 +23,9 @@ import {
   EditMenuDto,
   EditRestaurantDto,
 } from './dto';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import {
+  ApiKeyGuard,
   CurrentUser,
   JwtAuthGuard,
   ProfileFileValidationPipe,
@@ -76,7 +76,7 @@ export const menuStorage = {
 };
 
 @Controller()
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, ApiKeyGuard)
 @ApiTags('Gateway')
 export class GatewayController {
   constructor(private readonly gatewayService: GatewayService) {}

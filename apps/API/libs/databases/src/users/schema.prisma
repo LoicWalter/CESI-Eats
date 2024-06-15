@@ -24,6 +24,8 @@ model User {
 
   suspended Boolean @default(false)
 
+  apiKey String @unique @default(cuid())
+
   parrain   User?   @relation("ParrainFk", fields: [parrainId], references: [id])
   parrainId String?
 

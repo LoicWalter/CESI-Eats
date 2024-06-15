@@ -9,6 +9,7 @@ import {
   CreditCard,
   Edit,
   EditOff,
+  Key,
   PersonAdd,
   PersonOutline,
   Visibility,
@@ -26,6 +27,7 @@ import { PhoneInput } from './phoneInput';
 import { useFormState } from 'react-dom';
 import { editUser } from '../actions';
 import { deleteUser } from '../auth';
+import { StyledButton } from './styledButton';
 
 const card = (
   cardOwner: string | null,
@@ -101,7 +103,8 @@ interface ProfilProps {
 
 export function Profil({ page }: ProfilProps): JSX.Element {
   const [state, formAction] = useFormState(editUser, { error: '' });
-  const [isCopied, setIsCopied] = useState(false);
+  const [isLinkCopied, setIsLinkCopied] = useState(false);
+  const [isApiKeyCopied, setIsApiKeyCopied] = useState(false);
   const [user, setUser] = useState<
     Partial<
       PrismaUsers.Prisma.UserGetPayload<{
@@ -391,8 +394,8 @@ export function Profil({ page }: ProfilProps): JSX.Element {
                       <CopyToClipboard
                         text={`${page}/auth/signup?parrainId=${user?.id}`}
                         onCopy={() => {
-                          setIsCopied(true);
-                          setTimeout(() => setIsCopied(false), 3000);
+                          setIsLinkCopied(true);
+                          setTimeout(() => setIsLinkCopied(false), 3000);
                         }}
                       >
                         <span className="ui-flex ui-flex-row ui-gap-2 ui-items-center hover:ui-bg-gray-4 ui-rounded-lg ui-p-2 ui-cursor-pointer">
@@ -400,7 +403,7 @@ export function Profil({ page }: ProfilProps): JSX.Element {
                           <PersonAdd className="ui-p-0" />
                         </span>
                       </CopyToClipboard>
-                      {isCopied && (
+                      {isLinkCopied && (
                         <Typography
                           variant="body1"
                           className="ui-text-green-500"
@@ -475,12 +478,35 @@ export function Profil({ page }: ProfilProps): JSX.Element {
                 </div>
               </div>
               <Divider />
-              <div className="ui-flex ui-flex-col ui-gap-6 ui-w-full md:ui-ml-6">
-                <Typography variant="h4">Zone de danger</Typography>
-                <div className="ui-flex ui-flex-row ui-gap-4">
+              <div className="ui-flex ui-flex-col ui-gap-6 ui-w-96">
+                <Typography variant="h5">Actions supplémentaires</Typography>
+                <div className="ui-flex ui-flex-col ui-gap-4">
+                  <div className="ui-flex ui-flex-row ui-gap-2 ui-items-center">
+                    <CopyToClipboard
+                      text={user?.apiKey || ''}
+                      onCopy={() => {
+                        setIsLinkCopied(true);
+                        setTimeout(() => setIsLinkCopied(false), 3000);
+                      }}
+                    >
+                      <span className="ui-flex ui-flex-row ui-gap-2 ui-items-center hover:ui-bg-gray-4 ui-rounded-lg ui-p-2 ui-cursor-pointer ui-w-full ui-justify-between ui-border-secondary ui-border">
+                        <Typography variant="body1">Copier la clé API</Typography>
+                        <Key />
+                      </span>
+                    </CopyToClipboard>
+                    {isLinkCopied && (
+                      <Typography
+                        variant="body1"
+                        className="ui-text-green-500"
+                      >
+                        Clé API copié !
+                      </Typography>
+                    )}
+                  </div>
+
                   <Button
                     onClick={() => deleteUser()}
-                    variant="outlined"
+                    variant="contained"
                     type="button"
                     className="ui-bg-red-500 ui-text-white hover:ui-bg-red-700 ui-rounded-lg ui-border-red-500 hover:ui-border-red-700"
                   >
