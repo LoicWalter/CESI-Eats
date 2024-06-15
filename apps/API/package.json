@@ -13,7 +13,7 @@
     "build": "pnpm run build:gateway && pnpm run build:auth && pnpm run build:orders && pnpm run build:restaurants",
     "build:gateway": "nest build api-gateway",
     "build:auth": "nest build auth-service",
-    "build:orders": "nest build orders-gateway",
+    "build:orders": "nest build orders-service",
     "build:restaurants": "nest build restaurants-service",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "generate:orders": "pnpm exec prisma generate --schema ./libs/databases/src/orders/schema.prisma",
