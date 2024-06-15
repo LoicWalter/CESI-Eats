@@ -19,7 +19,6 @@ import {
 } from './dto';
 import { firstValueFrom, of } from 'rxjs';
 import { join } from 'path';
-import e from 'express';
 
 @Injectable()
 export class GatewayService {

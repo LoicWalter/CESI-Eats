@@ -9,6 +9,7 @@ export * from './searchBar';
 export * from './loginPage';
 export * from './signupPage';
 export * from './styledTextField';
+export * from './styledButton';
 export * from './clickableImageInput';
 export * from './phoneInput';
 export * from './payement';

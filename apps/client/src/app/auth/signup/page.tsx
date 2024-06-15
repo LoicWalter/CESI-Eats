@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { SignupPage } from '@repo/ui';
+import { createClientUser, SignupPage } from '@repo/ui';
 
 interface FormValues {
   email: string;
@@ -9,7 +9,7 @@ interface FormValues {
 }
 
 function Signup(): JSX.Element {
-  return <SignupPage />;
+  return <SignupPage action={createClientUser} />;
 }
 
 export default Signup;

@@ -1,20 +1,20 @@
 import React from 'react';
 import { FormikProps } from 'formik';
-import { Grid, InputAdornment, InputLabel, Typography, TextField as Input } from '@mui/material';
+import { Grid, InputAdornment, Typography } from '@mui/material';
 import { CalendarToday, CreditCard } from '@mui/icons-material';
-import { HelperText } from './helperText';
+import { StyledTextField } from './styledTextField';
+import { FormValues } from './profil';
 
 interface PaymentFormProps {
-  formik: FormikProps<Record<string, string>>;
+  formik: FormikProps<FormValues>;
 }
 
 export function PaymentForm({ formik }: PaymentFormProps) {
-  const formatCardNumber = (value: string) => {
-    return value
-      .replace(/\D/g, '')
+  const formatCardNumber = (value: string) =>
+    value
+      ?.replace(/\D/g, '')
       .replace(/(.{4})/g, '$1 ')
       .trim();
-  };
 
   const formatExpiryDate = (value: string) => {
     // Remove non-numeric characters
@@ -30,6 +30,11 @@ export function PaymentForm({ formik }: PaymentFormProps) {
       return formattedValue;
     }
   };
+
+  // cardNumber: string | null;
+  // cardExpiration: string | null;
+  // cardCvc: string | null;
+  // cardOwner: string | null;
 
   return (
     <div className="ui-py-2 ui-px-2">
@@ -52,26 +57,22 @@ export function PaymentForm({ formik }: PaymentFormProps) {
               sm={12}
             >
               <div className="ui-pb-2">
-                <InputLabel
-                  className="ui-text-gray-2"
-                  htmlFor="Nom sur la carte"
-                  error={Boolean(formik.errors.cardName && formik.touched.cardName)}
-                >
-                  Nom sur la carte
-                </InputLabel>
-                <Input
+                <StyledTextField
                   fullWidth
-                  id="cardName"
-                  name="cardName"
-                  value={formik.values.cardName.replace(/\d+/g, '')}
+                  label="Nom du titulaire de la carte"
+                  id="cardOwner"
+                  name="cardOwner"
+                  value={formik.values.cardOwner.replace(/\d+/g, '')}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={Boolean(formik.errors.cardName && formik.touched.cardName)}
-                  placeholder="e.g John Doe"
+                  error={Boolean(formik.touched.cardOwner && formik.errors.cardOwner)}
+                  helperText={
+                    formik.touched.cardOwner && formik.errors.cardOwner
+                      ? formik.errors.cardOwner
+                      : ''
+                  }
+                  placeholder="Nom du titulaire de la carte"
                 />
-                {Boolean(formik.errors.cardName && formik.touched.cardName) && (
-                  <HelperText error>errors.cardName</HelperText>
-                )}
               </div>
             </Grid>
             <Grid
@@ -80,20 +81,23 @@ export function PaymentForm({ formik }: PaymentFormProps) {
               sm={12}
             >
               <div className="ui-pb-2">
-                <InputLabel className="ui-text-gray-2">Numéro de la carte</InputLabel>
-                <Input
+                <StyledTextField
                   fullWidth
+                  label="Numéro de carte"
                   id="cardNumber"
                   name="cardNumber"
                   value={formatCardNumber(formik.values.cardNumber)}
                   onChange={(e) => {
-                    e.target.value = formatCardNumber(e.target.value);
-                    formik.handleChange(e);
+                    formik.setFieldValue('cardNumber', e.target.value.replace(/\s/g, ''));
                   }}
-                  error={formik.touched.cardNumber && Boolean(formik.errors.cardNumber)}
-                  inputProps={{ maxLength: 19 }}
-                  placeholder="1234 1234 1234 1234"
                   onBlur={formik.handleBlur}
+                  error={Boolean(formik.touched.cardNumber && formik.errors.cardNumber)}
+                  helperText={
+                    formik.touched.cardNumber && formik.errors.cardNumber
+                      ? formik.errors.cardNumber
+                      : ''
+                  }
+                  placeholder="Numéro de carte"
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -102,9 +106,6 @@ export function PaymentForm({ formik }: PaymentFormProps) {
                     ),
                   }}
                 />
-                {Boolean(formik.errors.cardNumber && formik.touched.cardNumber) && (
-                  <HelperText error>errors.cardNumber</HelperText>
-                )}
               </div>
             </Grid>
             <Grid
@@ -112,54 +113,51 @@ export function PaymentForm({ formik }: PaymentFormProps) {
               xs={12}
               sm={6}
             >
-              <InputLabel className="ui-text-gray-2">Date d'expiration</InputLabel>
-              <Input
-                variant="outlined"
+              <StyledTextField
                 fullWidth
-                id="expiryDate"
-                name="expiryDate"
-                value={formik.values.expiryDate}
+                label="Date d'expiration"
+                id="cardExpiration"
+                name="cardExpiration"
+                value={formatExpiryDate(formik.values.cardExpiration)}
                 onChange={(e) => {
-                  e.target.value = formatExpiryDate(e.target.value);
-                  formik.handleChange(e);
+                  formik.setFieldValue('cardExpiration', e.target.value.replace(/\s/g, ''));
                 }}
-                error={formik.touched.expiryDate && Boolean(formik.errors.expiryDate)}
+                onBlur={formik.handleBlur}
+                error={Boolean(formik.touched.cardExpiration && formik.errors.cardExpiration)}
+                helperText={
+                  formik.touched.cardExpiration && formik.errors.cardExpiration
+                    ? formik.errors.cardExpiration
+                    : ''
+                }
+                placeholder="MM/YY"
                 InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
+                  startAdornment: (
+                    <InputAdornment position="start">
                       <CalendarToday />
                     </InputAdornment>
                   ),
                 }}
-                onBlur={formik.handleBlur}
-                placeholder="MM/YY"
               />
-              {Boolean(formik.errors.expiryDate && formik.touched.expiryDate) && (
-                <HelperText error>errors.expiryDate</HelperText>
-              )}
             </Grid>
             <Grid
               item
               xs={12}
               sm={6}
             >
-              <InputLabel className="ui-text-gray-2">CVV</InputLabel>
-              <Input
-                variant="outlined"
+              <StyledTextField
                 fullWidth
-                id="cvv"
-                name="cvv"
-                value={formik.values.cvv.replace(/\D/g, '')}
+                label="CVV"
+                id="cardCvc"
+                name="cardCvc"
+                value={formik.values.cardCvc?.replace(/\D/g, '')}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.cvv && Boolean(formik.errors.cvv)}
-                helperText={formik.touched.cvv && formik.errors.cvv}
-                inputProps={{ maxLength: 3 }}
+                error={Boolean(formik.touched.cardCvc && formik.errors.cardCvc)}
+                helperText={
+                  formik.touched.cardCvc && formik.errors.cardCvc ? formik.errors.cardCvc : ''
+                }
                 placeholder="123"
               />
-              {Boolean(formik.errors.cvv && formik.touched.cvv) && (
-                <HelperText error>errors.cvv</HelperText>
-              )}
             </Grid>
           </Grid>
         </div>

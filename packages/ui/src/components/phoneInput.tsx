@@ -56,6 +56,7 @@ export function PhoneInput({ value, onChange, InputProps, ...restProps }: PhoneI
             style={{ marginRight: '2px', marginLeft: '-8px' }}
           >
             <Select
+              disabled={restProps.disabled}
               MenuProps={{
                 style: {
                   height: '300px',
@@ -103,6 +104,7 @@ export function PhoneInput({ value, onChange, InputProps, ...restProps }: PhoneI
                   <MenuItem
                     key={country.iso2}
                     value={country.iso2}
+                    disabled={restProps.disabled}
                   >
                     <FlagImage
                       iso2={country.iso2}
