@@ -1,14 +1,18 @@
 'use client';
 
+import styled from '@emotion/styled';
 import React from 'react';
-import Carousel from 'react-multi-carousel';
+import Carousel, { ResponsiveType } from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
+import flechegauche from '../assets/flechegauche.svg';
+import flechedroite from '../assets/flechedroite.svg';
 
 interface CarouselProps {
   children: React.ReactNode;
+  responsive?: ResponsiveType;
 }
 
-const responsive = {
+const defaultResponsive = {
   largeDesktop: {
     breakpoint: { max: 3000, min: 2000 },
     items: 8,
@@ -31,10 +35,44 @@ const responsive = {
   },
 };
 
-export function CardCarousel({ children }: CarouselProps) {
+const StyledCarousel = styled(Carousel)`
+  .react-multiple-carousel__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border: none;
+    background-color: #394d5933;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-size: 50%; /* Ajuste la taille de l'icône */
+    background-repeat: no-repeat;
+    background-position: center;
+
+    &.react-multiple-carousel__arrow--left {
+      left: 0;
+      background-image: url(${flechegauche});
+    }
+
+    &.react-multiple-carousel__arrow--right {
+      right: 0;
+      background-image: url(${flechedroite});
+    }
+
+    &:hover {
+      background-color: #dd231b;
+    }
+  }
+`;
+
+export function CardCarousel({ children, responsive }: CarouselProps) {
+  console.log(responsive);
   return (
-    <Carousel
-      responsive={responsive}
+    <StyledCarousel
+      responsive={responsive || defaultResponsive}
       swipeable
       draggable
       ssr
@@ -44,6 +82,6 @@ export function CardCarousel({ children }: CarouselProps) {
       removeArrowOnDeviceType={['tablet', 'mobile']}
     >
       {children}
-    </Carousel>
+    </StyledCarousel>
   );
 }

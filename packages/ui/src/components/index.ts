@@ -5,3 +5,4 @@ export * from './restaurantCard';
 export * from './cardCarousel';
 export * from './searchWrapper';
 export * from './searchBar';
+export * from './filter';
