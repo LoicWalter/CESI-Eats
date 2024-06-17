@@ -172,11 +172,21 @@ export default function page({ action }: CreateRestaurantPageProps): JSX.Element
                 onBlur={handleBlur}
                 error={Boolean(errors.category && touched.category)}
               >
-                <MenuItem value="restaurant">Restaurant</MenuItem>
-                <MenuItem value="fast-food">Fast-food</MenuItem>
                 <MenuItem value="cafe">Café</MenuItem>
                 <MenuItem value="bar">Bar</MenuItem>
                 <MenuItem value="brasserie">Brasserie</MenuItem>
+                <MenuItem value="fast-food">Fast food</MenuItem>
+                <MenuItem value="restaurant-mexicain">Restaurant mexicain</MenuItem>
+                <MenuItem value="restaurant-de-sushis">Restaurant de sushis</MenuItem>
+                <MenuItem value="boulangerie">Boulangerie</MenuItem>
+                <MenuItem value="pizzeria">Pizzeria</MenuItem>
+                <MenuItem value="restaurant-italien">Restaurant italien</MenuItem>
+                <MenuItem value="restaurant-chinois">Restaurant chinois</MenuItem>
+                <MenuItem value="restaurant-indien">Restaurant indien</MenuItem>
+                <MenuItem value="restaurant-thaïlandais">Restaurant thaïlandais</MenuItem>
+                <MenuItem value="restaurant-végétarien">Restaurant végétarien</MenuItem>
+                <MenuItem value="restaurant-libanais">Restaurant libanais</MenuItem>
+                <MenuItem value="steakhouse">Steakhouse</MenuItem>
               </Select>
             </FormControl>
             <div className="flex flex-row w-full justify-between gap-4 items-center mt-6">
