@@ -6,6 +6,7 @@ export * from './restaurantCard';
 export * from './cardCarousel';
 export * from './searchWrapper';
 export * from './searchBar';
+export * from './filter';
 export * from './loginPage';
 export * from './signupPage';
 export * from './styledTextField';
