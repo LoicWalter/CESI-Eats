@@ -41,7 +41,8 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
 
   return (
     <>
-      <div className="ui-flex md:ui-hidden ui-fixed ui-bottom-0 ui-w-full ui-h-12 ui-z-30 ui-border-t-gray-4 ui-border-[1px] ui-bg-gray-5 ui-text-gray-3">
+      {/* Phone */}
+      <div className="ui-flex md:ui-hidden ui-fixed ui-bottom-0 ui-w-full ui-h-12 ui-z-10 ui-border-t-gray-4 ui-border-t-[1px] ui-bg-gray-5 ui-text-gray-3 ui-shadow-[0_-0.125rem_0.25rem_0_rgba(204,209,212,0.4)]">
         <div className="ui-flex ui-flex-row ui-justify-evenly ui-w-full ui-h-full">
           {iconArray.map(({ icon, href, id }) => (
             <React.Fragment key={id}>
@@ -50,7 +51,8 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
                 href={href}
               />
               <Divider
-                className="ui-border-gray-4 ui-my-2"
+                className="ui-border-gray-4 ui-my-2 ui-rounded"
+                sx={{ height: '70%' }}
                 orientation="vertical"
               />
             </React.Fragment>
@@ -59,7 +61,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
             icon={
               <ImageWithDefaultOnError
                 alt="Profile picture"
-                className="ui-w-8 ui-h-8 ui-rounded-full ui-aspect-square ui-object-cover ui-object-center"
+                className="ui-w-8 ui-h-8 ui-rounded-full ui-overflow-hidden ui-object-cover ui-object-center"
                 src={`${process.env.NEXT_PUBLIC_API_URL}/auth/profilePicture/${user?.profilePicture}`}
                 defaultReactNode={<PersonOutline />}
                 width={32}
@@ -71,13 +73,15 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
           />
         </div>
       </div>
+      {/* Computer */}
       <div
-        className="ui-hidden ui-sticky ui-top-0 ui-h-screen ui-border-r-gray-4 ui-border-[1px] ui-bg-gray-5 ui-text-gray-3 md:ui-flex ui-flex-col ui-items-center hover:ui-w-40 ui-transition-all ui-duration-300 ui-w-16 ui-z-20"
+        className="ui-hidden ui-sticky ui-top-0 ui-h-screen ui-border-r-gray-4 ui-border-r-[1px] ui-bg-gray-5 ui-text-gray-3 md:ui-flex ui-flex-col ui-items-center hover:ui-w-40 ui-transition-all ui-duration-300 ui-w-16 ui-z-20 ui-select-none ui-shadow-[0.125rem_0_0.25rem_0_rgba(204,209,212,0.7)]"
         {...bind}
       >
         <div className="ui-my-3">{logo}</div>
         <Divider
-          className="ui-w-full ui-border-gray-4"
+          className="ui-border-gray-4 ui-rounded"
+          sx={{ width: '70%' }}
           color=""
         />
         <div className="ui-flex ui-flex-col ui-justify-between ui-w-full ui-h-full">
@@ -106,11 +110,11 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
               icon={
                 <ImageWithDefaultOnError
                   alt="Profile picture"
-                  className="ui-w-8 ui-h-8 ui-rounded-full ui-aspect-square ui-object-cover ui-object-center"
+                  className="ui-w-8 ui-h-8 ui-rounded-full ui-overflow-hidden ui-object-cover ui-object-center"
                   src={`${process.env.NEXT_PUBLIC_API_URL}/auth/profilePicture/${user?.profilePicture}`}
                   defaultReactNode={<AccountCircleOutlined />}
-                  width={24}
-                  height={24}
+                  width={32}
+                  height={32}
                   forceDefault={user === undefined}
                 />
               }
@@ -143,12 +147,12 @@ function NavItem({
   return (
     <Link
       href={href}
-      className={`ui-flex ui-items-center ${noSidePadding ? 'ui-py-5 ui-justify-center' : 'ui-p-5'} hover:ui-bg-primary hover:ui-text-gray-5`}
+      className={`ui-flex ui-w-full ui-items-center ui-justify-center md:ui-justify-start ui-py-5 ${noSidePadding ? 'md:ui-pl-[0.875rem]' : 'md:ui-pl-5'} hover:ui-bg-primary hover:ui-text-gray-5 active:ui-bg-secondary active:ui-text-gray-5 active:ui-shadow-[inset_0.125rem_0.125rem_0.25rem_0_rgba(0,0,0,0.4)]`}
     >
       <div>{icon}</div>
       {text !== '' && (
         <div
-          className={`ui-text-sm ui-transition-all ${hovered ? 'ui-pl-4 ui-w-3/5 ui-opacity-100' : 'ui-w-0 ui-opacity-0 ui-pointer-events-none'}`}
+          className={`ui-text-sm ui-transition-all ui-whitespace-nowrap ${hovered ? 'ui-pl-4 ui-w-full ui-opacity-100 ui-whitespace-nowrap ui-overflow-hidden' : 'ui-w-0 ui-opacity-0 ui-pointer-events-none'}`}
         >
           {text}
         </div>

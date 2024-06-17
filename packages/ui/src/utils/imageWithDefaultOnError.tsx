@@ -18,7 +18,7 @@ export const ImageWithDefaultOnError = ({
   const [defaultImage, setDefaultImage] = useState(false);
 
   if (forceDefault) {
-    return <>{defaultReactNode}</>;
+    return <div className={rest.className}>{defaultReactNode}</div>;
   }
 
   return !defaultImage ? (
@@ -31,6 +31,6 @@ export const ImageWithDefaultOnError = ({
       }}
     />
   ) : (
-    <>{defaultReactNode}</>
+    <div className={rest.className}>{defaultReactNode}</div>
   );
 };

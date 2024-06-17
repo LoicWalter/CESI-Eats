@@ -37,9 +37,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
           logo={
             <Image
               alt="Logo"
-              height={64}
+              height={80}
               src={Logo}
               width={64}
+              className="w-16 h-20"
             />
           }
         />
