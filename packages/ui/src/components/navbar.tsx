@@ -52,7 +52,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
               />
               <Divider
                 className="ui-border-gray-4 ui-my-2 ui-rounded"
-                sx={{height:"70%"}}
+                sx={{ height: '70%' }}
                 orientation="vertical"
               />
             </React.Fragment>
@@ -81,7 +81,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
         <div className="ui-my-3">{logo}</div>
         <Divider
           className="ui-border-gray-4 ui-rounded"
-          sx={{width:"70%"}}
+          sx={{ width: '70%' }}
           color=""
         />
         <div className="ui-flex ui-flex-col ui-justify-between ui-w-full ui-h-full">
