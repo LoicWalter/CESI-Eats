@@ -1,0 +1,85 @@
+services:
+  gateway:
+    container_name: api-gateway
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+    env_file:
+      - ./.docker.env
+    depends_on:
+      - rabbitmq
+    ports:
+      - '7000:7000'
+    restart: always
+    networks:
+      - api
+
+  auth-service:
+    container_name: auth-service
+    build:
+      context: .
+      dockerfile: ./apps/auth-service/Dockerfile
+    env_file:
+      - ./.prod.env
+    depends_on:
+      - rabbitmq
+      - gateway
+      - postgre-users
+    ports:
+      - '7001:7001'
+    restart: always
+    networks:
+      - api
+
+  orders-service:
+    container_name: orders-service
+    build:
+      context: .
+      dockerfile: ./apps/orders-service/Dockerfile
+    env_file:
+      - ./.prod.env
+    depends_on:
+      - rabbitmq
+      - gateway
+    restart: always
+    networks:
+      - api
+
+  restaurants-service:
+    container_name: restaurants-service
+    build:
+      context: .
+      dockerfile: ./apps/restaurants-service/Dockerfile
+    env_file:
+      - ./.prod.env
+    depends_on:
+      - rabbitmq
+      - gateway
+    restart: always
+    networks:
+      - api
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq
+    ports:
+      - '5672:5672'
+    restart: always
+    networks:
+      - api
+
+  postgre-users:
+    container_name: postgre-users
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: users
+    ports:
+      - '5434:5432'
+    restart: always
+    networks:
+      - api
+
+networks:
+  api:

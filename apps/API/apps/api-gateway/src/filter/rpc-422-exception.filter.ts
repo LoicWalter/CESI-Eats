@@ -8,7 +8,19 @@ export class UnprocessableEntityExceptionFilter implements RpcExceptionFilter<Rp
   catch(exception: RpcException): Observable<any> {
     return throwError(() => {
       if (exception.getError() === ErrorsMessages.USER_ALREADY_EXISTS) {
-        return { status: 422, error: exception.getError() };
+        return { status: 422, message: exception.getError() };
+      }
+      if (exception.getError() === ErrorsMessages.RESTAURANT_NOT_FOUND) {
+        return { status: 422, message: exception.getError() };
+      }
+      if (exception.getError() === ErrorsMessages.ITEM_NOT_FOUND) {
+        return { status: 422, message: exception.getError() };
+      }
+      if (exception.getError() === ErrorsMessages.MENU_NOT_FOUND) {
+        return { status: 422, message: exception.getError() };
+      }
+      if (exception.getError() === ErrorsMessages.USER_IS_NOT_OWNER) {
+        return { status: 422, message: exception.getError() };
       }
       return exception.getError();
     });

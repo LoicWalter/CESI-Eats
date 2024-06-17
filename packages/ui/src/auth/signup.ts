@@ -10,13 +10,18 @@ enum UserTypes {
   LIVREUR = 'livreur',
 }
 
-const createUser = (userType: UserTypes) => async (_: any, data: Record<string, any>) => {
-  const { res, parsedRes } = await post<PrismaUsers.User>(`auth/signup/${userType}`, {
-    body: JSON.stringify(data),
-  });
+const createUser = (userType: UserTypes) => async (_: any, data: FormData) => {
+  const { res, parsedRes } = await post<PrismaUsers.User>(
+    `/auth/signup/${userType}`,
+    {
+      body: data,
+    },
+    true,
+  );
   if (!res.ok) {
     return { error: getErrorMessage(parsedRes) };
   }
+  console.log('User created:', parsedRes);
   redirect(defaultWebRoutes.LOGIN);
 };
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { AccountCircleOutlined, PersonOutline } from '@mui/icons-material';
+import { AccountCircleOutlined, Logout, PersonOutline } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
 import { Divider } from '@mui/material';
 import { useOnHover } from '../hooks/useOnHover';
@@ -59,15 +59,15 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
             icon={
               <ImageWithDefaultOnError
                 alt="Profile picture"
-                className="ui-w-8 ui-h-8 ui-rounded-full"
-                src="http://localhost:7000/auth/profile-picture/"
+                className="ui-w-8 ui-h-8 ui-rounded-full ui-aspect-square ui-object-cover ui-object-center"
+                src={`${process.env.NEXT_PUBLIC_API_URL}/auth/profilePicture/${user?.profilePicture}`}
                 defaultReactNode={<PersonOutline />}
                 width={32}
                 height={32}
                 forceDefault={user === undefined}
               />
             }
-            href={user === undefined ? '/auth/login' : '/profile'}
+            href={user === undefined ? '/auth/login' : '/profil'}
           />
         </div>
       </div>
@@ -93,21 +93,29 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
             ))}
           </div>
           <div>
+            {user?.name && (
+              <NavItem
+                hovered={hovered}
+                icon={<Logout />}
+                text={'Se déconnecter'}
+                href={'/auth/logout'}
+              />
+            )}
             <NavItem
               hovered={hovered}
               icon={
                 <ImageWithDefaultOnError
                   alt="Profile picture"
-                  className="ui-w-8 ui-h-8 ui-rounded-full"
-                  src="http://localhost:7000/auth/profile-picture/"
+                  className="ui-w-8 ui-h-8 ui-rounded-full ui-aspect-square ui-object-cover ui-object-center"
+                  src={`${process.env.NEXT_PUBLIC_API_URL}/auth/profilePicture/${user?.profilePicture}`}
                   defaultReactNode={<AccountCircleOutlined />}
                   width={24}
                   height={24}
                   forceDefault={user === undefined}
                 />
               }
-              text={user?.email ?? 'Se connecter'}
-              href={user === undefined ? '/auth/login' : '/profile'}
+              text={user?.name ?? 'Se connecter'}
+              href={user === undefined ? '/auth/login' : '/profil'}
               noSidePadding
             />
           </div>

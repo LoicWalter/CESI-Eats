@@ -1,9 +1,9 @@
+import { PrismaUsers } from '@api/cesieats';
 import { commonMiddleware, defaultWebRoutes } from '@repo/ui';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest): Response | undefined {
-  return;
-  return commonMiddleware(defaultWebRoutes.CLIENT)(request);
+  return commonMiddleware(defaultWebRoutes.CLIENT, PrismaUsers.Role.CLIENT)(request);
 }
 
 export const config = {
@@ -17,4 +17,5 @@ export const config = {
      */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
+  unstable_allowDynamic: ['**/node_modules/lodash/_root.js'],
 };
