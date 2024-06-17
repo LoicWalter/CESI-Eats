@@ -15,18 +15,18 @@ export const metadata: Metadata = {
 };
 
 const icons = [
-  { icon: <HomeOutlined />, text: 'Accueil', id: '1' },
-  { icon: <DeliveryDiningOutlined />, text: 'Livraison', id: '2' },
+  { icon: <HomeOutlined />, text: 'Accueil', id: '1', href: '/' },
+  { icon: <DeliveryDiningOutlined />, text: 'Livraison', id: '2', href: '/livraison' },
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
   return (
     <html lang="en">
       <body
-        className={`${inter.className} flex flex-row w-screen h-screen overflow-hidden border-0`}
+        className={`${inter.className} flex flex-row w-screen h-screen overflow-hidden border-0 pb-12 md:pb-0`}
       >
         <Navbar
-          iconArray={icons}
+          items={icons}
           logo={
             <Image
               alt="Logo"
@@ -36,8 +36,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
             />
           }
         />
-        <div className="flex-1 overflow-y-auto overflow-x-hidden mb-12 md:mb-0">{children}</div>
-      </body>{' '}
+        <div className="flex-1 md:overflow-y-hidden md:overflow-x-hidden flex justify-center items-center">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }

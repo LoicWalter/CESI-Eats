@@ -186,7 +186,7 @@ export function Profil({ page }: ProfilProps): JSX.Element {
           onSubmit={formik.handleSubmit}
           className="ui-flex ui-w-full"
         >
-          <div className="ui-flex ui-flex-col ui-w-full ui-gap-12 ui-p-12">
+          <div className="ui-flex ui-flex-col ui-w-full ui-gap-8">
             <div className="ui-justify-center ui-align-center ui-flex">
               <ClickableImageInput
                 name="profilePicture"
@@ -213,8 +213,8 @@ export function Profil({ page }: ProfilProps): JSX.Element {
             </Alert>
 
             <div className="ui-flex ui-flex-col ui-w-full ui-h-full gap-8">
-              <div className="ui-flex ui-flex-col md:ui-flex-row md:ui-gap-24 ui-gap-4 md:ui-justify-center">
-                <div className="ui-flex ui-flex-col ui-gap-6 ui-w-full md:ui-w-2/5">
+              <div className="ui-flex ui-flex-col md:ui-flex-row md:ui-gap-24 ui-gap-8 md:ui-justify-center">
+                <div className="ui-flex ui-flex-col ui-gap-6 ui-w-full ui-min-w-2/5">
                   <Typography
                     variant="h4"
                     className="ui-text-center"
@@ -344,176 +344,199 @@ export function Profil({ page }: ProfilProps): JSX.Element {
                     }}
                   />
                 </div>
-                <div className="ui-flex ui-flex-col ui-gap-6 ui-w-full md:ui-w-2/5">
-                  <Typography
-                    variant="h4"
-                    className="ui-text-center"
-                  >
-                    Informations complémentaires
-                  </Typography>
-                  <StyledTextField
-                    key="address"
-                    id="address"
-                    name="address"
-                    label="Adresse"
-                    value={formik.values.address}
-                    variant="standard"
-                    type="text"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={Boolean(formik.errors.address && formik.touched.address)}
-                    helperText={
-                      formik.touched.address && formik.errors.address ? formik.errors.address : ''
-                    }
-                  />
-                  <div className="ui-flex ui-flex-col ui-gap-2">
-                    <Typography variant="h6">Parrainage</Typography>
-                    {user?.parrain && (
-                      <>
-                        <Typography
-                          variant="body1"
-                          className="ui-p-2"
-                        >
-                          Parrainné par : {user.parrain.name}
-                        </Typography>
-                        <Divider />
-                      </>
-                    )}
-                    {user?.filleuls?.map((filleul) => (
-                      <React.Fragment key={filleul.id}>
-                        <Typography
-                          variant="body1"
-                          className="ui-p-2"
-                        >
-                          {filleul.name}
-                        </Typography>
-                        <Divider />
-                      </React.Fragment>
-                    ))}
-                    <div className="ui-flex ui-flex-row ui-gap-2 ui-items-center">
-                      <CopyToClipboard
-                        text={`${page}/auth/signup?parrainId=${user?.id}`}
-                        onCopy={() => {
-                          setIsLinkCopied(true);
-                          setTimeout(() => setIsLinkCopied(false), 3000);
-                        }}
-                      >
-                        <span className="ui-flex ui-flex-row ui-gap-2 ui-items-center hover:ui-bg-gray-4 ui-rounded-lg ui-p-2 ui-cursor-pointer">
-                          <Typography variant="body1">Parrainer un ami</Typography>
-                          <PersonAdd className="ui-p-0" />
-                        </span>
-                      </CopyToClipboard>
-                      {isLinkCopied && (
-                        <Typography
-                          variant="body1"
-                          className="ui-text-green-500"
-                        >
-                          Lien d'invitation copié !
-                        </Typography>
+                {user?.roles?.includes(PrismaUsers.Role.CLIENT) && (
+                  <div className="ui-flex ui-flex-col ui-gap-6 ui-w-full md:ui-min-w-2/5">
+                    <Typography
+                      variant="h4"
+                      className="ui-text-center"
+                    >
+                      Informations complémentaires
+                    </Typography>
+                    <StyledTextField
+                      key="address"
+                      id="address"
+                      name="address"
+                      label="Adresse"
+                      value={formik.values.address}
+                      variant="standard"
+                      type="text"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={Boolean(formik.errors.address && formik.touched.address)}
+                      helperText={
+                        formik.touched.address && formik.errors.address ? formik.errors.address : ''
+                      }
+                    />
+                    <div className="ui-flex ui-flex-col ui-gap-2">
+                      <Typography variant="h6">Parrainage</Typography>
+                      {user?.parrain && (
+                        <>
+                          <Typography
+                            variant="body1"
+                            className="ui-p-2"
+                          >
+                            Parrainné par : {user.parrain.name}
+                          </Typography>
+                          <Divider />
+                        </>
                       )}
-                    </div>
-                    <Divider />
-                  </div>
-                  <div className="ui-flex ui-flex-col ui-gap-2">
-                    <Typography variant="h6">Carte banquaire</Typography>
-                    <div className="ui-flex ui-flex-row ui-gap-2 ui-items-center">
-                      <div className="ui-justify-between ui-flex ui-flex-row ui-w-full">
-                        <div className="ui-flex ui-flex-row ui-gap-2">
-                          <CreditCard className="ui-opacity-55" />
-                          {card(
-                            formik.values.cardOwner,
-                            formik.values.cardNumber,
-                            formik.values.cardExpiration,
-                            formik.values.cardCvc,
-                          )}
-                        </div>
-                        <IconButton
-                          className="ui-p-0"
-                          onClick={handleClickOpen}
+                      {user?.filleuls?.map((filleul) => (
+                        <React.Fragment key={filleul.id}>
+                          <Typography
+                            variant="body1"
+                            className="ui-p-2"
+                          >
+                            {filleul.name}
+                          </Typography>
+                          <Divider />
+                        </React.Fragment>
+                      ))}
+                      <div className="ui-flex ui-flex-row ui-gap-2 ui-items-center">
+                        <CopyToClipboard
+                          text={`${page}/auth/signup?parrainId=${user?.id}`}
+                          onCopy={() => {
+                            setIsLinkCopied(true);
+                            setTimeout(() => setIsLinkCopied(false), 3000);
+                          }}
                         >
-                          <Edit />
-                        </IconButton>
-                        <Modal
-                          open={open}
-                          onClose={handleClose}
-                          className="ui-flex ui-justify-center ui-items-center "
-                          title="Ajouter une carte banquaire"
-                        >
-                          <div className="ui-bg-gray-5 ui-m-8 ui-p-8 ui-rounded-lg ui-relative">
-                            <IconButton
-                              className="ui-absolute ui-top-4 ui-right-4"
-                              onClick={handleClose}
-                            >
-                              <Close />
-                            </IconButton>
-                            <PaymentForm formik={formik} />
-                            <Button
-                              variant="outlined"
-                              className="ui-bg-primary ui-text-white hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary ui-w-full ui-py-2 ui-mt-8"
-                              onClick={handleClose}
-                            >
-                              Enregistrer
-                            </Button>
-                          </div>
-                        </Modal>
+                          <span className="ui-flex ui-flex-row ui-gap-2 ui-items-center hover:ui-bg-gray-4 ui-rounded-lg ui-p-2 ui-cursor-pointer">
+                            <Typography variant="body1">Parrainer un ami</Typography>
+                            <PersonAdd className="ui-p-0" />
+                          </span>
+                        </CopyToClipboard>
+                        {isLinkCopied && (
+                          <Typography
+                            variant="body1"
+                            className="ui-text-green-500"
+                          >
+                            Lien d'invitation copié !
+                          </Typography>
+                        )}
                       </div>
+                      <Divider />
                     </div>
-                    <Divider />
-                  </div>
-                  <div className="ui-flex ui-flex-row ui-items-center ui-gap-2 ui-w-full">
-                    <Button
-                      variant="outlined"
-                      className="ui-text-primary hover:ui-text-secondary ui-w-full ui-border-primary ui-rounded-lg hover:ui-border-secondary "
-                    >
-                      Annuler
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      type="submit"
-                      className="ui-bg-primary ui-text-white hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary ui-w-full"
-                    >
-                      Enregistrer
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              <Divider />
-              <div className="ui-flex ui-flex-col ui-gap-6 ui-w-96">
-                <Typography variant="h5">Actions supplémentaires</Typography>
-                <div className="ui-flex ui-flex-col ui-gap-4">
-                  <div className="ui-flex ui-flex-row ui-gap-2 ui-items-center">
-                    <CopyToClipboard
-                      text={user?.apiKey || ''}
-                      onCopy={() => {
-                        setIsLinkCopied(true);
-                        setTimeout(() => setIsLinkCopied(false), 3000);
-                      }}
-                    >
-                      <span className="ui-flex ui-flex-row ui-gap-2 ui-items-center hover:ui-bg-gray-4 ui-rounded-lg ui-p-2 ui-cursor-pointer ui-w-full ui-justify-between ui-border-secondary ui-border">
-                        <Typography variant="body1">Copier la clé API</Typography>
-                        <Key />
-                      </span>
-                    </CopyToClipboard>
-                    {isLinkCopied && (
-                      <Typography
-                        variant="body1"
-                        className="ui-text-green-500"
+                    <div className="ui-flex ui-flex-col ui-gap-2">
+                      <Typography variant="h6">Carte banquaire</Typography>
+                      <div className="ui-flex ui-flex-row ui-gap-2 ui-items-center">
+                        <div className="ui-justify-between ui-flex ui-flex-row ui-w-full">
+                          <div className="ui-flex ui-flex-row ui-gap-2">
+                            <CreditCard className="ui-opacity-55" />
+                            {card(
+                              formik.values.cardOwner,
+                              formik.values.cardNumber,
+                              formik.values.cardExpiration,
+                              formik.values.cardCvc,
+                            )}
+                          </div>
+                          <IconButton
+                            className="ui-p-0"
+                            onClick={handleClickOpen}
+                          >
+                            <Edit />
+                          </IconButton>
+                          <Modal
+                            open={open}
+                            onClose={handleClose}
+                            className="ui-flex ui-justify-center ui-items-center "
+                            title="Ajouter une carte banquaire"
+                          >
+                            <div className="ui-bg-gray-5 ui-m-8 ui-p-8 ui-rounded-lg ui-relative">
+                              <IconButton
+                                className="ui-absolute ui-top-4 ui-right-4"
+                                onClick={handleClose}
+                              >
+                                <Close />
+                              </IconButton>
+                              <PaymentForm formik={formik} />
+                              <Button
+                                variant="outlined"
+                                className="ui-bg-primary ui-text-white hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary ui-w-full ui-py-2 ui-mt-8"
+                                onClick={handleClose}
+                              >
+                                Enregistrer
+                              </Button>
+                            </div>
+                          </Modal>
+                        </div>
+                      </div>
+                      <Divider />
+                    </div>
+                    <div className="ui-flex ui-flex-row ui-items-center ui-gap-2 ui-w-full">
+                      <Button
+                        variant="outlined"
+                        className="ui-text-primary hover:ui-text-secondary ui-w-full ui-border-primary ui-rounded-lg hover:ui-border-secondary "
                       >
-                        Clé API copié !
-                      </Typography>
-                    )}
+                        Annuler
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        type="submit"
+                        className="ui-bg-primary ui-text-white hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary ui-w-full"
+                      >
+                        Enregistrer
+                      </Button>
+                    </div>
                   </div>
-
+                )}
+              </div>
+              {!user?.roles?.includes(PrismaUsers.Role.CLIENT) && (
+                <div className="ui-flex ui-flex-row sm:flex-col ui-gap-6 ui-mt-8 ui-w-full">
                   <Button
-                    onClick={() => deleteUser()}
-                    variant="contained"
-                    type="button"
-                    className="ui-bg-red-500 ui-text-white hover:ui-bg-red-700 ui-rounded-lg ui-border-red-500 hover:ui-border-red-700"
+                    variant="outlined"
+                    className="ui-text-primary hover:ui-text-secondary ui-w-full ui-border-primary ui-rounded-lg hover:ui-border-secondary "
                   >
-                    Supprimer le compte
+                    Annuler
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    type="submit"
+                    className="ui-bg-primary ui-text-white hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary ui-w-full"
+                  >
+                    Enregistrer
                   </Button>
                 </div>
-              </div>
+              )}
+              {user?.roles?.includes(PrismaUsers.Role.CLIENT) && (
+                <>
+                  <Divider />
+                  <div className="ui-flex ui-flex-col ui-gap-6 md:ui-w-1/2 ui-w-full">
+                    <Typography variant="h5">Actions supplémentaires</Typography>
+                    <div className="ui-flex ui-flex-col ui-gap-4">
+                      <div className="ui-flex ui-flex-row ui-gap-2 ui-items-center">
+                        <CopyToClipboard
+                          text={user?.apiKey || ''}
+                          onCopy={() => {
+                            setIsLinkCopied(true);
+                            setTimeout(() => setIsLinkCopied(false), 3000);
+                          }}
+                        >
+                          <span className="ui-flex ui-flex-row ui-gap-2 ui-items-center hover:ui-bg-gray-4 ui-rounded-lg ui-p-2 ui-cursor-pointer ui-w-full ui-justify-between ui-border-secondary ui-border">
+                            <Typography variant="body1">Copier la clé API</Typography>
+                            <Key />
+                          </span>
+                        </CopyToClipboard>
+                        {isLinkCopied && (
+                          <Typography
+                            variant="body1"
+                            className="ui-text-green-500"
+                          >
+                            Clé API copié !
+                          </Typography>
+                        )}
+                      </div>
+
+                      <Button
+                        onClick={() => deleteUser()}
+                        variant="contained"
+                        type="button"
+                        className="ui-bg-red-500 ui-text-white hover:ui-bg-red-700 ui-rounded-lg ui-border-red-500 hover:ui-border-red-700"
+                      >
+                        Supprimer le compte
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </form>

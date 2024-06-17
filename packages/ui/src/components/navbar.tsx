@@ -41,7 +41,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
 
   return (
     <>
-      <div className="ui-flex md:ui-hidden ui-fixed ui-bottom-0 ui-w-full ui-h-12 ui-z-10 ui-border-t-gray-4 ui-border-[1px] ui-bg-gray-5 ui-text-gray-3">
+      <div className="ui-flex md:ui-hidden ui-fixed ui-bottom-0 ui-w-full ui-h-12 ui-z-30 ui-border-t-gray-4 ui-border-[1px] ui-bg-gray-5 ui-text-gray-3">
         <div className="ui-flex ui-flex-row ui-justify-evenly ui-w-full ui-h-full">
           {iconArray.map(({ icon, href, id }) => (
             <React.Fragment key={id}>
