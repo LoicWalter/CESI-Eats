@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Navbar } from '@repo/ui';
 import Image from 'next/image';
-import { DeliveryDiningOutlined, HomeOutlined } from '@mui/icons-material';
+import { HomeOutlined, RestaurantOutlined } from '@mui/icons-material';
 import Logo from './favicon.ico';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -15,8 +15,8 @@ export const metadata: Metadata = {
 };
 
 const items = [
-  { icon: <HomeOutlined />, text: 'Accueil', id: '1', href: "./" },
-  { icon: <DeliveryDiningOutlined />, text: 'Livraison', id: '2', href: "./" },
+  { icon: <HomeOutlined />, text: 'Accueil', id: '1', href: "/" },
+  { icon: <RestaurantOutlined />, text: 'Menu', id: '2', href: "/menu" },
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
