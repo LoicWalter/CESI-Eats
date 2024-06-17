@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useFormState } from 'react-dom';
 import {
   ClickableImageInput,
@@ -104,7 +104,7 @@ export function SignupPage({ action }: SignupPageProps): JSX.Element {
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue }) => (
           <form
             onSubmit={handleSubmit}
-            className="ui-flex ui-flex-col ui-gap-4 ui-w-full ui-justify-center items-center"
+            className="items-center ui-flex ui-flex-col ui-gap-4 ui-w-full ui-justify-center"
           >
             <ClickableImageInput
               name="profilePicture"
