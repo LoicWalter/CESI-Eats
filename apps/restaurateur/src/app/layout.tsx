@@ -15,15 +15,15 @@ export const metadata: Metadata = {
 };
 
 const items = [
-  { icon: <HomeOutlined />, text: 'Accueil', id: '1', href: "/" },
-  { icon: <RestaurantOutlined />, text: 'Menu', id: '2', href: "/menu" },
+  { icon: <HomeOutlined />, text: 'Accueil', id: '1', href: '/' },
+  { icon: <RestaurantOutlined />, text: 'Gestion Restaurant', id: '2', href: '/restaurant' },
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
   return (
     <html lang="en">
       <body
-        className={`${inter.className} flex flex-row w-screen h-screen overflow-hidden border-0 font-display`}
+        className={`${inter.className} flex flex-row w-screen h-screen overflow-hidden border-0 pb-12 md:pb-0 font-display`}
       >
         <Navbar
           items={items}
@@ -37,8 +37,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
             />
           }
         />
-        <div className="flex-1 overflow-y-auto overflow-x-hidden mb-12 md:mb-0">{children}</div>
-      </body>{' '}
+        <div className="flex-1 md:overflow-y-hidden md:overflow-x-hidden flex justify-center items-center">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }
