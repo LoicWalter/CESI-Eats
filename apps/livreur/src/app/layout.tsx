@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'CESI Eats',
-  description: 'CESI Eats - Commercial application for food delivery service.',
+  description: 'CESI Eats - Delivery boy application for food delivery service.',
 };
 
 const items = [
