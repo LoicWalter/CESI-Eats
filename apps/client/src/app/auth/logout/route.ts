@@ -10,3 +10,12 @@ export async function GET() {
     });
   redirect(defaultWebRoutes.CLIENT);
 }
+
+export async function POST() {
+  cookies()
+    .getAll()
+    .forEach((cookie) => {
+      cookies().delete(cookie.name);
+    });
+  redirect(defaultWebRoutes.CLIENT);
+}

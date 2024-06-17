@@ -23,4 +23,9 @@ export class AuthController {
   validateUser(@CurrentUser() user: User) {
     return user;
   }
+
+  @MessagePattern(AuthMessage.VALIDATE_API_KEY)
+  validateApiKey(data: { API_KEY: string }) {
+    return this.authService.validateApiKey(data.API_KEY);
+  }
 }

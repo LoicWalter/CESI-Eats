@@ -27,7 +27,7 @@
     "seed:orders": "ts-node ./libs/databases/src/orders/seed.ts",
     "seed:restaurants": "ts-node ./libs/databases/src/restaurants/seed.ts",
     "seed:users": "ts-node ./libs/databases/src/users/seed.ts",
-    "seed": "pnpm run seed:orders && pnpm run seed:users && pnpm run seed:restaurants",
+    "seed": "pnpm run seed:users && pnpm run seed:restaurants && pnpm run seed:orders",
     "start": "nest start",
     "start:dev": "nest start --tsc --watch",
     "start:debug": "nest start --debug --watch",

@@ -12,7 +12,7 @@ import {
   redirectTo,
 } from '@repo/ui';
 import { Formik } from 'formik';
-import { Button, IconButton, Typography } from '@mui/material';
+import { Alert, Button, IconButton, Typography } from '@mui/material';
 import * as Yup from 'yup';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useSearchParams } from 'next/navigation';
@@ -65,11 +65,17 @@ export function SignupPage({ action }: SignupPageProps): JSX.Element {
     <div className="ui-w-full ui-h-full ui-flex ui-flex-col ui-justify-center ui-items-center ui-gap-4">
       <Typography
         variant="h4"
-        className="font-bold"
+        className="ui-font-bold"
       >
         Inscription
       </Typography>
-      {state?.error ? <p>{state.error}</p> : null}
+      <Alert
+        severity="error"
+        className="ui-w-full"
+        hidden={!state.error}
+      >
+        {state.error}
+      </Alert>
       <Formik
         initialValues={{
           profilePicture: null,
