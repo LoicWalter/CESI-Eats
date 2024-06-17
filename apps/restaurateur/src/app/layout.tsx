@@ -16,14 +16,14 @@ export const metadata: Metadata = {
 
 const items = [
   { icon: <HomeOutlined />, text: 'Accueil', id: '1', href: '/' },
-  { icon: <RestaurantOutlined />, text: 'Menu', id: '2', href: '/menu' },
+  { icon: <RestaurantOutlined />, text: 'Gestion Restaurant', id: '2', href: '/restaurant' },
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
   return (
     <html lang="en">
       <body
-        className={`${inter.className} flex flex-row w-screen h-screen overflow-hidden border-0 font-display`}
+        className={`${inter.className} flex flex-row w-screen h-screen overflow-hidden border-0 pb-12 md:pb-0 font-display`}
       >
         <Navbar
           items={items}
