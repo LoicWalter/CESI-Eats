@@ -15,8 +15,8 @@ export const metadata: Metadata = {
 };
 
 const items = [
-  { icon: <HomeOutlined />, text: 'Accueil', id: '1', href: "/"},
-  { icon: <DeliveryDiningOutlined />, text: 'Livraison', id: '2', href: "/livraison"},
+  { icon: <HomeOutlined />, text: 'Accueil', id: '1', href: '/'},
+  { icon: <DeliveryDiningOutlined />, text: 'Livraison', id: '2', href: '/livraison'},
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
           }
         />
         <div className="flex-1 overflow-y-auto overflow-x-hidden mb-12 md:mb-0">{children}</div>
-      </body>{' '}
+      </body>
     </html>
   );
 }

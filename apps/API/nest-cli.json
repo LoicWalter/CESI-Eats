@@ -3,7 +3,6 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "apps/api-gateway/src",
   "compilerOptions": {
-    "deleteOutDir": true,
     "webpack": true,
     "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
   },
@@ -62,6 +61,15 @@
       "sourceRoot": "apps/auth-service/src",
       "compilerOptions": {
         "tsConfigPath": "apps/auth-service/tsconfig.app.json"
+      }
+    },
+    "restaurants-service": {
+      "type": "application",
+      "root": "apps/restaurants-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/restaurants-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/restaurants-service/tsconfig.app.json"
       }
     }
   }

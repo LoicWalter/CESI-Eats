@@ -13,7 +13,7 @@ export class UsersService {
   async editUser(data: EditUserMessage, role?: Role) {
     if (data.dto.email) {
       const user = await this.getUserByEmail(data.dto.email);
-      if (user && user.id !== data.user.id) {
+      if (user && user.id !== data.userId) {
         throw new RpcException(ErrorsMessages.USER_ALREADY_EXISTS);
       }
     }
@@ -21,37 +21,69 @@ export class UsersService {
       data.dto.password = await bcrypt.hash(data.dto.password, 10);
     }
 
-    let newRoles = data.user.roles;
-    if (!data.user.roles.includes(role) && role) {
-      newRoles = [...data.user.roles, role];
+    const editedUser = await this.prisma.user.findFirst({
+      where: {
+        id: data.userId,
+      },
+    });
+
+    let newRoles = editedUser?.roles;
+    if (!editedUser?.roles.includes(role) && role) {
+      newRoles = [...editedUser?.roles, role];
     }
 
     const user = await this.prisma.user.update({
       where: {
-        id: data.user.id,
+        id: data.userId,
       },
       data: {
         ...data.dto,
         profilePicture: data.profilePicture,
         roles: newRoles,
       },
+      include: {
+        filleuls: true,
+        parrain: true,
+      },
     });
     return user;
   }
 
   async createUser(data: CreateUserMessage) {
+    const { password, parrainId, ...rest } = data.dto;
     const user = await this.getUserByEmail(data.dto.email);
     if (user) {
-      return this.editUser(new EditUserMessage(user, data.dto, data.profilePicture), data.role);
+      if (user.roles.includes(data.role)) {
+        throw new RpcException(ErrorsMessages.USER_ALREADY_EXISTS);
+      }
+      return this.editUser(new EditUserMessage(user.id, data.dto, data.profilePicture), data.role);
     }
+
     const newUser = await this.prisma.user.create({
       data: {
-        email: data.dto.email,
-        password: await bcrypt.hash(data.dto.password, 10),
+        password: await bcrypt.hash(password, 10),
+        ...rest,
         profilePicture: data.profilePicture,
         roles: [data.role],
       },
     });
+
+    if (parrainId) {
+      const newUserWithParrain = await this.prisma.user.update({
+        where: {
+          id: newUser.id,
+        },
+        data: {
+          parrainId,
+        },
+        include: {
+          filleuls: true,
+          parrain: true,
+        },
+      });
+      return newUserWithParrain;
+    }
+
     return newUser;
   }
 
@@ -64,6 +96,11 @@ export class UsersService {
     if (!passwordIsValid) {
       throw new UnauthorizedException(ErrorsMessages.INVALID_CREDENTIALS);
     }
+
+    if (user.suspended) {
+      throw new UnauthorizedException(ErrorsMessages.USER_SUSPENDED);
+    }
+
     return user;
   }
 
@@ -72,6 +109,10 @@ export class UsersService {
       where: {
         id: userId,
       },
+      include: {
+        filleuls: true,
+        parrain: true,
+      },
     });
   }
 
@@ -79,6 +120,33 @@ export class UsersService {
     return this.prisma.user.findFirst({
       where: {
         email,
+      },
+      include: {
+        filleuls: true,
+        parrain: true,
+      },
+    });
+  }
+
+  async getUsers() {
+    const users = await this.prisma.user.findMany({
+      include: {
+        filleuls: true,
+        parrain: true,
+      },
+    });
+
+    return users.reduce((acc, user) => {
+      delete user.password;
+      acc.push(user);
+      return acc;
+    }, []);
+  }
+
+  deleteUser(id: string) {
+    return this.prisma.user.delete({
+      where: {
+        id,
       },
     });
   }

@@ -22,6 +22,7 @@ import configuration from './config/configuration';
       validationSchema: Joi.object({
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRATION: Joi.string().required(),
+        API_KEY: Joi.string().required(),
         DATABASE_URL_USERS: Joi.string().required(),
         RABBIT_MQ_AUTH_QUEUE: Joi.string().required(),
         RABBIT_MQ_URI: Joi.string().required(),

@@ -14,7 +14,24 @@ model User {
   email          String  @unique
   password       String
   profilePicture String?
-  roles          Role[]
+  name           String
+  phoneNumber    String
+  address        String?
+  cardNumber     String?
+  cardExpiration String?
+  cardCvc        String?
+  cardOwner      String?
+
+  suspended Boolean @default(false)
+
+  apiKey String @unique @default(cuid())
+
+  parrain   User?   @relation("ParrainFk", fields: [parrainId], references: [id])
+  parrainId String?
+
+  filleuls User[] @relation("ParrainFk")
+
+  roles Role[]
 }
 
 enum Role {
