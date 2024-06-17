@@ -42,13 +42,14 @@ export function LoginPage({ logo, mustBeAdmin }: LoginPageProps): JSX.Element {
       >
         Connexion
       </Typography>
-      <Alert
-        severity="error"
-        className="ui-w-full"
-        hidden={!state.error}
-      >
-        {state.error}
-      </Alert>
+      {state.error && (
+        <Alert
+          severity="error"
+          className="ui-w-full"
+        >
+          {state.error}
+        </Alert>
+      )}
       <Formik
         initialValues={{ email: '', password: '' }}
         validationSchema={schema}

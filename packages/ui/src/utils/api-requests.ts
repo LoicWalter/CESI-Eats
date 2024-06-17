@@ -17,14 +17,18 @@ async function getUrl(path: string): Promise<string> {
 }
 
 async function request<T>(path: string, options: RequestInit): Promise<ResponseWith<T>> {
-  try {
-    const res = await fetch(await getUrl(path), options);
-    const parsedRes = await res.json();
-    return { res, parsedRes };
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+  return fetch(await getUrl(path), options)
+    .then(async (res) => {
+      if (!res.ok) {
+        throw new Error(res.statusText);
+      }
+      const parsedRes = await res.json();
+      return { res, parsedRes };
+    })
+    .catch((error) => {
+      console.error(error);
+      return { res: new Response(null), parsedRes: { message: error } } as ResponseWith<T>;
+    });
 }
 
 async function getHeaders(withFile: boolean = false): Promise<Headers> {
@@ -42,7 +46,7 @@ export async function get<T>(
   path: string,
   options: Omit<RequestInit, 'headers'>,
 ): Promise<ResponseWith<T>> {
-  return request(path, {
+  return await request(path, {
     headers: await getHeaders(),
     ...options,
   });
@@ -86,7 +90,7 @@ export async function _delete<T>(
 export async function getUserById(id: string): Promise<PrismaUsers.User | undefined> {
   const { res, parsedRes } = await get<
     PrismaUsers.Prisma.UserGetPayload<{
-      include: { filleuls: true };
+      include: { filleuls: true; parrain: true };
     }>
   >(`/auth/users/${id}`, {});
   if (!res.ok) {
@@ -101,6 +105,7 @@ export async function setUserCookie(user: Partial<PrismaUsers.User>) {
     value: JSON.stringify(user),
     secure: true,
     httpOnly: false,
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
   });
 }
 
@@ -134,5 +139,6 @@ export async function redirectWithGetParams(path: string, params: Record<string,
 }
 
 export async function redirectTo(path: string) {
+  console.log('redirecting to', path);
   redirect(path);
 }

@@ -87,7 +87,11 @@ export class RestaurantsService {
       where: { id },
       include: {
         items: true,
-        menus: true,
+        menus: {
+          include: {
+            items: true,
+          },
+        },
       },
     });
   }

@@ -16,19 +16,16 @@ import {
   VisibilityOff,
 } from '@mui/icons-material';
 import { PaymentForm } from './payement';
-import { PrismaUsers } from '@api/cesieats';
-import { getUserInfosFromCookie, ImageWithDefaultOnError } from '../utils';
-import { usePathname } from 'next/navigation';
+import { ImageWithDefaultOnError, useUser } from '../utils';
 import { ClickableImageInput } from './clickableImageInput';
 import { StyledTextField } from './styledTextField';
 //@ts-ignore
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { PhoneInput } from './phoneInput';
 import { useFormState } from 'react-dom';
-import { editUser } from '../actions';
+import { editUser } from '../actions/edit-user';
 import { deleteUser } from '../auth';
-import { StyledButton } from './styledButton';
-
+import { StyledButton, StyledOutlinedButton } from './styledButton';
 const card = (
   cardOwner: string | null,
   cardNumber: string | null,
@@ -105,27 +102,7 @@ export function Profil({ page }: ProfilProps): JSX.Element {
   const [state, formAction] = useFormState(editUser, { error: '' });
   const [isLinkCopied, setIsLinkCopied] = useState(false);
   const [isApiKeyCopied, setIsApiKeyCopied] = useState(false);
-  const [user, setUser] = useState<
-    Partial<
-      PrismaUsers.Prisma.UserGetPayload<{
-        include: { filleuls: true; parrain: true };
-      }>
-    >
-  >();
-
-  const pathname = usePathname();
-
-  useEffect(() => {
-    const getUser = async () => {
-      const user = await getUserInfosFromCookie();
-      if (!user?.id) {
-        setUser(undefined);
-        return;
-      }
-      setUser(user);
-    };
-    getUser();
-  }, [pathname]);
+  const user = useUser();
 
   const [update, setUpdate] = React.useState<Record<string, boolean>>({
     name: false,
@@ -204,13 +181,14 @@ export function Profil({ page }: ProfilProps): JSX.Element {
                 }
               />
             </div>
-            <Alert
-              severity="error"
-              hidden={!state.error}
-              className="ui-w-full"
-            >
-              {state.error}
-            </Alert>
+            {state.error && (
+              <Alert
+                severity="error"
+                className="ui-w-full"
+              >
+                {state.error}
+              </Alert>
+            )}
 
             <div className="ui-flex ui-flex-col ui-w-full ui-h-full gap-8">
               <div className="ui-flex ui-flex-col md:ui-flex-row md:ui-gap-24 ui-gap-4 md:ui-justify-center">
@@ -461,19 +439,18 @@ export function Profil({ page }: ProfilProps): JSX.Element {
                     <Divider />
                   </div>
                   <div className="ui-flex ui-flex-row ui-items-center ui-gap-2 ui-w-full">
-                    <Button
+                    <StyledOutlinedButton
                       variant="outlined"
                       className="ui-text-primary hover:ui-text-secondary ui-w-full ui-border-primary ui-rounded-lg hover:ui-border-secondary "
                     >
                       Annuler
-                    </Button>
-                    <Button
-                      variant="outlined"
+                    </StyledOutlinedButton>
+                    <StyledButton
                       type="submit"
-                      className="ui-bg-primary ui-text-white hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary ui-w-full"
+                      className="ui-bg-primary hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary ui-w-full"
                     >
                       Enregistrer
-                    </Button>
+                    </StyledButton>
                   </div>
                 </div>
               </div>
@@ -485,8 +462,8 @@ export function Profil({ page }: ProfilProps): JSX.Element {
                     <CopyToClipboard
                       text={user?.apiKey || ''}
                       onCopy={() => {
-                        setIsLinkCopied(true);
-                        setTimeout(() => setIsLinkCopied(false), 3000);
+                        setIsApiKeyCopied(true);
+                        setTimeout(() => setIsApiKeyCopied(false), 3000);
                       }}
                     >
                       <span className="ui-flex ui-flex-row ui-gap-2 ui-items-center hover:ui-bg-gray-4 ui-rounded-lg ui-p-2 ui-cursor-pointer ui-w-full ui-justify-between ui-border-secondary ui-border">
@@ -494,24 +471,24 @@ export function Profil({ page }: ProfilProps): JSX.Element {
                         <Key />
                       </span>
                     </CopyToClipboard>
-                    {isLinkCopied && (
+                    {isApiKeyCopied && (
                       <Typography
                         variant="body1"
                         className="ui-text-green-500"
                       >
-                        Clé API copié !
+                        Clé API copiée !
                       </Typography>
                     )}
                   </div>
 
-                  <Button
+                  <StyledButton
                     onClick={() => deleteUser()}
                     variant="contained"
                     type="button"
                     className="ui-bg-red-500 ui-text-white hover:ui-bg-red-700 ui-rounded-lg ui-border-red-500 hover:ui-border-red-700"
                   >
                     Supprimer le compte
-                  </Button>
+                  </StyledButton>
                 </div>
               </div>
             </div>

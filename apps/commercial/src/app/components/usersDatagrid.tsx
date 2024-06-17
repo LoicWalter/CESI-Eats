@@ -4,14 +4,9 @@ import React from 'react';
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import { AccountCircleOutlined } from '@mui/icons-material';
 import { PrismaUsers } from '@api/cesieats';
-import {
-  ClickableImageInput,
-  deleteUser,
-  deleteUserAsAdmin,
-  editUserDatagrid,
-  ImageWithDefaultOnError,
-} from '@repo/ui';
+import { ClickableImageInput, deleteUserAsAdmin, ImageWithDefaultOnError } from '@repo/ui';
 import { Alert, Button } from '@mui/material';
+import { editUserDatagrid } from '@repo/ui/actions/edit-user.js';
 
 interface UsersDatagridProps {
   data: PrismaUsers.User[];

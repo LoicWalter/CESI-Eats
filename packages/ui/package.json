@@ -6,6 +6,7 @@
   ],
   "exports": {
     "./styles.css": "./dist/index.css",
+    "./actions/*": "./src/actions/*",
     ".": "./src/index.ts"
   },
   "license": "MIT",

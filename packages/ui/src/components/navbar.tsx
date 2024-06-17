@@ -1,13 +1,11 @@
 'use client';
 
 import { AccountCircleOutlined, Logout, PersonOutline } from '@mui/icons-material';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Divider } from '@mui/material';
 import { useOnHover } from '../hooks/useOnHover';
 import Link from 'next/link';
-import { getUserInfosFromCookie, ImageWithDefaultOnError } from '../utils';
-import { PrismaUsers } from '@api/cesieats';
-import { usePathname } from 'next/navigation';
+import { ImageWithDefaultOnError, useUser } from '../utils';
 
 interface Item {
   icon: JSX.Element;
@@ -23,25 +21,11 @@ interface NavbarProps {
 
 export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
   const [hovered, bind] = useOnHover();
-  const [user, setUser] = useState<Partial<PrismaUsers.User>>();
-
-  const pathname = usePathname();
-
-  useEffect(() => {
-    const getUser = async () => {
-      const user = await getUserInfosFromCookie();
-      if (!user?.id) {
-        setUser(undefined);
-        return;
-      }
-      setUser(user);
-    };
-    getUser();
-  }, [pathname]);
+  const user = useUser();
 
   return (
     <>
-      <div className="ui-flex md:ui-hidden ui-fixed ui-bottom-0 ui-w-full ui-h-12 ui-z-10 ui-border-t-gray-4 ui-border-[1px] ui-bg-gray-5 ui-text-gray-3">
+      <div className="ui-flex md:ui-hidden ui-fixed ui-bottom-0 ui-w-full ui-h-12 ui-border-t-gray-4 ui-border-[1px] ui-bg-gray-5 ui-text-gray-3 ui-z-50">
         <div className="ui-flex ui-flex-row ui-justify-evenly ui-w-full ui-h-full">
           {iconArray.map(({ icon, href, id }) => (
             <React.Fragment key={id}>
@@ -72,7 +56,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
         </div>
       </div>
       <div
-        className="ui-hidden ui-sticky ui-top-0 ui-h-screen ui-border-r-gray-4 ui-border-[1px] ui-bg-gray-5 ui-text-gray-3 md:ui-flex ui-flex-col ui-items-center hover:ui-w-40 ui-transition-all ui-duration-300 ui-w-16 ui-z-20"
+        className="ui-hidden ui-z-50 ui-sticky ui-top-0 ui-h-screen ui-border-r-gray-4 ui-border-[1px] ui-bg-gray-5 ui-text-gray-3 md:ui-flex ui-flex-col ui-items-center hover:ui-w-40 ui-transition-all ui-duration-300 ui-w-16"
         {...bind}
       >
         <div className="ui-my-3">{logo}</div>
