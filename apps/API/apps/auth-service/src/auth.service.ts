@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
@@ -18,7 +18,10 @@ export class AuthService {
     private readonly prismaUsersService: PrismaUsersService,
   ) {}
 
+  private readonly logger = new Logger(AuthService.name);
+
   login(user: User, response: Response) {
+    this.logger.log(`User ${user.id} logged in`);
     const tokenPayload: TokenPayload = {
       userId: user.id,
     };
@@ -35,6 +38,7 @@ export class AuthService {
   }
 
   async validateApiKey(API_KEY: string) {
+    this.logger.log(`Validating API key ${API_KEY}`);
     const user = await this.prismaUsersService.user.findUnique({
       where: {
         apiKey: API_KEY,
