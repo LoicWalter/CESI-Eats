@@ -59,7 +59,7 @@ export default function page({ action }: CreateArticlePageProps): JSX.Element {
   });
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center gap-4">
+    <div className="w-full flex flex-col justify-center items-center gap-4">
       <Typography
         variant="h4"
         className="font-bold"

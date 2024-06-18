@@ -3,11 +3,11 @@ import BgImage from '../../assets/repas-de-famille.jpg';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
-  title: 'Client profil page',
-  description: 'Client profil page',
+  title: 'Livraison',
+  description: 'Livraison page',
 };
 
-export default function ProfilLayout({ children }: { children: React.ReactNode }): JSX.Element {
+export default function LivraisonLayout({ children }: { children: React.ReactNode }): JSX.Element {
   return (
     <div className="h-screen overflow-hidden w-full flex flex-col justify-center items-center">
       <Image

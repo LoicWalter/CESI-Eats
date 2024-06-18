@@ -4,10 +4,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Navbar } from '@repo/ui';
 import Image from 'next/image';
-import {
-  DashboardOutlined,
-  GroupsOutlined,
-} from '@mui/icons-material';
+import { DashboardOutlined, GroupsOutlined } from '@mui/icons-material';
 import Logo from './favicon.ico';
 
 const inter = Inter({ subsets: ['latin'] });
