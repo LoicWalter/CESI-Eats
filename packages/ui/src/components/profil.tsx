@@ -26,6 +26,7 @@ import { useFormState } from 'react-dom';
 import { editUser } from '../actions/edit-user';
 import { deleteUser } from '../auth';
 import { StyledButton, StyledOutlinedButton } from './styledButton';
+import { PrismaUsers } from '@api/cesieats';
 const card = (
   cardOwner: string | null,
   cardNumber: string | null,
@@ -392,52 +393,54 @@ export function Profil({ page }: ProfilProps): JSX.Element {
                     </div>
                     <Divider />
                   </div>
-                  <div className="ui-flex ui-flex-col ui-gap-2">
-                    <Typography variant="h6">Carte banquaire</Typography>
-                    <div className="ui-flex ui-flex-row ui-gap-2 ui-items-center">
-                      <div className="ui-justify-between ui-flex ui-flex-row ui-w-full">
-                        <div className="ui-flex ui-flex-row ui-gap-2">
-                          <CreditCard className="ui-opacity-55" />
-                          {card(
-                            formik.values.cardOwner,
-                            formik.values.cardNumber,
-                            formik.values.cardExpiration,
-                            formik.values.cardCvc,
-                          )}
-                        </div>
-                        <IconButton
-                          className="ui-p-0"
-                          onClick={handleClickOpen}
-                        >
-                          <Edit />
-                        </IconButton>
-                        <Modal
-                          open={open}
-                          onClose={handleClose}
-                          className="ui-flex ui-justify-center ui-items-center "
-                          title="Ajouter une carte banquaire"
-                        >
-                          <div className="ui-bg-gray-5 ui-m-8 ui-p-8 ui-rounded-lg ui-relative">
-                            <IconButton
-                              className="ui-absolute ui-top-4 ui-right-4"
-                              onClick={handleClose}
-                            >
-                              <Close />
-                            </IconButton>
-                            <PaymentForm formik={formik} />
-                            <StyledButton
-                              variant="contained"
-                              className="ui-bg-primary ui-text-white hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary ui-w-full ui-py-2 ui-mt-8"
-                              onClick={handleClose}
-                            >
-                              Enregistrer
-                            </StyledButton>
+                  {user?.roles?.includes(PrismaUsers.Role.CLIENT) && (
+                    <div className="ui-flex ui-flex-col ui-gap-2">
+                      <Typography variant="h6">Carte banquaire</Typography>
+                      <div className="ui-flex ui-flex-row ui-gap-2 ui-items-center">
+                        <div className="ui-justify-between ui-flex ui-flex-row ui-w-full">
+                          <div className="ui-flex ui-flex-row ui-gap-2">
+                            <CreditCard className="ui-opacity-55" />
+                            {card(
+                              formik.values.cardOwner,
+                              formik.values.cardNumber,
+                              formik.values.cardExpiration,
+                              formik.values.cardCvc,
+                            )}
                           </div>
-                        </Modal>
+                          <IconButton
+                            className="ui-p-0"
+                            onClick={handleClickOpen}
+                          >
+                            <Edit />
+                          </IconButton>
+                          <Modal
+                            open={open}
+                            onClose={handleClose}
+                            className="ui-flex ui-justify-center ui-items-center "
+                            title="Ajouter une carte banquaire"
+                          >
+                            <div className="ui-bg-gray-5 ui-m-8 ui-p-8 ui-rounded-lg ui-relative">
+                              <IconButton
+                                className="ui-absolute ui-top-4 ui-right-4"
+                                onClick={handleClose}
+                              >
+                                <Close />
+                              </IconButton>
+                              <PaymentForm formik={formik} />
+                              <StyledButton
+                                variant="contained"
+                                className="ui-bg-primary ui-text-white hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary ui-w-full ui-py-2 ui-mt-8"
+                                onClick={handleClose}
+                              >
+                                Enregistrer
+                              </StyledButton>
+                            </div>
+                          </Modal>
+                        </div>
                       </div>
+                      <Divider />
                     </div>
-                    <Divider />
-                  </div>
+                  )}
                   <div className="ui-flex ui-flex-row ui-items-center ui-gap-2 ui-w-full">
                     <StyledOutlinedButton
                       variant="outlined"
@@ -458,28 +461,30 @@ export function Profil({ page }: ProfilProps): JSX.Element {
               <div className="ui-flex ui-flex-col ui-gap-6 ui-w-96">
                 <Typography variant="h5">Actions supplémentaires</Typography>
                 <div className="ui-flex ui-flex-col ui-gap-4">
-                  <div className="ui-flex ui-flex-row ui-gap-2 ui-items-center">
-                    <CopyToClipboard
-                      text={user?.apiKey || ''}
-                      onCopy={() => {
-                        setIsApiKeyCopied(true);
-                        setTimeout(() => setIsApiKeyCopied(false), 3000);
-                      }}
-                    >
-                      <span className="ui-flex ui-flex-row ui-gap-2 ui-items-center hover:ui-bg-gray-4 ui-rounded-lg ui-p-2 ui-cursor-pointer ui-w-full ui-justify-between ui-border-secondary ui-border">
-                        <Typography variant="body1">Copier la clé API</Typography>
-                        <Key />
-                      </span>
-                    </CopyToClipboard>
-                    {isApiKeyCopied && (
-                      <Typography
-                        variant="body1"
-                        className="ui-text-green-500"
+                  {user?.roles?.includes(PrismaUsers.Role.CLIENT) && (
+                    <div className="ui-flex ui-flex-row ui-gap-2 ui-items-center">
+                      <CopyToClipboard
+                        text={user?.apiKey || ''}
+                        onCopy={() => {
+                          setIsApiKeyCopied(true);
+                          setTimeout(() => setIsApiKeyCopied(false), 3000);
+                        }}
                       >
-                        Clé API copiée !
-                      </Typography>
-                    )}
-                  </div>
+                        <span className="ui-flex ui-flex-row ui-gap-2 ui-items-center hover:ui-bg-gray-4 ui-rounded-lg ui-p-2 ui-cursor-pointer ui-w-full ui-justify-between ui-border-secondary ui-border">
+                          <Typography variant="body1">Copier la clé API</Typography>
+                          <Key />
+                        </span>
+                      </CopyToClipboard>
+                      {isApiKeyCopied && (
+                        <Typography
+                          variant="body1"
+                          className="ui-text-green-500"
+                        >
+                          Clé API copiée !
+                        </Typography>
+                      )}
+                    </div>
+                  )}
 
                   <StyledButton
                     onClick={() => deleteUser()}
