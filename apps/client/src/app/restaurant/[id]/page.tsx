@@ -206,52 +206,54 @@ export default function Page({ params }: { params: { id: string } }) {
         </Box>
       </Box>
       <Divider />
-      <Typography variant="h5">Menus :</Typography>
-      <Grid
-        container
-        spacing={4}
-      >
-        {fullRestaurant.menus?.map((menu) => (
+      {fullRestaurant.menus && (
+        <>
+          <Typography variant="h5">Menus :</Typography>
           <Grid
-            item
-            xs={12}
-            sm={6}
-            md={4}
-            key={menu.id}
+            container
+            spacing={4}
           >
-            <Paper
-              className="p-4 flex flex-col items-start h-full"
-              onClick={() => setModal({ open: true, menu })}
-            >
-              <ImageWithDefaultOnError
-                src={`${process.env.NEXT_PUBLIC_API_URL}/menu-picture/${menu.menuPicture}`}
-                alt={menu.name!}
-                width={48}
-                height={48}
-                className="w-full mb-4 rounded h-64 object-cover object-center"
-                defaultReactNode={
-                  <img
-                    src={'https://via.placeholder.com/300'}
+            {fullRestaurant.menus?.map((menu) => (
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                key={menu.id}
+              >
+                <Paper
+                  className="p-4 flex flex-col items-start h-full"
+                  onClick={() => setModal({ open: true, menu })}
+                >
+                  <ImageWithDefaultOnError
+                    src={`${process.env.NEXT_PUBLIC_API_URL}/menu-picture/${menu.menuPicture}`}
                     alt={menu.name!}
+                    width={48}
+                    height={48}
                     className="w-full mb-4 rounded h-64 object-cover object-center"
+                    defaultReactNode={
+                      <img
+                        src={'https://via.placeholder.com/300'}
+                        alt={menu.name!}
+                        className="w-full mb-4 rounded h-64 object-cover object-center"
+                      />
+                    }
+                    forceDefault={!menu.menuPicture}
                   />
-                }
-                forceDefault={!menu.menuPicture}
-              />
-              <Typography
-                variant="h6"
-                component="h3"
-                className="font-bold"
-              >
-                {menu.name}
-              </Typography>
-              <Typography
-                variant="body2"
-                className="mt-2"
-              >
-                {menu.description}
-              </Typography>
-              {/* {item.options && (
+                  <Typography
+                    variant="h6"
+                    component="h3"
+                    className="font-bold"
+                  >
+                    {menu.name}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    className="mt-2"
+                  >
+                    {menu.description}
+                  </Typography>
+                  {/* {item.options && (
                     <div className="w-full flex flex-row">
                       <Typography
                         variant="body2"
@@ -266,46 +268,48 @@ export default function Page({ params }: { params: { id: string } }) {
                       />
                     </div>
                   )} */}
-              <Box className="items-end flex w-full h-full pt-2">
-                <div className="items-center flex justify-between w-full">
-                  <Typography
-                    variant="body1"
-                    className="font-bold"
-                  >
-                    {menu.price}€
-                  </Typography>
-                  <div className="flex justify-center items-center gap-2">
-                    {findInCart(menu.id, 'menu') ? (
-                      <>
+                  <Box className="items-end flex w-full h-full pt-2">
+                    <div className="items-center flex justify-between w-full">
+                      <Typography
+                        variant="body1"
+                        className="font-bold"
+                      >
+                        {menu.price}€
+                      </Typography>
+                      <div className="flex justify-center items-center gap-2">
+                        {findInCart(menu.id, 'menu') ? (
+                          <>
+                            <IconButton
+                              color="primary"
+                              onClick={(e) => addToCart(e, 'menu', menu, 'remove')}
+                            >
+                              <RemoveCircleOutline className="text-primary hover:text-secondary" />
+                            </IconButton>
+                            <Typography
+                              variant="body1"
+                              className="text-center"
+                            >
+                              {findInCart(menu.id, 'menu')?.quantity}
+                            </Typography>
+                          </>
+                        ) : null}
+
                         <IconButton
                           color="primary"
-                          onClick={(e) => addToCart(e, 'menu', menu, 'remove')}
+                          onClick={(e) => addToCart(e, 'menu', menu, 'add')}
                         >
-                          <RemoveCircleOutline className="text-primary hover:text-secondary" />
+                          <AddCircleOutlineIcon className="text-primary hover:text-secondary" />
                         </IconButton>
-                        <Typography
-                          variant="body1"
-                          className="text-center"
-                        >
-                          {findInCart(menu.id, 'menu')?.quantity}
-                        </Typography>
-                      </>
-                    ) : null}
-
-                    <IconButton
-                      color="primary"
-                      onClick={(e) => addToCart(e, 'menu', menu, 'add')}
-                    >
-                      <AddCircleOutlineIcon className="text-primary hover:text-secondary" />
-                    </IconButton>
-                  </div>
-                </div>
-              </Box>
-            </Paper>
+                      </div>
+                    </div>
+                  </Box>
+                </Paper>
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
-      <Divider />
+          <Divider />
+        </>
+      )}
       <Typography variant="h5">Articles :</Typography>
       <Grid
         container

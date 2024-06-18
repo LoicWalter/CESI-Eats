@@ -6,6 +6,7 @@ import { Divider } from '@mui/material';
 import { useOnHover } from '../hooks/useOnHover';
 import Link from 'next/link';
 import { ImageWithDefaultOnError, useUser } from '../utils';
+import Image from 'next/image';
 
 interface Item {
   icon: JSX.Element;
@@ -91,11 +92,11 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
                 <ImageWithDefaultOnError
                   alt="Profile picture"
                   className="ui-w-8 ui-h-8 ui-rounded-full ui-aspect-square ui-object-cover ui-object-center"
-                  src={`${process.env.NEXT_PUBLIC_API_URL}/auth/profilePicture/${user?.profilePicture}`}
-                  defaultReactNode={<AccountCircleOutlined />}
                   width={24}
                   height={24}
-                  forceDefault={user === undefined}
+                  defaultReactNode={<AccountCircleOutlined />}
+                  src={`${process.env.NEXT_PUBLIC_API_URL}/auth/profilePicture/${user?.profilePicture}`}
+                  forceDefault={!user?.profilePicture}
                 />
               }
               text={user?.name ?? 'Se connecter'}

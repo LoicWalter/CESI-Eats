@@ -425,13 +425,13 @@ export function Profil({ page }: ProfilProps): JSX.Element {
                               <Close />
                             </IconButton>
                             <PaymentForm formik={formik} />
-                            <Button
-                              variant="outlined"
+                            <StyledButton
+                              variant="contained"
                               className="ui-bg-primary ui-text-white hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary ui-w-full ui-py-2 ui-mt-8"
                               onClick={handleClose}
                             >
                               Enregistrer
-                            </Button>
+                            </StyledButton>
                           </div>
                         </Modal>
                       </div>

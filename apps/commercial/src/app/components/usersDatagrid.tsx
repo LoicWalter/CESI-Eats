@@ -4,7 +4,12 @@ import React from 'react';
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import { AccountCircleOutlined } from '@mui/icons-material';
 import { PrismaUsers } from '@api/cesieats';
-import { ClickableImageInput, deleteUserAsAdmin, ImageWithDefaultOnError } from '@repo/ui';
+import {
+  ClickableImageInput,
+  deleteUserAsAdmin,
+  ImageWithDefaultOnError,
+  StyledButton,
+} from '@repo/ui';
 import { Alert, Button } from '@mui/material';
 import { editUserDatagrid } from '@repo/ui/actions/edit-user.js';
 
@@ -56,7 +61,7 @@ export function UsersDatagrid({ data }: UsersDatagridProps) {
       headerName: 'Supprimer',
       width: 120,
       renderCell: (params) => (
-        <Button onClick={() => deleteUserAsAdmin(params.row['id'])}>Supprimer</Button>
+        <StyledButton onClick={() => deleteUserAsAdmin(params.row['id'])}>Supprimer</StyledButton>
       ),
     },
   ];

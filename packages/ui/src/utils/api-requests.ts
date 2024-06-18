@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import { Cookies } from '../constants';
 import { PrismaUsers } from '@api/cesieats';
 import { redirect } from 'next/navigation';
+import { getErrorMessage } from './errors';
 
 type ResponseWith<T> = { res: Response; parsedRes: T };
 
@@ -17,18 +18,10 @@ async function getUrl(path: string): Promise<string> {
 }
 
 async function request<T>(path: string, options: RequestInit): Promise<ResponseWith<T>> {
-  return fetch(await getUrl(path), options)
-    .then(async (res) => {
-      if (!res.ok) {
-        throw new Error(res.statusText);
-      }
-      const parsedRes = await res.json();
-      return { res, parsedRes };
-    })
-    .catch((error) => {
-      console.error(error);
-      return { res: new Response(null), parsedRes: { message: error } } as ResponseWith<T>;
-    });
+  const url = await getUrl(path);
+  const response = await fetch(url, options);
+  const parsedRes = await response.json();
+  return { res: response, parsedRes };
 }
 
 async function getHeaders(withFile: boolean = false): Promise<Headers> {
@@ -84,6 +77,13 @@ export async function _delete<T>(
     method: 'DELETE',
     headers: await getHeaders(),
     ...options,
+  });
+}
+
+export async function getPictureUrl<T>(path: string): Promise<ResponseWith<T>> {
+  return request(path, {
+    method: 'GET',
+    headers: await getHeaders(),
   });
 }
 
