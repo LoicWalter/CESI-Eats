@@ -1,13 +1,12 @@
 'use client';
 
 import { AccountCircleOutlined, Logout, PersonOutline } from '@mui/icons-material';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Divider } from '@mui/material';
 import { useOnHover } from '../hooks/useOnHover';
 import Link from 'next/link';
-import { getUserInfosFromCookie, ImageWithDefaultOnError } from '../utils';
-import { PrismaUsers } from '@api/cesieats';
-import { usePathname } from 'next/navigation';
+import { ImageWithDefaultOnError, useUser } from '../utils';
+import Image from 'next/image';
 
 interface Item {
   icon: JSX.Element;
@@ -23,21 +22,7 @@ interface NavbarProps {
 
 export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
   const [hovered, bind] = useOnHover();
-  const [user, setUser] = useState<Partial<PrismaUsers.User>>();
-
-  const pathname = usePathname();
-
-  useEffect(() => {
-    const getUser = async () => {
-      const user = await getUserInfosFromCookie();
-      if (!user?.id) {
-        setUser(undefined);
-        return;
-      }
-      setUser(user);
-    };
-    getUser();
-  }, [pathname]);
+  const user = useUser();
 
   return (
     <>

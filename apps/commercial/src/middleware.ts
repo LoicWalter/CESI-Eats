@@ -1,9 +1,34 @@
-import { PrismaUsers } from '@api/cesieats';
-import { commonMiddleware, defaultWebRoutes } from '@repo/ui';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest): Response | undefined {
-  return commonMiddleware(defaultWebRoutes.COMMERCIAL, PrismaUsers.Role.ADMIN)(request);
+  const role = 'ADMIN';
+  const app = '/commercial';
+  const currentUser = request.cookies.get('User')?.value;
+  const authCookie = request.cookies.get('Authentication')?.value;
+  const isLogged = Boolean(currentUser && authCookie);
+  const currentPathName = request.nextUrl.pathname;
+
+  const userRole = JSON.parse(currentUser || '{}')?.roles;
+
+  const authRoutes = ['/auth/login', '/auth/signup'];
+  const routesNeedAuth = ['/profil', '/paiement'];
+  const routesNeedRole = ['/profil', '/paiement', '/dashboard'];
+
+  const isAuthRoute = authRoutes.some((route) => currentPathName.startsWith(route));
+
+  if (isLogged && isAuthRoute) {
+    return Response.redirect(new URL(app, request.url));
+  }
+
+  if (routesNeedRole.some((route) => currentPathName.startsWith(route))) {
+    if (!userRole || !userRole.includes(role)) {
+      return Response.redirect(new URL(`${app}/auth/login`, request.url));
+    }
+  }
+
+  if (!isLogged && routesNeedAuth.some((route) => currentPathName.startsWith(route))) {
+    return Response.redirect(new URL(`${app}/auth/login`, request.url));
+  }
 }
 
 export const config = {
