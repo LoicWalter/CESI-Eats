@@ -6,12 +6,12 @@ import { AccountCircleOutlined } from '@mui/icons-material';
 import { PrismaUsers } from '@api/cesieats';
 import {
   ClickableImageInput,
-  deleteUser,
   deleteUserAsAdmin,
-  editUserDatagrid,
   ImageWithDefaultOnError,
+  StyledButton,
 } from '@repo/ui';
 import { Alert, Button } from '@mui/material';
+import { editUserDatagrid } from '@repo/ui/actions/edit-user.js';
 
 interface UsersDatagridProps {
   data: PrismaUsers.User[];
@@ -61,7 +61,7 @@ export function UsersDatagrid({ data }: UsersDatagridProps) {
       headerName: 'Supprimer',
       width: 120,
       renderCell: (params) => (
-        <Button onClick={() => deleteUserAsAdmin(params.row['id'])}>Supprimer</Button>
+        <StyledButton onClick={() => deleteUserAsAdmin(params.row['id'])}>Supprimer</StyledButton>
       ),
     },
   ];

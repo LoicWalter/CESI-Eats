@@ -3,6 +3,8 @@ version: '3'
 services:
   client:
     container_name: client
+    env_file:
+      - .env.prod
     build:
       context: .
       dockerfile: ./apps/client/Dockerfile
@@ -14,6 +16,8 @@ services:
 
   commercial:
     container_name: commercial
+    env_file:
+      - .env.prod
     build:
       context: .
       dockerfile: ./apps/commercial/Dockerfile
@@ -25,6 +29,8 @@ services:
 
   livreur:
     container_name: livreur
+    env_file:
+      - .env.prod
     build:
       context: .
       dockerfile: ./apps/livreur/Dockerfile
@@ -36,6 +42,8 @@ services:
 
   restaurateur:
     container_name: restaurateur
+    env_file:
+      - .env.prod
     build:
       context: .
       dockerfile: ./apps/restaurateur/Dockerfile

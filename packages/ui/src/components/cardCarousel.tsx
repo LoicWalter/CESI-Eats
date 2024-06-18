@@ -52,16 +52,6 @@ const StyledCarousel = styled(Carousel)`
     background-repeat: no-repeat;
     background-position: center;
 
-    &.react-multiple-carousel__arrow--left {
-      left: 0;
-      background-image: url(${flechegauche});
-    }
-
-    &.react-multiple-carousel__arrow--right {
-      right: 0;
-      background-image: url(${flechedroite});
-    }
-
     &:hover {
       background-color: #dd231b;
     }
@@ -69,7 +59,6 @@ const StyledCarousel = styled(Carousel)`
 `;
 
 export function CardCarousel({ children, responsive }: CarouselProps) {
-  console.log(responsive);
   return (
     <StyledCarousel
       responsive={responsive || defaultResponsive}

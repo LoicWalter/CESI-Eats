@@ -25,6 +25,9 @@ export async function login(
       body: JSON.stringify(rest),
     },
   );
+
+  console.log('Response:', res);
+
   if (!res.ok) {
     return { error: getErrorMessage(parsedRes) };
   }
