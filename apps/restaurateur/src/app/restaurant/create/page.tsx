@@ -1,24 +1,7 @@
 'use client';
 
 import React from 'react';
-import {
-  Container,
-  Typography,
-  Box,
-  TextField,
-  Button,
-  IconButton,
-  InputAdornment,
-  MenuItem,
-  FormControl,
-  Select,
-  InputLabel,
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import InfoIcon from '@mui/icons-material/Info';
-import Image, { StaticImageData } from 'next/image';
-import BgImage from '../../../assets/repas-de-famille.jpg';
-import RestaurantImage from '../../../assets/exemple-restaurant.jpg';
+import { Typography, MenuItem } from '@mui/material';
 import { useFormState } from 'react-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -158,37 +141,35 @@ export default function page({ action }: CreateRestaurantPageProps): JSX.Element
                 className: `${errors.siret && touched.siret ? 'bg-red-100' : ''}`,
               }}
             />
-            <FormControl
-              variant="outlined"
-              fullWidth
+            <StyledTextField
+              label="Catégorie"
+              name="category"
+              select
+              value={values.category}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={Boolean(errors.category && touched.category)}
+              helperText={errors.siret && touched.siret ? errors.siret : ''}
+              InputProps={{
+                className: `${errors.siret && touched.siret ? 'bg-red-100' : ''}`,
+              }}
             >
-              <InputLabel id="category">Catégorie</InputLabel>
-              <Select
-                labelId="category"
-                label="Catégorie"
-                name="category"
-                value={values.category}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={Boolean(errors.category && touched.category)}
-              >
-                <MenuItem value="cafe">Café</MenuItem>
-                <MenuItem value="bar">Bar</MenuItem>
-                <MenuItem value="brasserie">Brasserie</MenuItem>
-                <MenuItem value="fast-food">Fast food</MenuItem>
-                <MenuItem value="restaurant-mexicain">Restaurant mexicain</MenuItem>
-                <MenuItem value="restaurant-de-sushis">Restaurant de sushis</MenuItem>
-                <MenuItem value="boulangerie">Boulangerie</MenuItem>
-                <MenuItem value="pizzeria">Pizzeria</MenuItem>
-                <MenuItem value="restaurant-italien">Restaurant italien</MenuItem>
-                <MenuItem value="restaurant-chinois">Restaurant chinois</MenuItem>
-                <MenuItem value="restaurant-indien">Restaurant indien</MenuItem>
-                <MenuItem value="restaurant-thaïlandais">Restaurant thaïlandais</MenuItem>
-                <MenuItem value="restaurant-végétarien">Restaurant végétarien</MenuItem>
-                <MenuItem value="restaurant-libanais">Restaurant libanais</MenuItem>
-                <MenuItem value="steakhouse">Steakhouse</MenuItem>
-              </Select>
-            </FormControl>
+              <MenuItem value="cafe">Café</MenuItem>
+              <MenuItem value="bar">Bar</MenuItem>
+              <MenuItem value="brasserie">Brasserie</MenuItem>
+              <MenuItem value="fast-food">Fast food</MenuItem>
+              <MenuItem value="restaurant-mexicain">Restaurant mexicain</MenuItem>
+              <MenuItem value="restaurant-de-sushis">Restaurant de sushis</MenuItem>
+              <MenuItem value="boulangerie">Boulangerie</MenuItem>
+              <MenuItem value="pizzeria">Pizzeria</MenuItem>
+              <MenuItem value="restaurant-italien">Restaurant italien</MenuItem>
+              <MenuItem value="restaurant-chinois">Restaurant chinois</MenuItem>
+              <MenuItem value="restaurant-indien">Restaurant indien</MenuItem>
+              <MenuItem value="restaurant-thaïlandais">Restaurant thaïlandais</MenuItem>
+              <MenuItem value="restaurant-végétarien">Restaurant végétarien</MenuItem>
+              <MenuItem value="restaurant-libanais">Restaurant libanais</MenuItem>
+              <MenuItem value="steakhouse">Steakhouse</MenuItem>
+            </StyledTextField>
             <div className="flex flex-row w-full justify-between gap-4 items-center mt-6">
               <StyledOutlinedButton
                 className="w-1/2 border-primary text-primary rounded-xl"

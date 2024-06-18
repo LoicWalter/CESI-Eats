@@ -101,7 +101,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
               <NavItem
                 hovered={hovered}
                 icon={<Logout />}
-                text={'Se déconnecter'}
+                text={'Deconnexion'}
                 href={'/auth/logout'}
               />
             )}
