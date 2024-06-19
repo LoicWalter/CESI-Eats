@@ -9,10 +9,13 @@ interface RestaurantCardProps {
 
 export function RestaurantCard({ restaurant }: RestaurantCardProps) {
   return (
-    <Link href={`/restaurant/${restaurant.id}`}>
-      <Card className="ui-w-5/6 ui-mx-4 ui-inline-block">
+    <Link
+      href={`/restaurant/${restaurant.id}`}
+      className="ui-h-full ui-w-full"
+    >
+      <Card className="ui-mx-4 ui-w-full ui-h-full ui-flex ui-justify-between ui-flex-col">
         <ImageWithDefaultOnError
-          src="https://via.placeholder.com/300"
+          src={`${process.env.NEXT_PUBLIC_API_URL}/restaurant-picture/${restaurant.restaurantPicture}`}
           alt="restaurant"
           width="300"
           height="300"

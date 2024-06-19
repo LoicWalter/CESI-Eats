@@ -14,3 +14,4 @@ export * from './styledButton';
 export * from './clickableImageInput';
 export * from './phoneInput';
 export * from './payement';
+export * from './iconWithTooltip';

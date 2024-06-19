@@ -57,8 +57,9 @@ const schema = Yup.object().shape({
   cardNumber: Yup.string().matches(/^[0-9]{16}$/, 'Le numéro de carte est invalide'),
   cardExpiration: Yup.string()
     .test('valid-month', 'Le mois est invalide', function (value) {
+      console.log(value);
       if (!value) {
-        return false;
+        return true;
       }
 
       const [month] = value.split('/').map((item) => parseInt(item, 10));
@@ -67,7 +68,7 @@ const schema = Yup.object().shape({
     })
     .test('is-future-date', "La date d'expiration doit être future", function (value) {
       if (!value) {
-        return false;
+        return true;
       }
 
       const currentDate = new Date();
@@ -154,10 +155,11 @@ export function Profil({ page }: ProfilProps): JSX.Element {
         Object.entries(values).forEach(([key, value]) => {
           formData.append(key, value);
         });
+        console.log(formData);
         formAction(formData);
       }}
       validationSchema={schema}
-      enableReinitialize={true}
+      enableReinitialize
     >
       {(formik) => (
         <form
@@ -397,7 +399,18 @@ export function Profil({ page }: ProfilProps): JSX.Element {
                     <div className="ui-flex ui-flex-col ui-gap-2">
                       <Typography variant="h6">Carte banquaire</Typography>
                       <div className="ui-flex ui-flex-row ui-gap-2 ui-items-center">
-                        <div className="ui-justify-between ui-flex ui-flex-row ui-w-full">
+                        <div
+                          className={`flex flex-row justify-between items-center w-full
+                                  ${
+                                    (formik.errors.cardOwner && formik.touched.cardOwner) ||
+                                    (formik.errors.cardNumber && formik.touched.cardNumber) ||
+                                    (formik.errors.cardExpiration &&
+                                      formik.touched.cardExpiration) ||
+                                    (formik.errors.cardCvc && formik.touched.cardCvc)
+                                      ? 'bg-red-100'
+                                      : ''
+                                  }`}
+                        >
                           <div className="ui-flex ui-flex-row ui-gap-2">
                             <CreditCard className="ui-opacity-55" />
                             {card(
@@ -450,6 +463,7 @@ export function Profil({ page }: ProfilProps): JSX.Element {
                     </StyledOutlinedButton>
                     <StyledButton
                       type="submit"
+                      variant="contained"
                       className="ui-bg-primary hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary ui-w-full"
                     >
                       Enregistrer

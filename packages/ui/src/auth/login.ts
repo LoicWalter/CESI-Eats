@@ -3,21 +3,14 @@
 import { jwtDecode } from 'jwt-decode';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import {
-  Cookies,
-  defaultWebRoutes,
-  FormErrors,
-  getErrorMessage,
-  post,
-  setUserCookie,
-} from '@repo/ui';
+import { Cookies, defaultWebRoutes, FormErrors, getErrorMessage, post, Tags } from '@repo/ui';
 import { PrismaUsers } from '@api/cesieats';
+import { revalidateTag } from 'next/cache';
 
 export async function login(
   _currentState: FormErrors,
   data: Record<string, any>,
 ): Promise<FormErrors> {
-  console.log('Logging in:', data);
   const { mustBeAdmin, ...rest } = data;
   const { res, parsedRes } = await post<PrismaUsers.User>(
     `${process.env.NEXT_PUBLIC_LOGIN_URL}/auth/login`,
@@ -26,25 +19,20 @@ export async function login(
     },
   );
 
-  console.log('Response:', res);
-
   if (!res.ok) {
     return { error: getErrorMessage(parsedRes) };
   }
-
-  console.log('User logged in:', parsedRes);
 
   if (mustBeAdmin && !parsedRes.roles.includes(PrismaUsers.Role.ADMIN)) {
     redirect(process.env.NEXT_PUBLIC_CLIENT_URL as string);
   }
 
-  setCookies(res, parsedRes);
+  setCookies(res);
   redirect(defaultWebRoutes.HOME);
 }
 
-const setCookies = async (response: Response, content: Record<string, any>) => {
+const setCookies = async (response: Response) => {
   const setCookieHeader = response.headers.get('Set-Cookie');
-  console.log('Set-Cookie:', setCookieHeader);
   if (!setCookieHeader) return;
   const token = setCookieHeader.split(';')[0].split('=')[1];
   const decodedToken = jwtDecode(token);
@@ -55,6 +43,5 @@ const setCookies = async (response: Response, content: Record<string, any>) => {
     httpOnly: true,
     expires: new Date(decodedToken.exp! * 1000),
   });
-
-  await setUserCookie(content);
+  revalidateTag(Tags.ME);
 };

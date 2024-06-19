@@ -35,7 +35,6 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<CartByRestaurant>({});
 
   useEffect(() => {
-    console.log('cart', cart);
     if (!cart || Object.keys(cart).length === 0) {
       const cart = localStorage.getItem('cart');
       const parsedCart = cart ? JSON.parse(cart) : {};
@@ -97,12 +96,14 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem('cart', JSON.stringify(newCart));
   };
 
-  const getTotalPrice = (id: string) =>
-    (cart[id] || []).reduce(
+  const getTotalPrice = (id: string) => {
+    const result = (cart[id] || []).reduce(
       (acc, element) => acc + (element.object.price || 0) * element.quantity,
 
       0,
     );
+    return Math.round(result * 100) / 100;
+  };
 
   return (
     <CartContext.Provider

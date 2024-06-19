@@ -3,34 +3,28 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { PrismaUsers } from '@api/cesieats';
 import { usePathname } from 'next/navigation';
-import { getUserInfosFromCookie } from '../utils/api-requests';
+import { getMe } from '../actions/get-me';
 
-const UserContext = createContext<
-  Partial<
-    PrismaUsers.Prisma.UserGetPayload<{
-      include: { filleuls: true; parrain: true };
-    }>
-  >
->({});
+export type UserContextType = Partial<
+  PrismaUsers.Prisma.UserGetPayload<{
+    include: { filleuls: true; parrain: true };
+  }>
+>;
+
+const UserContext = createContext<UserContextType>({});
 
 interface UserProviderProps {
   children: React.ReactNode;
 }
 
 export const UserProvider = ({ children }: UserProviderProps) => {
-  const [user, setUser] = useState<
-    Partial<
-      PrismaUsers.Prisma.UserGetPayload<{
-        include: { filleuls: true; parrain: true };
-      }>
-    >
-  >({});
+  const [user, setUser] = useState<UserContextType>({});
 
   const pathname = usePathname();
 
   useEffect(() => {
     const getUser = async () => {
-      const user = await getUserInfosFromCookie();
+      const user = await getMe();
       if (!user?.id) {
         setUser({});
         return;

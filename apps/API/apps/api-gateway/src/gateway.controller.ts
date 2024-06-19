@@ -82,7 +82,7 @@ export const menuStorage = {
 };
 
 @Controller()
-@UseGuards(RolesGuard, ApiKeyGuard)
+@UseGuards(RolesGuard)
 @ApiTags('Gateway')
 export class GatewayController {
   constructor(private readonly gatewayService: GatewayService) {}
@@ -237,7 +237,7 @@ export class GatewayController {
   //-------------------------------Restaurant--------------------------------
 
   @ApiBody({ type: CreateRestaurantDto })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   // @Roles(Role.RESTAURATEUR)
   @UseInterceptors(FileInterceptor('restaurant-picture', restaurantStorage))
@@ -252,7 +252,7 @@ export class GatewayController {
   }
 
   @ApiBody({ type: EditRestaurantDto })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.RESTAURATEUR)
   @UseInterceptors(FileInterceptor('restaurant-picture', restaurantStorage))
@@ -268,7 +268,7 @@ export class GatewayController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   // @Roles(Role.RESTAURATEUR)
   @Delete('/restaurants/:id')
   deleteRestaurant(@CurrentUser() user: User, @Param('id') id: string) {
@@ -276,12 +276,15 @@ export class GatewayController {
   }
 
   @HttpCode(HttpStatus.OK)
+  // @Roles(Role.RESTAURATEUR)
+  @UseGuards(ApiKeyGuard)
   @Get('/restaurants/:id')
   getRestaurant(@Param('id') id: string) {
     return this.gatewayService.getRestaurant(id);
   }
 
   @HttpCode(HttpStatus.OK)
+  @UseGuards(ApiKeyGuard)
   @Get('/restaurants')
   getAllRestaurants() {
     return this.gatewayService.getAllRestaurants();
@@ -294,6 +297,7 @@ export class GatewayController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @UseGuards(ApiKeyGuard)
   @Get('/restaurants/:id/infos')
   getRestaurantInfos(@Param('id') id: string) {
     return this.gatewayService.getRestaurantInfos(id);
@@ -303,7 +307,7 @@ export class GatewayController {
 
   @ApiBody({ type: CreateItemDto })
   @HttpCode(HttpStatus.CREATED)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   // @Roles(Role.RESTAURATEUR)
   @UseInterceptors(FileInterceptor('item-picture', itemStorage))
   @Post('/restaurants/:restaurantId/items')
@@ -319,7 +323,7 @@ export class GatewayController {
 
   @ApiBody({ type: EditItemDto })
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   // @Roles(Role.RESTAURATEUR)
   @UseInterceptors(FileInterceptor('item-picture', itemStorage))
   @Patch('/restaurants/:restaurantId/items/:itemId')
@@ -336,7 +340,7 @@ export class GatewayController {
 
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.RESTAURATEUR)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @Delete('/restaurants/:restaurantId/items/:itemId')
   deleteItem(
     @CurrentUser() user: User,
@@ -348,12 +352,14 @@ export class GatewayController {
 
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.RESTAURATEUR)
+  @UseGuards(ApiKeyGuard)
   @Get('/restaurants/:restaurantId/items/:itemId')
   getItem(@Param('restaurantId') restaurantId: string, @Param('itemId') itemId: string) {
     return this.gatewayService.getItem(restaurantId, itemId);
   }
 
   @HttpCode(HttpStatus.OK)
+  @UseGuards(ApiKeyGuard)
   @Get('/restaurants/:restaurantId/items')
   getAllItems(@Param('restaurantId') restaurantId: string) {
     return this.gatewayService.getAllItems(restaurantId);
@@ -370,7 +376,7 @@ export class GatewayController {
   @ApiBody({ type: CreateMenuDto })
   @HttpCode(HttpStatus.CREATED)
   // @Roles(Role.RESTAURATEUR)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @UseInterceptors(FileInterceptor('menu-picture', menuStorage))
   @Post('/restaurants/:restaurantId/menus')
   createMenu(
@@ -386,7 +392,7 @@ export class GatewayController {
   @ApiBody({ type: EditMenuDto })
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.RESTAURATEUR)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @UseInterceptors(FileInterceptor('menu-picture', menuStorage))
   @Patch('/restaurants/:restaurantId/menus/:menuId')
   editMenu(
@@ -402,7 +408,7 @@ export class GatewayController {
 
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.RESTAURATEUR)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @Delete('/restaurants/:restaurantId/menus/:menuId')
   deleteMenu(
     @CurrentUser() user: User,
@@ -413,6 +419,7 @@ export class GatewayController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @UseGuards(ApiKeyGuard)
   // @Roles(Role.RESTAURATEUR)
   @Get('/restaurants/:restaurantId/menus/:menuId')
   getMenu(@Param('restaurantId') restaurantId: string, @Param('menuId') menuId: string) {
@@ -420,6 +427,7 @@ export class GatewayController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @UseGuards(ApiKeyGuard)
   @Get('/restaurants/:restaurantId/menus')
   getAllMenus(@Param('restaurantId') restaurantId: string) {
     return this.gatewayService.getAllMenus(restaurantId);
