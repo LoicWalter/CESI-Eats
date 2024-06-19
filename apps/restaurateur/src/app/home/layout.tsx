@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   description: 'Restaurant home page',
 };
 
-export default function ProfilLayout({ children }: { children: React.ReactNode }): JSX.Element {
+export default function HomeLayout({ children }: { children: React.ReactNode }): JSX.Element {
   return (
-    <div className="h-screen overflow-hidden w-full flex flex-col justify-center items-center">
+    <div className="w-full h-full flex flex-col justify-center items-center">
       <Image
         src={BgImage}
         alt="Repas de famille"
@@ -17,7 +17,7 @@ export default function ProfilLayout({ children }: { children: React.ReactNode }
         objectFit="cover"
         objectPosition="center"
       />
-      <div className="bg-white px-12 py-6 md:rounded-xl xl:w-1/2 lg:w-2/3 md:w-5/6 z-20 w-full overflow-hidden">
+      <div className="w-full bg-white md:px-12 md:py-6 lg:px-12 lg:py-6 xl:px-12 xl:py-6 md:rounded-xl xl:w-1/2 lg:w-2/3 md:w-5/6 z-20">
         {children}
       </div>
     </div>

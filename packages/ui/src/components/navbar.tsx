@@ -42,7 +42,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
   return (
     <>
       {/* Phone */}
-      <div className="ui-flex md:ui-hidden ui-fixed ui-bottom-0 ui-w-full ui-h-12 ui-z-10 ui-border-t-gray-4 ui-border-t-[1px] ui-bg-gray-5 ui-text-gray-3 ui-shadow-[0_-0.125rem_0.25rem_0_rgba(204,209,212,0.4)]">
+      <div className="ui-flex md:ui-hidden ui-fixed ui-bottom-0 ui-w-full ui-h-12 ui-z-10 ui-border-t-gray-4 ui-border-t-[0.0625rem] ui-bg-gray-5 ui-text-gray-3 ui-shadow-[0_-0.125rem_0.25rem_0_rgba(204,209,212,0.4)]">
         <div className="ui-flex ui-flex-row ui-justify-evenly ui-w-full ui-h-full">
           {iconArray.map(({ icon, href, id }) => (
             <React.Fragment key={id}>
@@ -75,7 +75,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
       </div>
       {/* Computer */}
       <div
-        className="ui-hidden ui-sticky ui-top-0 ui-h-screen ui-border-r-gray-4 ui-border-r-[1px] ui-bg-gray-5 ui-text-gray-3 md:ui-flex ui-flex-col ui-items-center hover:ui-w-40 ui-transition-all ui-duration-300 ui-w-16 ui-z-20 ui-select-none ui-shadow-[0.125rem_0_0.25rem_0_rgba(204,209,212,0.7)]"
+        className="ui-hidden ui-sticky ui-top-0 ui-h-screen ui-border-r-gray-4 ui-border-r-[0.0625rem] ui-bg-gray-5 ui-text-gray-3 md:ui-flex ui-flex-col ui-items-center hover:ui-w-40 ui-transition-all ui-duration-300 ui-w-16 ui-z-20 ui-select-none ui-shadow-[0.125rem_0_0.25rem_0_rgba(204,209,212,0.7)]"
         {...bind}
       >
         <div className="ui-my-3">{logo}</div>

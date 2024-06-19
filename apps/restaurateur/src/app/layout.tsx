@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
   return (
     <html lang="en">
       <body
-        className={`${inter.className} flex flex-row w-screen h-screen overflow-hidden border-0 pb-12 md:pb-0 font-display`}
+        className={`${inter.className} flex flex-row w-screen h-screen overflow-auto border-0 pb-12 md:pb-0 font-display`}
       >
         <Navbar
           items={items}
@@ -37,7 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
             />
           }
         />
-        <div className="flex-1 md:overflow-y-hidden md:overflow-x-hidden flex justify-center items-center">
+        <div className="flex flex-1 overflow-y-auto overflow-x-hidden justify-center items-center">
           {children}
         </div>
       </body>
