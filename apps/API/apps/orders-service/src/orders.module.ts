@@ -5,7 +5,7 @@ import { PrismaOrdersModule } from '@app/databases/orders/prisma/prisma-orders.m
 import { OrdersService } from './orders.service';
 import { OrdersController } from './orders.controller';
 import * as Joi from 'joi';
-import { RmqModule } from 'libs/common';
+import { Microservices, RmqModule } from 'libs/common';
 
 @Module({
   imports: [
@@ -19,6 +19,7 @@ import { RmqModule } from 'libs/common';
       }),
     }),
     RmqModule,
+    RmqModule.register({ name: Microservices.RESTAURANTS }),
     PrismaOrdersModule,
   ],
   controllers: [OrdersController],

@@ -1,5 +1,6 @@
 export * from './create-client.dto';
 export * from './create-order.dto';
+export * from './edit-order.dto';
 export * from './create-restaurant.dto';
 export * from './edit-restaurant.dto';
 export * from './sign-in.dto';
@@ -10,3 +11,5 @@ export * from './create-item.dto';
 export * from './edit-item.dto';
 export * from './create-menu.dto';
 export * from './edit-menu.dto';
+export * from './create-delivery.dto';
+export * from './edit-delivery-status.dto';

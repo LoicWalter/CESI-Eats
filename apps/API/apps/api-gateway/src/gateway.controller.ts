@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Res,
   UploadedFile,
   UseGuards,
@@ -15,12 +16,15 @@ import {
 } from '@nestjs/common';
 import { GatewayService } from './gateway.service';
 import {
+  CreateDeliveryDto,
   CreateItemDto,
   CreateMenuDto,
   CreateOrderDto,
   CreateRestaurantDto,
+  EditDeliveryStatusDto,
   EditItemDto,
   EditMenuDto,
+  // EditOrderDto,
   EditRestaurantDto,
 } from './dto';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
@@ -33,6 +37,8 @@ import {
   RolesGuard,
 } from 'libs/common';
 import { User } from '@gen/client/users';
+import { OrderStatus } from '@gen/client/orders';
+import { DeliveryStatus } from '@gen/client/deliveries';
 import { Role } from '@gen/client/users';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as path from 'path';
@@ -81,15 +87,176 @@ export const menuStorage = {
 export class GatewayController {
   constructor(private readonly gatewayService: GatewayService) {}
 
+  private mapOrderStatusToEnum(status: string) {
+    switch (status) {
+      case 'COMMANDE_PASSEE':
+        return OrderStatus.COMMANDE_PASSEE;
+      case 'COMMANDE_ACCEPTEE':
+        return OrderStatus.COMMANDE_ACCEPTEE;
+      case 'PREPARATION_EN_COURS':
+        return OrderStatus.PREPARATION_EN_COURS;
+      case 'COMMANDE_PRETE':
+        return OrderStatus.COMMANDE_PRETE;
+      default:
+        throw new Error(`Invalid status value: ${status}`);
+    }
+  }
+
+  private mapDeliveryStatusToEnum(status: string): DeliveryStatus {
+    switch (status) {
+      case 'LIVRAISON_ACCEPTEE':
+        return DeliveryStatus.LIVRAISON_ACCEPTEE;
+      case 'LIVREUR_EN_ROUTE_VERS_RESTAURANT':
+        return DeliveryStatus.LIVREUR_EN_ROUTE_VERS_RESTAURANT;
+      case 'COMMANDE_RECUPEREE':
+        return DeliveryStatus.COMMANDE_RECUPEREE;
+      case 'LIVREUR_EN_ROUTE_VERS_CLIENT':
+        return DeliveryStatus.LIVREUR_EN_ROUTE_VERS_CLIENT;
+      case 'COMMANDE_LIVREE':
+        return DeliveryStatus.COMMANDE_LIVREE;
+      default:
+        throw new Error(`Invalid status value: ${status}`);
+    }
+  }
   //-------------------------------Order--------------------------------
 
   @ApiBody({ type: CreateOrderDto })
   @HttpCode(HttpStatus.CREATED)
-  @Roles(Role.CLIENT)
-  @UseGuards(JwtAuthGuard)
+  // @Roles(Role.CLIENT)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @Post('/orders')
-  createOrder(@Body() createOrderDto: CreateOrderDto) {
-    return this.gatewayService.createOrder(createOrderDto);
+  createOrder(@CurrentUser() user: User, @Body() createOrderDto: CreateOrderDto) {
+    return this.gatewayService.createOrder(user, createOrderDto);
+  }
+
+  // @ApiBody({ type: EditOrderDto })
+  // @HttpCode(HttpStatus.OK)
+  // // @Roles(Role.CLIENT)
+  // @Patch('/orders/:id')
+  // editOrder(
+  //   @CurrentUser() user: User,
+  //   @Param('id') id: string,
+  //   @Body() editOrderDto: EditOrderDto,
+  // ) {
+  //   return this.gatewayService.editOrder(user, id, editOrderDto);
+  // }
+
+  // @HttpCode(HttpStatus.OK)
+  // // @Roles(Role.CLIENT)
+  // @Delete('/orders/:id')
+  // deleteOrder(@CurrentUser() user: User, @Param('id') id: string) {
+  //   return this.gatewayService.deleteOrder(user, id);
+  // }
+
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.CLIENT)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('/orders/:id')
+  getClientOrder(@CurrentUser() user: User, @Param('id') id: string) {
+    return this.gatewayService.getClientOrder(user, id);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.CLIENT)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('/orders')
+  getAllClientOrders(@CurrentUser() user: User) {
+    return this.gatewayService.getAllClientOrders(user.id);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.RESTAURATEUR)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Patch('/restaurants/:restaurantId/orders/:orderId')
+  editOrderStatus(
+    @CurrentUser() user: User,
+    @Param('restaurantId') restaurantId: string,
+    @Param('orderId') orderId: string,
+    @Body() { status }: { status: string },
+  ) {
+    console.log('status', status);
+    const statusEnum = this.mapOrderStatusToEnum(status);
+    console.log('statusEnum', statusEnum);
+    return this.gatewayService.editOrderStatus(user, restaurantId, orderId, statusEnum);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.RESTAURATEUR)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('/restaurants/:restaurantId/orders/:orderId')
+  getReceivedOrder(
+    @CurrentUser() user: User,
+    @Param('restaurantId') restaurantId: string,
+    @Param('orderId') orderId: string,
+  ) {
+    return this.gatewayService.getReceivedOrder(user, restaurantId, orderId);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.RESTAURATEUR)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('/restaurants/:restaurantId/orders')
+  getAllReceivedOrders(@CurrentUser() user: User, @Param('restaurantId') restaurantId: string) {
+    return this.gatewayService.getAllReceivedOrders(user, restaurantId);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.ADMIN)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('admin/orders/:orderId')
+  getOrder(@Param('orderId') orderId: string) {
+    return this.gatewayService.getOrder(orderId);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.ADMIN)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('admin/orders')
+  getAllOrders() {
+    return this.gatewayService.getAllOrders();
+  }
+
+  //-------------------------------Delivery--------------------------------
+
+  @HttpCode(HttpStatus.CREATED)
+  // @Roles(Role.CLIENT)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Post('/deliveries')
+  createDelivery(@CurrentUser() user: User, @Body() createDeliveryDto: CreateDeliveryDto) {
+    return this.gatewayService.createDelivery(user, createDeliveryDto);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.LIVREUR)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Patch('/deliveries/:deliveryId')
+  editDeliveryStatus(
+    @CurrentUser() user: User,
+    @Param('deliveryId') deliveryId: string,
+    @Body() editDeliveryStatusDto: EditDeliveryStatusDto,
+    @Query('type') type: string,
+  ) {
+    let statusEnum = null;
+    if (editDeliveryStatusDto.status) {
+      statusEnum = this.mapDeliveryStatusToEnum(editDeliveryStatusDto.status);
+    }
+    return this.gatewayService.editDeliveryStatus(user, deliveryId, statusEnum, type);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.LIVREUR)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('/deliveries/:deliveryId')
+  getDeliveryOrder(@CurrentUser() user: User, @Param('deliveryId') deliveryId: string) {
+    return this.gatewayService.getDeliveryOrder(user, deliveryId);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.LIVREUR)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('/deliveries')
+  getAllDeliveryOrders(@CurrentUser() user: User, @Query('type') type: string) {
+    return this.gatewayService.getAllDeliveryOrders(user, type);
   }
 
   //-------------------------------Restaurant--------------------------------
@@ -149,14 +316,14 @@ export class GatewayController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('/restaurant-picture/:id')
+  @Get('/restaurant/:id/picture')
   getRestaurantPicture(@Param('id') id: string, @Res() res) {
     return this.gatewayService.getRestaurantPicture(id, res);
   }
 
   @HttpCode(HttpStatus.OK)
   @UseGuards(ApiKeyGuard)
-  @Get('/restaurant-infos/:id')
+  @Get('/restaurants/:id/infos')
   getRestaurantInfos(@Param('id') id: string) {
     return this.gatewayService.getRestaurantInfos(id);
   }
@@ -168,7 +335,7 @@ export class GatewayController {
   @UseGuards(ApiKeyGuard, JwtAuthGuard)
   // @Roles(Role.RESTAURATEUR)
   @UseInterceptors(FileInterceptor('item-picture', itemStorage))
-  @Post('/:restaurantId/items')
+  @Post('/restaurants/:restaurantId/items')
   createItem(
     @CurrentUser() user: User,
     @Param('restaurantId') restaurantId: string,
@@ -184,7 +351,7 @@ export class GatewayController {
   @UseGuards(ApiKeyGuard, JwtAuthGuard)
   // @Roles(Role.RESTAURATEUR)
   @UseInterceptors(FileInterceptor('item-picture', itemStorage))
-  @Patch('/:restaurantId/items/:itemId')
+  @Patch('/restaurants/:restaurantId/items/:itemId')
   editItem(
     @CurrentUser() user: User,
     @Param('restaurantId') restaurantId: string,
@@ -199,7 +366,7 @@ export class GatewayController {
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.RESTAURATEUR)
   @UseGuards(ApiKeyGuard, JwtAuthGuard)
-  @Delete('/:restaurantId/items/:itemId')
+  @Delete('/restaurants/:restaurantId/items/:itemId')
   deleteItem(
     @CurrentUser() user: User,
     @Param('restaurantId') restaurantId: string,
@@ -211,20 +378,20 @@ export class GatewayController {
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.RESTAURATEUR)
   @UseGuards(ApiKeyGuard)
-  @Get('/:restaurantId/items/:itemId')
+  @Get('/restaurants/:restaurantId/items/:itemId')
   getItem(@Param('restaurantId') restaurantId: string, @Param('itemId') itemId: string) {
     return this.gatewayService.getItem(restaurantId, itemId);
   }
 
   @HttpCode(HttpStatus.OK)
   @UseGuards(ApiKeyGuard)
-  @Get('/:restaurantId/items')
+  @Get('/restaurants/:restaurantId/items')
   getAllItems(@Param('restaurantId') restaurantId: string) {
     return this.gatewayService.getAllItems(restaurantId);
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('/item-picture/:id')
+  @Get('/item/:id/picture')
   getItemPicture(@Param('id') id: string, @Res() res) {
     return this.gatewayService.getItemPicture(id, res);
   }
@@ -236,7 +403,7 @@ export class GatewayController {
   // @Roles(Role.RESTAURATEUR)
   @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @UseInterceptors(FileInterceptor('menu-picture', menuStorage))
-  @Post('/:restaurantId/menus')
+  @Post('/restaurants/:restaurantId/menus')
   createMenu(
     @CurrentUser() user: User,
     @Param('restaurantId') restaurantId: string,
@@ -252,7 +419,7 @@ export class GatewayController {
   // @Roles(Role.RESTAURATEUR)
   @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @UseInterceptors(FileInterceptor('menu-picture', menuStorage))
-  @Patch('/:restaurantId/menus/:menuId')
+  @Patch('/restaurants/:restaurantId/menus/:menuId')
   editMenu(
     @CurrentUser() user: User,
     @Param('restaurantId') restaurantId: string,
@@ -267,7 +434,7 @@ export class GatewayController {
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.RESTAURATEUR)
   @UseGuards(ApiKeyGuard, JwtAuthGuard)
-  @Delete('/:restaurantId/menus/:menuId')
+  @Delete('/restaurants/:restaurantId/menus/:menuId')
   deleteMenu(
     @CurrentUser() user: User,
     @Param('restaurantId') restaurantId: string,
@@ -279,20 +446,20 @@ export class GatewayController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(ApiKeyGuard)
   // @Roles(Role.RESTAURATEUR)
-  @Get('/:restaurantId/menus/:menuId')
+  @Get('/restaurants/:restaurantId/menus/:menuId')
   getMenu(@Param('restaurantId') restaurantId: string, @Param('menuId') menuId: string) {
     return this.gatewayService.getMenu(restaurantId, menuId);
   }
 
   @HttpCode(HttpStatus.OK)
   @UseGuards(ApiKeyGuard)
-  @Get('/:restaurantId/menus')
+  @Get('/restaurants/:restaurantId/menus')
   getAllMenus(@Param('restaurantId') restaurantId: string) {
     return this.gatewayService.getAllMenus(restaurantId);
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('/menu-picture/:id')
+  @Get('/menu/:id/picture')
   getMenuPicture(@Param('id') id: string, @Res() res) {
     return this.gatewayService.getMenuPicture(id, res);
   }

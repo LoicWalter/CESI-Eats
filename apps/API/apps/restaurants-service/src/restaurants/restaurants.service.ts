@@ -24,10 +24,10 @@ export class RestaurantsService {
   }
 
   async editRestaurant(data: EditRestaurantMessage) {
-    const restaurant = await this.prisma.restaurant.findFirst({
+    const restaurant = await this.prisma.restaurant.findUnique({
       where: { id: data.id },
     });
-    const owner = await this.prisma.restaurant.findFirst({
+    const owner = await this.prisma.restaurant.findUnique({
       where: { id: data.id, owner: data.user.id },
     });
     if (!restaurant) {

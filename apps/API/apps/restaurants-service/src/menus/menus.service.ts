@@ -14,18 +14,23 @@ export class MenusService {
   constructor(private readonly prisma: PrismaRestaurantsService) {}
 
   async createMenu(data: CreateMenuMessage) {
-    const restaurant = await this.prisma.restaurant.findFirst({
+    const restaurant = await this.prisma.restaurant.findUnique({
       where: { id: data.restaurantId },
+      include: { items: true },
     });
-    const owner = await this.prisma.restaurant.findFirst({
+    const owner = await this.prisma.restaurant.findUnique({
       where: { id: data.restaurantId, owner: data.user.id },
     });
+    const allItemsExist = data.dto.itemIDs.every(
+      (itemID) => restaurant.items.find((item: { id: string }) => item.id === itemID) !== undefined,
+    );
     if (!restaurant) {
       throw new RpcException(ErrorsMessages.RESTAURANT_NOT_FOUND);
     }
     if (!owner) {
       throw new RpcException(ErrorsMessages.USER_IS_NOT_OWNER);
     }
+    if (!allItemsExist) throw new RpcException(ErrorsMessages.ONE_OR_MORE_ITEMS_NOT_FOUND);
     console.log('Creating menu :', data);
     const { itemIDs, ...rest } = data.dto;
     return this.prisma.menu.create({
@@ -44,13 +49,18 @@ export class MenusService {
     });
     const restaurant = await this.prisma.restaurant.findUnique({
       where: { id: data.restaurantId, owner: data.user.id },
+      include: { items: true },
     });
+    const allItemsExist = data.dto.itemIDs.every(
+      (itemID) => restaurant.items.find((item: { id: string }) => item.id === itemID) !== undefined,
+    );
     if (!menu) {
       throw new RpcException(ErrorsMessages.MENU_NOT_FOUND);
     }
     if (!restaurant) {
       throw new RpcException(ErrorsMessages.USER_IS_NOT_OWNER);
     }
+    if (!allItemsExist) throw new RpcException(ErrorsMessages.ONE_OR_MORE_ITEMS_NOT_FOUND);
     console.log('Updating menu :', data);
     const { itemIDs, ...rest } = data.dto;
     return this.prisma.menu.update({
