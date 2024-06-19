@@ -48,7 +48,7 @@ export default function page({ action }: CreateRestaurantPageProps): JSX.Element
   });
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center gap-4">
+    <div className="w-full flex flex-col justify-center items-center gap-4">
       <Typography
         variant="h4"
         className="font-bold"
@@ -144,6 +144,7 @@ export default function page({ action }: CreateRestaurantPageProps): JSX.Element
             <StyledTextField
               label="Catégorie"
               name="category"
+              fullWidth
               select
               value={values.category}
               onChange={handleChange}
