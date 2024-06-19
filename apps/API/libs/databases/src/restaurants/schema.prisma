@@ -27,6 +27,8 @@ model item {
   id           String     @id @default(auto()) @map("_id") @db.ObjectId
   name         String
   description  String?
+  regime       String?
+  category     String?
   price        Float?
   itemPicture  String?
   restaurant   restaurant @relation(fields: [restaurantId], references: [id])

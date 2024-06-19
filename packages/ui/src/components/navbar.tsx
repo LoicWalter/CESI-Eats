@@ -51,7 +51,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
                 defaultReactNode={<PersonOutline />}
                 width={32}
                 height={32}
-                forceDefault={user === undefined}
+                forceDefault={!user?.profilePicture}
               />
             }
             href={user === undefined ? '/auth/login' : '/profil'}
@@ -100,7 +100,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
                   defaultReactNode={<AccountCircleOutlined />}
                   width={32}
                   height={32}
-                  forceDefault={user === undefined}
+                  forceDefault={!user?.profilePicture}
                 />
               }
               text={user?.name ?? 'Se connecter'}

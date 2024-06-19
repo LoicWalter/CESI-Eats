@@ -99,37 +99,6 @@ export async function getUserById(id: string): Promise<PrismaUsers.User | undefi
   return parsedRes;
 }
 
-export async function setUserCookie(user: Partial<PrismaUsers.User>) {
-  cookies().set({
-    name: Cookies.User,
-    value: JSON.stringify(user),
-    secure: true,
-    httpOnly: false,
-    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
-  });
-}
-
-export async function getUserInfosFromCookie(): Promise<
-  | Partial<
-      PrismaUsers.Prisma.UserGetPayload<{
-        include: { filleuls: true };
-      }>
-    >
-  | undefined
-> {
-  const userCookie = cookies().get(Cookies.User);
-  const parsedCookie = JSON.parse(userCookie?.value || '{}');
-  if (!parsedCookie.id) {
-    return undefined;
-  }
-
-  const refreshedUser = await getUserById(parsedCookie.id);
-  if (refreshedUser) {
-    setUserCookie(refreshedUser);
-  }
-  return refreshedUser;
-}
-
 export async function redirectWithGetParams(path: string, params: Record<string, string>) {
   const url = new URL(await getUrl(path));
   Object.entries(params).forEach(([key, value]) => {
@@ -139,6 +108,5 @@ export async function redirectWithGetParams(path: string, params: Record<string,
 }
 
 export async function redirectTo(path: string) {
-  console.log('redirecting to', path);
   redirect(path);
 }

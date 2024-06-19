@@ -12,7 +12,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
     <Link href={`/restaurant/${restaurant.id}`}>
       <Card className="ui-w-5/6 ui-mx-4 ui-inline-block">
         <ImageWithDefaultOnError
-          src="https://via.placeholder.com/300"
+          src={`${process.env.NEXT_PUBLIC_API_URL}/restaurant-picture/${restaurant.restaurantPicture}`}
           alt="restaurant"
           width="300"
           height="300"

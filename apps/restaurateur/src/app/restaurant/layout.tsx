@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function RestaurantLayout({ children }: { children: React.ReactNode }): JSX.Element {
   return (
-    <div className="h-screen overflow-hidden w-full flex flex-col justify-center items-center">
+    <div className="flex flex-col items-center justify-center w-full h-screen overflow-hidden">
       <Image
         src={BgImage}
         alt="Repas de famille"
@@ -17,7 +17,7 @@ export default function RestaurantLayout({ children }: { children: React.ReactNo
         objectFit="cover"
         objectPosition="center"
       />
-      <div className="bg-white px-12 py-6 sm:rounded-xl lg:w-2/5 md:w-3/5 z-20 sm:w-4/5 w-full overflow-hidden">
+      <div className="z-20 w-full px-12 py-6 overflow-y-auto bg-white sm:rounded-xl lg:w-2/5 md:w-3/5 sm:w-4/5">
         {children}
       </div>
     </div>

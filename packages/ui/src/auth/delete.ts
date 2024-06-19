@@ -10,12 +10,10 @@ export async function deleteUser() {
   if (!res.ok) {
     return { error: getErrorMessage(parsedRes) };
   }
-  console.log('User deleted:', parsedRes);
   redirect(defaultWebRoutes.LOGOUT);
 }
 
 export async function deleteUserAsAdmin(id: string) {
-  console.log('deleteUserAsAdmin', id);
   const { res, parsedRes } = await _delete<PrismaUsers.User>(`/auth/users/${id}`, {});
   if (!res.ok) {
     return { error: getErrorMessage(parsedRes) };

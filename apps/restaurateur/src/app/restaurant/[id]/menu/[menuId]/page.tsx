@@ -1,79 +1,72 @@
 'use client';
 
 import React from 'react';
-import {
-  Typography,
-  MenuItem,
-  Chip,
-  SelectChangeEvent,
-  Checkbox,
-  ListItemText,
-} from '@mui/material';
+import { Typography, MenuItem, Checkbox, ListItemText, Alert } from '@mui/material';
 import { useFormState } from 'react-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { ClickableImageInput, StyledButton, StyledOutlinedButton, StyledTextField } from '@repo/ui';
+import {
+  ClickableImageInput,
+  ImageWithDefaultOnError,
+  StyledButton,
+  StyledOutlinedButton,
+  StyledTextField,
+  useRestaurant,
+} from '@repo/ui';
 import { InsertPhotoOutlined } from '@mui/icons-material';
 import Link from 'next/link';
+import { editMenu } from '@repo/ui/actions/edit-menu.ts';
 
 interface ArticleFormValues {
   name: string;
   description: string;
-  articles: string[];
+  items: string[];
   price: number;
-  picture: File | null;
+  'menu-picture': File | null;
 }
 
-interface CreateArticlePageProps {
-  action: (
-    _: any,
-    data: FormData,
-  ) => Promise<{
-    error: string;
-  }>;
-}
-
-const articles = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder',
-];
-
-export default function page({ action }: CreateArticlePageProps): JSX.Element {
-  const [state, formAction] = useFormState(action, { error: '' });
+export default function EditMenu({
+  params,
+}: {
+  params: { id: string; menuId: string };
+}): JSX.Element {
+  const [state, formAction] = useFormState(editMenu, { error: '' });
+  const restaurant = useRestaurant();
+  const { id, menuId } = params;
+  const menu = restaurant?.menus?.find((m) => m.id === menuId);
 
   const schema = Yup.object().shape({
     name: Yup.string().required('Le nom est requis.'),
     description: Yup.string().required('La description est requise'),
-    articles: Yup.array()
+    items: Yup.array()
       .min(1, 'Au moins un article est requis')
       .required('Les articles sont requis.'),
     price: Yup.string().required('Le prix est requise.'),
   });
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center gap-4">
+    <div className="flex flex-col items-center justify-center w-full h-full gap-4">
       <Typography
         variant="h4"
         className="font-bold"
       >
         Ajouter un menu
       </Typography>
-      {state?.error ? <p>{state.error}</p> : null}
+      {state.error && (
+        <Alert
+          severity="error"
+          className="w-full"
+        >
+          {state.error}
+        </Alert>
+      )}
       <Formik
         initialValues={{
-          name: '',
-          description: '',
-          articles: [],
-          price: 0,
-          picture: null,
+          name: menu?.name || '',
+          description: menu?.description || '',
+          items: menu?.items?.map((item) => item.id) || [],
+          price: menu?.price || 0,
+          'menu-picture': null,
         }}
         validationSchema={schema}
         onSubmit={(values: ArticleFormValues) => {
@@ -81,20 +74,41 @@ export default function page({ action }: CreateArticlePageProps): JSX.Element {
           const formData = new FormData();
 
           Object.entries(values).forEach(([key, value]) => {
+            if (key === 'items') {
+              value.forEach((item: string) => {
+                formData.append('itemIDs', item);
+              });
+              return;
+            }
             formData.append(key, value);
           });
-          //formAction(formData);
+          formAction({
+            restaurantId: id,
+            menuId,
+            formData,
+          });
         }}
+        enableReinitialize
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue }) => (
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col gap-4 w-full justify-center items-center"
+            className="flex flex-col items-center justify-center w-full gap-4"
           >
             <ClickableImageInput
-              name="articlePicture"
-              handleFile={(file) => setFieldValue('articlePicture', file)}
-              defaultValue={<InsertPhotoOutlined />}
+              name="menu-picture"
+              handleFile={(file) => setFieldValue('menu-picture', file)}
+              defaultValue={
+                <ImageWithDefaultOnError
+                  src={`${process.env.NEXT_PUBLIC_API_URL}/menu-picture/${menu?.menuPicture}`}
+                  alt="menu-picture"
+                  className="w-32 h-32 rounded-full"
+                  defaultReactNode={<InsertPhotoOutlined fontSize="large" />}
+                  forceDefault={!menu?.menuPicture}
+                  width={128}
+                  height={128}
+                />
+              }
             />
             <StyledTextField
               fullWidth
@@ -128,30 +142,40 @@ export default function page({ action }: CreateArticlePageProps): JSX.Element {
               fullWidth
               variant="outlined"
               label="Articles"
-              name="articles"
+              name="items"
               onChange={handleChange}
               select
               SelectProps={{
                 multiple: true,
-                value: values.articles,
+                value: values.items,
                 onBlur: handleBlur,
-                renderValue: (selected) => (selected as string[]).join(', '),
+                renderValue: (selected) =>
+                  (selected as string[])
+                    .map((value) => {
+                      const item = restaurant?.items?.find((i) => i.id === value);
+                      return item?.name;
+                    })
+                    .join(', '),
               }}
-              error={Boolean(errors.articles && touched.articles)}
-              helperText={errors.articles && touched.articles ? errors.articles : ''}
+              error={Boolean(errors.items && touched.items)}
+              helperText={errors.items && touched.items ? errors.items : ''}
               InputProps={{
-                className: `${errors.articles && touched.articles ? 'bg-red-100' : ''}`,
+                className: `${errors.items && touched.items ? 'bg-red-100' : ''}`,
               }}
             >
-              {articles.map((name) => (
-                <MenuItem
-                  key={name}
-                  value={name}
-                >
-                  <Checkbox checked={values.articles.indexOf(name) > -1} />
-                  <ListItemText primary={name} />
-                </MenuItem>
-              ))}
+              {restaurant?.items ? (
+                restaurant.items.map((item) => (
+                  <MenuItem
+                    key={item.id}
+                    value={item.id}
+                  >
+                    <Checkbox checked={values.items.indexOf(item.id) > -1} />
+                    <ListItemText primary={item.name} />
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem disabled>Aucun article</MenuItem>
+              )}
             </StyledTextField>
 
             <StyledTextField
@@ -170,7 +194,7 @@ export default function page({ action }: CreateArticlePageProps): JSX.Element {
                 className: `${errors.price && touched.price ? 'bg-red-100' : ''}`,
               }}
             />
-            <div className="flex flex-row w-full justify-between gap-4 items-center mt-6">
+            <div className="flex flex-row items-center justify-between w-full gap-4 mt-6">
               <Link
                 href="/restaurant/management"
                 className="w-1/2"
@@ -185,7 +209,7 @@ export default function page({ action }: CreateArticlePageProps): JSX.Element {
               </Link>
               <StyledButton
                 type="submit"
-                className="w-1/2 bg-primary text-white rounded-xl"
+                className="w-1/2 text-white bg-primary rounded-xl"
                 variant="contained"
               >
                 Enregistrer

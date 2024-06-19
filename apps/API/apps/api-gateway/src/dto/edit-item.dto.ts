@@ -30,4 +30,22 @@ export class EditItemDto {
   @IsNumber()
   @IsOptional()
   price: number;
+
+  @ApiProperty({
+    description: 'Régime',
+    example: 'Vegan',
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  regime: string;
+
+  @ApiProperty({
+    description: 'Category',
+    example: 'Desserts',
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  category: string;
 }

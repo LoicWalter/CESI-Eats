@@ -98,8 +98,12 @@ export default function OrderDetails({ params }: { params: { id: string } }) {
   const [state, formAction] = useFormState(submitOrder, { state: '' });
   const [fullRestaurant, setFullRestaurant] = React.useState<RestaurantsContextType>({});
   const [openConfirmationModal, setOpenConfirmationModal] = React.useState(false);
-  const { cartFromRestaurant, getTotalPrice } = useCart(id);
+  const { cartFromRestaurant, getTotalPrice, deleteRestaurantCart } = useCart(id);
   const user = useUser();
+
+  useEffect(() => {
+    if (state.state === 'success') deleteRestaurantCart(id);
+  }, [state.state]);
 
   useEffect(() => {
     const fetchRestaurant = async () => {
@@ -184,7 +188,7 @@ export default function OrderDetails({ params }: { params: { id: string } }) {
                   </Typography>
                   <div className="flex flex-col w-full mb-4 md:flex-row">
                     <ImageWithDefaultOnError
-                      src={`${process.env.NEXT_PUBLIC_API_URL}/restaurants-picture/${fullRestaurant.restaurantPicture}`}
+                      src={`${process.env.NEXT_PUBLIC_API_URL}/restaurant-picture/${fullRestaurant.restaurantPicture}`}
                       alt={fullRestaurant.name || ''}
                       width={300}
                       height={300}
@@ -398,11 +402,11 @@ export default function OrderDetails({ params }: { params: { id: string } }) {
         title="Confirmation de la commande"
       >
         <div className="relative p-8 m-8 rounded-lg bg-gray-5">
-          <div className="flex flex-col justify-center items-center gap-12">
+          <div className="flex flex-col items-center justify-center gap-12">
             {state.state === 'success' ? (
-              <CheckCircle className="text-green-500 h-48 w-48" />
+              <CheckCircle className="w-48 h-48 text-green-500" />
             ) : state.state === 'error' ? (
-              <Cancel className="text-red-500 h-48 w-48" />
+              <Cancel className="w-48 h-48 text-red-500" />
             ) : (
               <CircularProgress />
             )}
