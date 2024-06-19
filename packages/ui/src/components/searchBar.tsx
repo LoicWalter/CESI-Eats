@@ -6,10 +6,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { debounce } from 'lodash';
 import { useUser } from '../utils';
 
-export function SearchBar(): JSX.Element {
+interface SearchBarProps {
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export function SearchBar({ setSearch }: SearchBarProps): JSX.Element {
   const user = useUser();
 
-  const [searchValue, setSearchValue] = useState<string>('');
   const [address, setAddress] = useState<string>(user?.address ?? '');
 
   useEffect(() => {
@@ -20,17 +23,10 @@ export function SearchBar(): JSX.Element {
   }, [address]);
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setSearchValue(event.target.value);
+    setSearch(event.target.value);
   };
 
   const searchDelayed = useMemo(() => debounce(onInputChange, 500), [onInputChange]);
-
-  useEffect(() => {
-    if (!searchValue) {
-      return;
-    }
-    window.history.replaceState({}, '', `?search=${searchValue}`);
-  }, [searchValue]);
 
   useEffect(() => {
     return () => {

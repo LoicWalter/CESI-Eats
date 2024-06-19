@@ -176,7 +176,7 @@ export default function page(): JSX.Element {
             <StyledTextField
               label="Catégorie"
               name="category"
-              className="w-full"
+              fullWidth
               select
               value={values.category}
               onChange={handleChange}
