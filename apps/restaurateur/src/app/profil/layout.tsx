@@ -17,7 +17,7 @@ export default function ProfilLayout({ children }: { children: React.ReactNode }
         objectFit="cover"
         objectPosition="center"
       />
-      <div className="bg-white px-12 py-6 md:rounded-xl xl:w-1/2 lg:w-2/3 md:w-5/6 z-20 w-full overflow-hidden">
+      <div className="bg-white px-12 py-6 sm:rounded-xl xl:w-4/6 lg:w-5/6 md:w-5/6 z-20 sm:full w-full overflow-auto mb-12 md:mb-0">
         {children}
       </div>
     </div>

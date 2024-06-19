@@ -6,6 +6,7 @@ import styled from '@emotion/styled';
 export const StyledButton = styled(Button)({
   '&.MuiButton-root': {
     backgroundColor: 'var(--color-primary)',
+    color: 'white',
     '&:hover': {
       backgroundColor: 'var(--color-secondary)',
     },

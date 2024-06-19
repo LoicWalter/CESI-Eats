@@ -20,3 +20,8 @@ export * from './searchWrapper';
 export * from './signupPage';
 export * from './styledButton';
 export * from './styledTextField';
+export * from './styledButton';
+export * from './clickableImageInput';
+export * from './phoneInput';
+export * from './payement';
+export * from './iconWithTooltip';

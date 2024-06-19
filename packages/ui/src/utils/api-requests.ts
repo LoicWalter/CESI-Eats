@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import { Cookies } from '../constants';
 import { PrismaUsers } from '@api/cesieats';
 import { redirect } from 'next/navigation';
+import { getErrorMessage } from './errors';
 
 type ResponseWith<T> = { res: Response; parsedRes: T };
 
@@ -17,14 +18,10 @@ async function getUrl(path: string): Promise<string> {
 }
 
 async function request<T>(path: string, options: RequestInit): Promise<ResponseWith<T>> {
-  try {
-    const res = await fetch(await getUrl(path), options);
-    const parsedRes = await res.json();
-    return { res, parsedRes };
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+  const url = await getUrl(path);
+  const response = await fetch(url, options);
+  const parsedRes = await response.json();
+  return { res: response, parsedRes };
 }
 
 async function getHeaders(withFile: boolean = false): Promise<Headers> {
@@ -42,7 +39,7 @@ export async function get<T>(
   path: string,
   options: Omit<RequestInit, 'headers'>,
 ): Promise<ResponseWith<T>> {
-  return request(path, {
+  return await request(path, {
     headers: await getHeaders(),
     ...options,
   });
@@ -83,46 +80,23 @@ export async function _delete<T>(
   });
 }
 
+export async function getPictureUrl<T>(path: string): Promise<ResponseWith<T>> {
+  return request(path, {
+    method: 'GET',
+    headers: await getHeaders(),
+  });
+}
+
 export async function getUserById(id: string): Promise<PrismaUsers.User | undefined> {
   const { res, parsedRes } = await get<
     PrismaUsers.Prisma.UserGetPayload<{
-      include: { filleuls: true };
+      include: { filleuls: true; parrain: true };
     }>
   >(`/auth/users/${id}`, {});
   if (!res.ok) {
     return undefined;
   }
   return parsedRes;
-}
-
-export async function setUserCookie(user: Partial<PrismaUsers.User>) {
-  cookies().set({
-    name: Cookies.User,
-    value: JSON.stringify(user),
-    secure: true,
-    httpOnly: false,
-  });
-}
-
-export async function getUserInfosFromCookie(): Promise<
-  | Partial<
-      PrismaUsers.Prisma.UserGetPayload<{
-        include: { filleuls: true };
-      }>
-    >
-  | undefined
-> {
-  const userCookie = cookies().get(Cookies.User);
-  const parsedCookie = JSON.parse(userCookie?.value || '{}');
-  if (!parsedCookie.id) {
-    return undefined;
-  }
-
-  const refreshedUser = await getUserById(parsedCookie.id);
-  if (refreshedUser) {
-    setUserCookie(refreshedUser);
-  }
-  return refreshedUser;
 }
 
 export async function redirectWithGetParams(path: string, params: Record<string, string>) {

@@ -66,11 +66,17 @@ export class ItemsService {
     const restaurant = await this.prisma.restaurant.findUnique({
       where: { id: data.restaurantId, owner: data.user.id },
     });
+    const isItemInMenu = await this.prisma.menu.findFirst({
+      where: { items: { some: { id: data.itemId } } },
+    });
     if (!item) {
       throw new RpcException(ErrorsMessages.ITEM_NOT_FOUND);
     }
     if (!restaurant) {
       throw new RpcException(ErrorsMessages.USER_IS_NOT_OWNER);
+    }
+    if (isItemInMenu) {
+      throw new RpcException(ErrorsMessages.ITEM_IN_MENU);
     }
     console.log('Deleting item :', data.itemId);
     return this.prisma.item.delete({ where: { id: data.itemId } });

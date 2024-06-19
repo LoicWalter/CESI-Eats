@@ -1,13 +1,11 @@
 'use client';
 
 import { AccountCircleOutlined, Logout, PersonOutline } from '@mui/icons-material';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Divider } from '@mui/material';
 import { useOnHover } from '../hooks/useOnHover';
 import Link from 'next/link';
-import { getUserInfosFromCookie, ImageWithDefaultOnError } from '../utils';
-import { PrismaUsers } from '@api/cesieats';
-import { usePathname } from 'next/navigation';
+import { ImageWithDefaultOnError, useUser } from '../utils';
 
 interface Item {
   icon: JSX.Element;
@@ -23,21 +21,7 @@ interface NavbarProps {
 
 export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
   const [hovered, bind] = useOnHover();
-  const [user, setUser] = useState<Partial<PrismaUsers.User>>();
-
-  const pathname = usePathname();
-
-  useEffect(() => {
-    const getUser = async () => {
-      const user = await getUserInfosFromCookie();
-      if (!user?.id) {
-        setUser(undefined);
-        return;
-      }
-      setUser(user);
-    };
-    getUser();
-  }, [pathname]);
+  const user = useUser();
 
   return (
     <>
@@ -61,21 +45,29 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
             icon={
               <ImageWithDefaultOnError
                 alt="Profile picture"
-                className="ui-w-8 ui-h-8 ui-rounded-full ui-overflow-hidden ui-object-cover ui-object-center"
+                className="ui-w-6 ui-h-6 ui-rounded-full ui-overflow-hidden"
                 src={`${process.env.NEXT_PUBLIC_API_URL}/auth/profilePicture/${user?.profilePicture}`}
-                defaultReactNode={<PersonOutline />}
+                defaultReactNode={<PersonOutline className="ui-w-full ui-h-full" />}
+                // defaultReactNode={
+                //   <Image
+                //     src={test}
+                //     alt="test"
+                //     className="ui-w-full ui-h-full"
+                //   ></Image>
+                // }
+                forceDefault={!user?.profilePicture}
                 width={32}
                 height={32}
-                forceDefault={user === undefined}
+                objectFit="contain"
               />
             }
-            href={user === undefined ? '/auth/login' : '/profil'}
+            href={!user.id ? '/auth/login' : '/profil'}
           />
         </div>
       </div>
       {/* Computer */}
       <div
-        className="ui-hidden ui-sticky ui-top-0 ui-h-screen ui-border-r-gray-4 ui-border-r-[0.0625rem] ui-bg-gray-5 ui-text-gray-3 md:ui-flex ui-flex-col ui-items-center hover:ui-w-40 ui-transition-all ui-duration-300 ui-w-16 ui-z-20 ui-select-none ui-shadow-[0.125rem_0_0.25rem_0_rgba(204,209,212,0.7)]"
+        className="ui-hidden ui-sticky ui-top-0 ui-w-16 ui-h-screen ui-border-r-gray-4 ui-border-r-[0.0625rem] ui-bg-gray-5 ui-text-gray-3 md:ui-flex ui-flex-col ui-items-center hover:ui-w-40 ui-transition-all ui-duration-300 ui-z-20 ui-select-none ui-shadow-[0.125rem_0_0.25rem_0_rgba(204,209,212,0.7)]"
         {...bind}
       >
         <div className="ui-my-3">{logo}</div>
@@ -97,29 +89,37 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
             ))}
           </div>
           <div>
-            {user?.name && (
+            {user?.id && (
               <NavItem
                 hovered={hovered}
                 icon={<Logout />}
-                text={'Se déconnecter'}
+                text={'Deconnexion'}
                 href={'/auth/logout'}
               />
             )}
+
             <NavItem
               hovered={hovered}
               icon={
                 <ImageWithDefaultOnError
                   alt="Profile picture"
-                  className="ui-w-8 ui-h-8 ui-rounded-full ui-overflow-hidden ui-object-cover ui-object-center"
+                  className="ui-flex ui-justify-center ui-w-8 ui-h-8 ui-rounded-full ui-overflow-hidden"
                   src={`${process.env.NEXT_PUBLIC_API_URL}/auth/profilePicture/${user?.profilePicture}`}
-                  defaultReactNode={<AccountCircleOutlined />}
+                  defaultReactNode={<AccountCircleOutlined className="ui-w-full ui-h-full" />}
                   width={32}
                   height={32}
-                  forceDefault={user === undefined}
+                  // defaultReactNode={
+                  //   <Image
+                  //     src={test}
+                  //     alt="test"
+                  //     className="ui-w-full ui-h-full"
+                  //   ></Image>
+                  // }
+                  forceDefault={!user?.profilePicture}
                 />
               }
               text={user?.name ?? 'Se connecter'}
-              href={user === undefined ? '/auth/login' : '/profil'}
+              href={!user.id ? '/auth/login' : '/profil'}
               noSidePadding
             />
           </div>
@@ -147,12 +147,12 @@ function NavItem({
   return (
     <Link
       href={href}
-      className={`ui-flex ui-w-full ui-items-center ui-justify-center md:ui-justify-start ui-py-5 ${noSidePadding ? 'md:ui-pl-[0.875rem]' : 'md:ui-pl-5'} hover:ui-bg-primary hover:ui-text-gray-5 active:ui-bg-secondary active:ui-text-gray-5 active:ui-shadow-[inset_0.125rem_0.125rem_0.25rem_0_rgba(0,0,0,0.4)]`}
+      className={`ui-flex ui-w-full ui-items-center ui-justify-center ui-py-5 md:ui-justify-start ${noSidePadding ? 'md:ui-pl-4' : 'md:ui-pl-5'} hover:ui-bg-primary hover:ui-text-gray-5 active:ui-bg-secondary active:ui-text-gray-5 active:ui-shadow-[inset_0.125rem_0.125rem_0.25rem_0_rgba(0,0,0,0.4)]`}
     >
-      <div>{icon}</div>
+      <div className="ui-w-8 ui-h-8">{icon}</div>
       {text !== '' && (
         <div
-          className={`ui-text-sm ui-transition-all ui-whitespace-nowrap ${hovered ? 'ui-pl-4 ui-w-full ui-opacity-100 ui-whitespace-nowrap ui-overflow-hidden' : 'ui-w-0 ui-opacity-0 ui-pointer-events-none'}`}
+          className={`ui-text-sm ui-transition-all ui-whitespace-nowrap ${hovered ? 'ui-pl-4 ui-opacity-100 ui-whitespace-nowrap ui-overflow-hidden' : 'ui-w-0 ui-opacity-0 ui-pointer-events-none'}`}
         >
           {text}
         </div>

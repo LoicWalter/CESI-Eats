@@ -42,17 +42,18 @@ export const profileStorage = {
 };
 
 @Controller('/auth')
-@UseGuards(ApiKeyGuard)
 @ApiTags('AuthGateway')
 export class AuthGatewayController {
   constructor(private readonly authGatewayService: AuthGatewayService) {}
 
+  @UseGuards(ApiKeyGuard)
   @Get('/test')
   test() {
     return 'Hello from Gateway';
   }
 
   @ApiBody({ type: CreateClientDto })
+  @UseGuards(ApiKeyGuard)
   @UseInterceptors(FileInterceptor('profilePicture', profileStorage))
   @Post('/signup/client')
   signUpClient(
@@ -64,6 +65,7 @@ export class AuthGatewayController {
   }
 
   @ApiBody({ type: CreateLivreurDto })
+  @UseGuards(ApiKeyGuard)
   @UseInterceptors(FileInterceptor('profilePicture', profileStorage))
   @Post('/signup/livreur')
   signUpLivreur(
@@ -75,6 +77,7 @@ export class AuthGatewayController {
   }
 
   @ApiBody({ type: CreateRestaurateurDto })
+  @UseGuards(ApiKeyGuard)
   @UseInterceptors(FileInterceptor('profilePicture', profileStorage))
   @Post('/signup/restaurateur')
   signUpRestaurateur(
@@ -85,7 +88,7 @@ export class AuthGatewayController {
     return this.authGatewayService.signUpUser(dto, Role.RESTAURATEUR, file);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @UseInterceptors(FileInterceptor('profilePicture', profileStorage))
   @Patch('/users')
   updateUser(
@@ -97,7 +100,7 @@ export class AuthGatewayController {
     return this.authGatewayService.updateUser(user.id, dto, file);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard, ApiKeyGuard)
   @UseInterceptors(FileInterceptor('profilePicture', profileStorage))
   @Patch('/users/:id')
   @Roles(Role.ADMIN)
@@ -111,31 +114,37 @@ export class AuthGatewayController {
     return this.authGatewayService.updateUser(id, dto, file);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @Get('/users/:id')
   getUser(@Param('id') id: string) {
     return this.authGatewayService.getUser(id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('/me')
+  getMe(@CurrentUser() user: User) {
+    console.log('getMe', user);
+    return this.authGatewayService.getUser(user.id);
+  }
+
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @Get('/users')
   getUsers() {
     return this.authGatewayService.getUsers();
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/profilePicture/:id')
   getProfilePicture(@Res() res, @Param('id') id: string) {
     return this.authGatewayService.getProfilePicture(id, res);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @Delete('/users')
   deleteUser(@CurrentUser() user: User) {
     return this.authGatewayService.deleteUser(user.id);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   @Delete('/users/:id')
   deleteUserByAdmin(@Param('id') id: string) {
