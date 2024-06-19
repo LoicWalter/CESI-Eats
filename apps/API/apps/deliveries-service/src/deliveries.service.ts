@@ -33,6 +33,7 @@ export class DeliveriesService {
     if (!order) {
       throw new RpcException(ErrorsMessages.ORDER_NOT_FOUND);
     }
+
     if (alreadyExist) {
       throw new RpcException(ErrorsMessages.DELIVERY_ALREADY_EXIST);
     }
