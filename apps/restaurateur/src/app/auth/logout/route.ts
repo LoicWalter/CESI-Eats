@@ -1,4 +1,5 @@
-import { defaultWebRoutes } from '@repo/ui';
+import { defaultWebRoutes, Tags } from '@repo/ui';
+import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -8,5 +9,16 @@ export async function GET() {
     .forEach((cookie) => {
       cookies().delete(cookie.name);
     });
+  revalidateTag(Tags.ME);
+  redirect(defaultWebRoutes.RESTAURATEUR);
+}
+
+export async function POST() {
+  cookies()
+    .getAll()
+    .forEach((cookie) => {
+      cookies().delete(cookie.name);
+    });
+  revalidateTag(Tags.ME);
   redirect(defaultWebRoutes.RESTAURATEUR);
 }

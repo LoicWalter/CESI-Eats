@@ -1,12 +1,11 @@
 'use client';
 
-import { AccountCircleOutlined, PersonOutline } from '@mui/icons-material';
-import React, { useEffect, useState } from 'react';
+import { AccountCircleOutlined, Logout, PersonOutline } from '@mui/icons-material';
+import React from 'react';
 import { Divider } from '@mui/material';
 import { useOnHover } from '../hooks/useOnHover';
 import Link from 'next/link';
-import { getUserInfosFromCookie, ImageWithDefaultOnError } from '../utils';
-import { PrismaUsers } from '@api/cesieats';
+import { ImageWithDefaultOnError, useUser } from '../utils';
 import { usePathname } from 'next/navigation';
 
 interface Item {
@@ -23,34 +22,24 @@ interface NavbarProps {
 
 export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
   const [hovered, bind] = useOnHover();
-  const [user, setUser] = useState<Partial<PrismaUsers.User>>();
-
+  const user = useUser();
   const pathname = usePathname();
-
-  useEffect(() => {
-    const getUser = async () => {
-      const user = await getUserInfosFromCookie();
-      if (!user?.id) {
-        setUser(undefined);
-        return;
-      }
-      setUser(user);
-    };
-    getUser();
-  }, [pathname]);
 
   return (
     <>
-      <div className="ui-flex md:ui-hidden ui-fixed ui-bottom-0 ui-w-full ui-h-12 ui-z-10 ui-border-t-gray-4 ui-border-[1px] ui-bg-gray-5 ui-text-gray-3">
+      {/* Phone */}
+      <div className="ui-flex md:ui-hidden ui-fixed ui-bottom-0 ui-w-full ui-h-12 ui-z-10 ui-border-t-gray-4 ui-border-t-[0.0625rem] ui-bg-gray-5 ui-text-gray-3 ui-shadow-[0_-0.125rem_0.25rem_0_rgba(204,209,212,0.4)]">
         <div className="ui-flex ui-flex-row ui-justify-evenly ui-w-full ui-h-full">
           {iconArray.map(({ icon, href, id }) => (
             <React.Fragment key={id}>
               <NavItem
                 icon={icon}
                 href={href}
+                isActive={href === '/' ? pathname === href : pathname.startsWith(href)}
               />
               <Divider
-                className="ui-border-gray-4 ui-my-2"
+                className="ui-border-gray-4 ui-my-2 ui-rounded"
+                sx={{ height: '70%' }}
                 orientation="vertical"
               />
             </React.Fragment>
@@ -59,25 +48,36 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
             icon={
               <ImageWithDefaultOnError
                 alt="Profile picture"
-                className="ui-w-8 ui-h-8 ui-rounded-full ui-aspect-square ui-object-cover ui-object-center"
-                src={`http://localhost:7000/auth/profilePicture/${user?.profilePicture}`}
-                defaultReactNode={<PersonOutline />}
+                className="ui-w-6 ui-h-6 ui-rounded-full ui-overflow-hidden"
+                src={`${process.env.NEXT_PUBLIC_API_URL}/auth/profilePicture/${user?.profilePicture}`}
+                defaultReactNode={<PersonOutline className="ui-w-full ui-h-full" />}
+                // defaultReactNode={
+                //   <Image
+                //     src={test}
+                //     alt="test"
+                //     className="ui-w-full ui-h-full"
+                //   ></Image>
+                // }
+                forceDefault={!user?.profilePicture}
                 width={32}
                 height={32}
-                forceDefault={user === undefined}
+                objectFit="contain"
               />
             }
-            href={user === undefined ? '/auth/login' : '/profil'}
+            href={!user.id ? '/auth/login' : '/profil'}
+            isActive={pathname.startsWith('/profil')}
           />
         </div>
       </div>
+      {/* Computer */}
       <div
-        className="ui-hidden ui-sticky ui-top-0 ui-h-screen ui-border-r-gray-4 ui-border-[1px] ui-bg-gray-5 ui-text-gray-3 md:ui-flex ui-flex-col ui-items-center hover:ui-w-40 ui-transition-all ui-duration-300 ui-w-16 ui-z-20"
+        className="ui-hidden ui-sticky ui-top-0 ui-w-16 ui-h-screen ui-border-r-gray-4 ui-border-r-[0.0625rem] ui-bg-gray-5 ui-text-gray-3 md:ui-flex ui-flex-col ui-items-center hover:ui-w-40 ui-transition-all ui-duration-300 ui-z-20 ui-select-none ui-shadow-[0.125rem_0_0.25rem_0_rgba(204,209,212,0.7)]"
         {...bind}
       >
         <div className="ui-my-3">{logo}</div>
         <Divider
-          className="ui-w-full ui-border-gray-4"
+          className="ui-border-gray-4 ui-rounded"
+          sx={{ width: '70%' }}
           color=""
         />
         <div className="ui-flex ui-flex-col ui-justify-between ui-w-full ui-h-full">
@@ -89,26 +89,45 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
                 key={id}
                 text={text}
                 href={href}
+                isActive={href === '/' ? pathname === href : pathname.startsWith(href)}
               />
             ))}
           </div>
           <div>
+            {user?.id && (
+              <NavItem
+                hovered={hovered}
+                icon={<Logout />}
+                text={'Deconnexion'}
+                href={'/auth/logout'}
+                isActive={false}
+              />
+            )}
+
             <NavItem
               hovered={hovered}
               icon={
                 <ImageWithDefaultOnError
                   alt="Profile picture"
-                  className="ui-w-8 ui-h-8 ui-rounded-full ui-aspect-square ui-object-cover ui-object-center"
-                  src={`http://localhost:7000/auth/profilePicture/${user?.profilePicture}`}
-                  defaultReactNode={<AccountCircleOutlined />}
-                  width={24}
-                  height={24}
-                  forceDefault={user === undefined}
+                  className="ui-flex ui-justify-center ui-w-8 ui-h-8 ui-rounded-full ui-overflow-hidden"
+                  src={`${process.env.NEXT_PUBLIC_API_URL}/auth/profilePicture/${user?.profilePicture}`}
+                  defaultReactNode={<AccountCircleOutlined className="ui-w-full ui-h-full" />}
+                  width={32}
+                  height={32}
+                  // defaultReactNode={
+                  //   <Image
+                  //     src={test}
+                  //     alt="test"
+                  //     className="ui-w-full ui-h-full"
+                  //   ></Image>
+                  // }
+                  forceDefault={!user?.profilePicture}
                 />
               }
               text={user?.name ?? 'Se connecter'}
-              href={user === undefined ? '/auth/login' : '/profil'}
+              href={!user.id ? '/auth/login' : '/profil'}
               noSidePadding
+              isActive={pathname.startsWith('/profil')}
             />
           </div>
         </div>
@@ -123,6 +142,7 @@ interface NavItemProps {
   text?: string;
   hovered?: boolean;
   noSidePadding?: boolean;
+  isActive?: boolean;
 }
 
 function NavItem({
@@ -131,16 +151,17 @@ function NavItem({
   text = '',
   hovered = false,
   noSidePadding = false,
+  isActive = false,
 }: NavItemProps): JSX.Element {
   return (
     <Link
       href={href}
-      className={`ui-flex ui-items-center ${noSidePadding ? 'ui-py-5 ui-justify-center' : 'ui-p-5'} hover:ui-bg-primary hover:ui-text-gray-5`}
+      className={`ui-flex ui-w-full ui-items-center ui-justify-center ui-py-5 md:ui-justify-start ${noSidePadding ? 'md:ui-pl-4' : 'md:ui-pl-5'} ${isActive ? 'ui-text-primary' : 'ui-text-gray-3'} hover:ui-bg-primary hover:ui-text-gray-5 active:ui-bg-secondary active:ui-text-gray-5 active:ui-shadow-[inset_0.125rem_0.125rem_0.25rem_0_rgba(0,0,0,0.4)]`}
     >
-      <div>{icon}</div>
+      <div className="ui-w-8 ui-h-8 focus:ui-text-primary">{icon}</div>
       {text !== '' && (
         <div
-          className={`ui-text-sm ui-transition-all ${hovered ? 'ui-pl-4 ui-w-3/5 ui-opacity-100' : 'ui-w-0 ui-opacity-0 ui-pointer-events-none'}`}
+          className={`ui-text-sm ui-transition-all ui-whitespace-nowrap ${hovered ? 'ui-pl-4 ui-opacity-100 ui-whitespace-nowrap ui-overflow-hidden' : 'ui-w-0 ui-opacity-0 ui-pointer-events-none'}`}
         >
           {text}
         </div>

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { RestaurantsController } from './restaurants.controller';
 import { RestaurantsService } from './restaurants.service';
 import { ItemsModule } from '../items/items.module';
+import { MenusModule } from '../menus/menus.module';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaRestaurantsModule } from '@app/databases/restaurants/prisma/prisma-restaurants.module';
 import configuration from '../config/configuration';
@@ -21,6 +22,7 @@ import { RmqModule } from 'libs/common';
     }),
     RmqModule,
     ItemsModule,
+    MenusModule,
     PrismaRestaurantsModule,
   ],
   controllers: [RestaurantsController],

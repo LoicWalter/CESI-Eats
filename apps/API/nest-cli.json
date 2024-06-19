@@ -71,6 +71,24 @@
       "compilerOptions": {
         "tsConfigPath": "apps/restaurants-service/tsconfig.app.json"
       }
+    },
+    "deliveries-service": {
+      "type": "application",
+      "root": "apps/deliveries-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/deliveries-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/deliveries-service/tsconfig.app.json"
+      }
+    },
+    "statistics-service": {
+      "type": "application",
+      "root": "apps/statistics-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/statistics-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/statistics-service/tsconfig.app.json"
+      }
     }
   }
 }

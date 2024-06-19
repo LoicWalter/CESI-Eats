@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useFormState } from 'react-dom';
 import {
   ClickableImageInput,
@@ -12,10 +12,11 @@ import {
   redirectTo,
 } from '@repo/ui';
 import { Formik } from 'formik';
-import { Button, IconButton, Typography } from '@mui/material';
+import { Alert, Button, IconButton, Typography } from '@mui/material';
 import * as Yup from 'yup';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { useSearchParams } from 'next/navigation';
+import { redirect, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
 interface FormValues {
   profilePicture: File | null;
@@ -65,11 +66,18 @@ export function SignupPage({ action }: SignupPageProps): JSX.Element {
     <div className="ui-w-full ui-h-full ui-flex ui-flex-col ui-justify-center ui-items-center ui-gap-4">
       <Typography
         variant="h4"
-        className="font-bold"
+        className="ui-font-bold"
       >
         Inscription
       </Typography>
-      {state?.error ? <p>{state.error}</p> : null}
+      {state.error && (
+        <Alert
+          severity="error"
+          className="ui-w-full"
+        >
+          {state.error}
+        </Alert>
+      )}
       <Formik
         initialValues={{
           profilePicture: null,
@@ -96,7 +104,7 @@ export function SignupPage({ action }: SignupPageProps): JSX.Element {
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue }) => (
           <form
             onSubmit={handleSubmit}
-            className="ui-flex ui-flex-col ui-gap-4 ui-w-full ui-justify-center items-center"
+            className="items-center ui-flex ui-flex-col ui-gap-4 ui-w-full ui-justify-center"
           >
             <ClickableImageInput
               name="profilePicture"
@@ -202,14 +210,18 @@ export function SignupPage({ action }: SignupPageProps): JSX.Element {
             />
 
             <div className="ui-flex ui-flex-row ui-w-full ui-justify-between ui-gap-4 ui-items-center ui-mt-6">
-              <StyledOutlinedButton
+              <Link
+                href="/auth/login"
                 className="ui-w-1/2 ui-border-primary ui-text-primary ui-rounded-xl"
-                type="button"
-                onClick={() => redirectTo('/auth/login')}
-                variant="outlined"
               >
-                Se connecter
-              </StyledOutlinedButton>
+                <StyledOutlinedButton
+                  type="button"
+                  variant="outlined"
+                  className="ui-w-full ui-bg-white ui-text-primary ui-rounded-xl"
+                >
+                  Se connecter
+                </StyledOutlinedButton>
+              </Link>
               <StyledButton
                 type="submit"
                 className="ui-w-1/2 ui-bg-primary ui-text-white ui-rounded-xl"

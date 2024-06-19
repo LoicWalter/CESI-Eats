@@ -10,24 +10,42 @@ datasource db {
 }
 
 model restaurant {
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
   name              String?
   owner             String
   priceRange        String?
-  phone             String? @unique
-  address           String? @unique
-  siret             String? @unique
+  phone             String?  @unique
+  address           String?  @unique
+  siret             String?  @unique
   category          String?
   restaurantPicture String?
   items             item[]
+  menus             menu[]
+  orders            String[]
 }
 
 model item {
   id           String     @id @default(auto()) @map("_id") @db.ObjectId
-  name         String?    @unique
+  name         String
   description  String?
+  regime       String?
+  category     String?
   price        Float?
   itemPicture  String?
   restaurant   restaurant @relation(fields: [restaurantId], references: [id])
   restaurantId String     @db.ObjectId
+  menus        menu[]     @relation(fields: [menuIDs], references: [id])
+  menuIDs      String[]   @db.ObjectId
+}
+
+model menu {
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  name         String?
+  description  String?
+  price        Float?
+  menuPicture  String?
+  restaurant   restaurant? @relation(fields: [restaurantId], references: [id])
+  restaurantId String      @db.ObjectId
+  items        item[]      @relation(fields: [itemIDs], references: [id])
+  itemIDs      String[]    @db.ObjectId
 }

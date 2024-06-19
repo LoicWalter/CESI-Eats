@@ -1,24 +1,38 @@
 import { Card, CardContent, CardMedia, Typography } from '@mui/material';
 import React from 'react';
+import { ImageWithDefaultOnError, RestaurantsContextType } from '../utils';
+import Link from 'next/link';
 
 interface RestaurantCardProps {
-  name: string;
-  timeRange: string;
+  restaurant: RestaurantsContextType;
 }
 
-export function RestaurantCard({ name, timeRange }: RestaurantCardProps) {
+export function RestaurantCard({ restaurant }: RestaurantCardProps) {
   return (
-    <Card className="ui-w-5/6 ui-mx-4 ui-inline-block">
-      <CardMedia
-        component="img"
-        alt="restaurant"
-        height="140"
-        image="https://via.placeholder.com/150"
-      />
-      <CardContent>
-        <Typography variant="h4">{name}</Typography>
-        <Typography variant="body1">{timeRange}</Typography>
-      </CardContent>
-    </Card>
+    <Link
+      href={`/restaurant/${restaurant.id}`}
+      className="ui-h-full ui-w-full"
+    >
+      <Card className="ui-mx-4 ui-w-full ui-h-full ui-flex ui-justify-between ui-flex-col">
+        <ImageWithDefaultOnError
+          src={`${process.env.NEXT_PUBLIC_API_URL}/restaurant-picture/${restaurant.restaurantPicture}`}
+          alt="restaurant"
+          width="300"
+          height="300"
+          defaultReactNode={
+            <CardMedia
+              component="img"
+              alt="restaurant"
+              height="140"
+              image="https://via.placeholder.com/150"
+            />
+          }
+        />
+        <CardContent>
+          <Typography variant="h5">{restaurant.name}</Typography>
+          <Typography variant="body1">{restaurant.priceRange}</Typography>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }

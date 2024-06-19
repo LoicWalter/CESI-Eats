@@ -1,0 +1,27 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../../../../node_modules/@gen/client/deliveries"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL_DELIVERIES")
+}
+
+enum DeliveryStatus {
+  LIVRAISON_ACCEPTEE               @map("Livraison acceptée")
+  LIVREUR_EN_ROUTE_VERS_RESTAURANT @map("Livreur en route vers le restaurant")
+  COMMANDE_RECUPEREE               @map("Commande récupérée par le livreur")
+  LIVREUR_EN_ROUTE_VERS_CLIENT     @map("Livreur en route vers le client")
+  COMMANDE_LIVREE                  @map("Commande livrée")
+}
+
+model Delivery {
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  deliverer       String?
+  order           String
+  deliveryAddress String
+  deliveryTime    DateTime?
+  status          DeliveryStatus?
+}

@@ -59,6 +59,34 @@ services:
     networks:
       - api
 
+  deliveries-service:
+    container_name: deliveries-service
+    build:
+      context: .
+      dockerfile: ./apps/deliveries-service/Dockerfile
+    env_file:
+      - ./.prod.env
+    depends_on:
+      - rabbitmq
+      - gateway
+    restart: always
+    networks:
+      - api
+  
+  statistics-service:
+    container_name: statistics-service
+    build:
+      context: .
+      dockerfile: ./apps/statistics-service/Dockerfile
+    env_file:
+      - ./.prod.env
+    depends_on:
+      - rabbitmq
+      - gateway
+    restart: always
+    networks:
+      - api
+
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq
