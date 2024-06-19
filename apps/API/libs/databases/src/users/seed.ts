@@ -39,7 +39,7 @@ async function main() {
       name: 'admin',
       password: await bcrypt.hash('admin', 10),
       roles: [Role.ADMIN],
-      // apiKey: 'admin',
+      apiKey: 'admin',
     },
   });
 

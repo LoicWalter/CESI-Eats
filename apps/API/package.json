@@ -31,7 +31,7 @@
     "seed:restaurants": "ts-node ./libs/databases/src/restaurants/seed.ts",
     "seed:deliveries": "ts-node ./libs/databases/src/deliveries/seed.ts",
     "seed:users": "ts-node ./libs/databases/src/users/seed.ts",
-    "seed": "pnpm run seed:orders && pnpm run seed:users && pnpm run seed:restaurants && pnpm run seed:deliveries",
+    "seed": "pnpm run seed:users && pnpm run seed:restaurants && pnpm run seed:orders && pnpm run seed:deliveries",
     "start": "nest start",
     "start:dev": "nest start --tsc --watch",
     "start:debug": "nest start --debug --watch",

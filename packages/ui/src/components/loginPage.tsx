@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormState } from 'react-dom';
 import { login, redirectTo, StyledTextField, StyledButton, StyledOutlinedButton } from '@repo/ui';
 import { Formik } from 'formik';
@@ -11,13 +11,15 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 interface FormValues {
   email: string;
   password: string;
+  mustBeAdmin?: boolean;
 }
 
 interface LoginPageProps {
   logo: React.ReactNode;
+  mustBeAdmin?: boolean;
 }
 
-export function LoginPage({ logo }: LoginPageProps): JSX.Element {
+export function LoginPage({ logo, mustBeAdmin }: LoginPageProps): JSX.Element {
   const [state, formAction] = useFormState(login, { error: '' });
   const [showPassword, setShowPassword] = React.useState(false);
   const schema = Yup.object().shape({
@@ -36,14 +38,14 @@ export function LoginPage({ logo }: LoginPageProps): JSX.Element {
       {logo}
       <Typography
         variant="h4"
-        className="font-bold"
+        className="ui-font-bold"
       >
         Connexion
       </Typography>
       {state.error && (
         <Alert
           severity="error"
-          className="w-full"
+          className="ui-w-full"
         >
           {state.error}
         </Alert>
@@ -53,6 +55,9 @@ export function LoginPage({ logo }: LoginPageProps): JSX.Element {
         validationSchema={schema}
         onSubmit={(values: FormValues) => {
           console.log(values);
+          if (mustBeAdmin) {
+            values.mustBeAdmin = true;
+          }
           formAction(values);
         }}
       >
@@ -102,15 +107,19 @@ export function LoginPage({ logo }: LoginPageProps): JSX.Element {
               }}
             />
 
-            <div className="ui-flex ui-flex-row ui-w-full ui-justify-between ui-gap-4 ui-items-center ui-mt-6">
-              <StyledOutlinedButton
-                className="ui-w-1/2 ui-border-primary ui-text-primary ui-rounded-xl"
-                type="button"
-                onClick={() => redirectTo('/auth/signup')}
-                variant="outlined"
-              >
-                S'inscrire
-              </StyledOutlinedButton>
+            <div
+              className={`ui-flex ui-flex-row ui-w-full ${mustBeAdmin ? 'ui-justify-end' : 'ui-justify-between'} ui-gap-4 ui-items-center ui-mt-6`}
+            >
+              {!mustBeAdmin && (
+                <StyledOutlinedButton
+                  className="ui-w-1/2 ui-border-primary ui-text-primary ui-rounded-xl"
+                  type="button"
+                  onClick={() => redirectTo('/auth/signup')}
+                  variant="outlined"
+                >
+                  S'inscrire
+                </StyledOutlinedButton>
+              )}
               <StyledButton
                 type="submit"
                 className="ui-w-1/2 ui-bg-primary ui-text-white ui-rounded-xl"

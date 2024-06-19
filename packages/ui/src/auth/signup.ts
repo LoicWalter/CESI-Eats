@@ -12,7 +12,7 @@ enum UserTypes {
 
 const createUser = (userType: UserTypes) => async (_: any, data: FormData) => {
   const { res, parsedRes } = await post<PrismaUsers.User>(
-    `auth/signup/${userType}`,
+    `/auth/signup/${userType}`,
     {
       body: data,
     },

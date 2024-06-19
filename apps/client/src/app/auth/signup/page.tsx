@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { createClientUser, SignupPage } from '@repo/ui';
 
 interface FormValues {
@@ -9,7 +9,11 @@ interface FormValues {
 }
 
 function Signup(): JSX.Element {
-  return <SignupPage action={createClientUser} />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SignupPage action={createClientUser} />
+    </Suspense>
+  );
 }
 
 export default Signup;

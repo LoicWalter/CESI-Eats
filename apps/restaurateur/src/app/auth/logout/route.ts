@@ -10,3 +10,12 @@ export async function GET() {
     });
   redirect(defaultWebRoutes.RESTAURATEUR);
 }
+
+export async function POST() {
+  cookies()
+    .getAll()
+    .forEach((cookie) => {
+      cookies().delete(cookie.name);
+    });
+  redirect(defaultWebRoutes.RESTAURATEUR);
+}

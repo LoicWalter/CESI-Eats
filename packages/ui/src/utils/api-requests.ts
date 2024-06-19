@@ -4,33 +4,31 @@ import { cookies } from 'next/headers';
 import { Cookies } from '../constants';
 import { PrismaUsers } from '@api/cesieats';
 import { redirect } from 'next/navigation';
+import { getErrorMessage } from './errors';
 
 type ResponseWith<T> = { res: Response; parsedRes: T };
 
-const BASE_URL = 'http://localhost:7000';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 async function getUrl(path: string): Promise<string> {
   if (path.startsWith('http')) {
     return path;
   }
-  return `${BASE_URL}/${path}`;
+  return `${BASE_URL}${path}`;
 }
 
 async function request<T>(path: string, options: RequestInit): Promise<ResponseWith<T>> {
-  try {
-    const res = await fetch(await getUrl(path), options);
-    const parsedRes = await res.json();
-    return { res, parsedRes };
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+  const url = await getUrl(path);
+  const response = await fetch(url, options);
+  const parsedRes = await response.json();
+  return { res: response, parsedRes };
 }
 
 async function getHeaders(withFile: boolean = false): Promise<Headers> {
   const headers = new Headers();
   const authCookie = cookies().get(Cookies.Authentication);
   headers.set('Cookie', `${Cookies.Authentication}=${authCookie?.value}`);
+  headers.set('x-api-key', process.env.NEXT_PUBLIC_API_KEY || '');
   if (!withFile) {
     headers.set('Content-Type', 'application/json');
   }
@@ -41,7 +39,7 @@ export async function get<T>(
   path: string,
   options: Omit<RequestInit, 'headers'>,
 ): Promise<ResponseWith<T>> {
-  return request(path, {
+  return await request(path, {
     headers: await getHeaders(),
     ...options,
   });
@@ -82,12 +80,19 @@ export async function _delete<T>(
   });
 }
 
+export async function getPictureUrl<T>(path: string): Promise<ResponseWith<T>> {
+  return request(path, {
+    method: 'GET',
+    headers: await getHeaders(),
+  });
+}
+
 export async function getUserById(id: string): Promise<PrismaUsers.User | undefined> {
   const { res, parsedRes } = await get<
     PrismaUsers.Prisma.UserGetPayload<{
-      include: { filleuls: true };
+      include: { filleuls: true; parrain: true };
     }>
-  >(`auth/users/${id}`, {});
+  >(`/auth/users/${id}`, {});
   if (!res.ok) {
     return undefined;
   }
@@ -100,6 +105,7 @@ export async function setUserCookie(user: Partial<PrismaUsers.User>) {
     value: JSON.stringify(user),
     secure: true,
     httpOnly: false,
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
   });
 }
 
@@ -133,5 +139,6 @@ export async function redirectWithGetParams(path: string, params: Record<string,
 }
 
 export async function redirectTo(path: string) {
+  console.log('redirecting to', path);
   redirect(path);
 }

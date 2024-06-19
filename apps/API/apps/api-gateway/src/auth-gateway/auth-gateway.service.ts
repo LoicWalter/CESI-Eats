@@ -14,7 +14,7 @@ import {
   GetUserMessage,
 } from 'libs/common';
 import { firstValueFrom, of } from 'rxjs';
-import { Role, User } from '@gen/client/users';
+import { Role } from '@gen/client/users';
 import type { CreateUserDto } from '../types/user-utils.types';
 import { join } from 'path';
 import { EditUserDto } from '../dto';
@@ -23,12 +23,12 @@ import { EditUserDto } from '../dto';
 export class AuthGatewayService {
   constructor(@Inject(Microservices.AUTH) private readonly authService: ClientProxy) {}
 
-  async updateUser(user: User, dto: EditUserDto, profilePicture: Express.Multer.File) {
+  async updateUser(id: string, dto: EditUserDto, profilePicture: Express.Multer.File) {
     try {
       const response = await firstValueFrom(
         this.authService.send(
           { cmd: UserMessage.EDIT_USER },
-          new EditUserMessage(user, dto, profilePicture?.filename),
+          new EditUserMessage(id, dto, profilePicture?.filename),
         ),
       );
       return response;
@@ -56,6 +56,14 @@ export class AuthGatewayService {
     }
   }
 
+  getUsers() {
+    try {
+      return firstValueFrom(this.authService.send({ cmd: UserMessage.GET_ALL_USERS }, {}));
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
   async signUpUser(dto: CreateUserDto, role: Role, profilePicture?: Express.Multer.File) {
     try {
       const response = await firstValueFrom(
@@ -72,5 +80,9 @@ export class AuthGatewayService {
       }
       throw new InternalServerErrorException(error.message);
     }
+  }
+
+  deleteUser(id: string) {
+    return firstValueFrom(this.authService.send({ cmd: UserMessage.DELETE_USER }, { id }));
   }
 }

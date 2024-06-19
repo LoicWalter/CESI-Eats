@@ -2,12 +2,15 @@ export enum AuthMessage {
   VALIDATE_USER = 'validate_user',
   GET_CURRENT_USER = 'get_current_user',
   SIGNIN_USER = 'signin_user',
+  VALIDATE_API_KEY = 'validate_api_key',
 }
 
 export enum UserMessage {
   CREATE_USER = 'create_user',
   EDIT_USER = 'edit_user',
   GET_USER = 'get_user',
+  GET_ALL_USERS = 'get_all_users',
+  DELETE_USER = 'delete_user',
 }
 
 export enum OrderMessage {
