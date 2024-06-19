@@ -8,10 +8,7 @@ import {
   Param,
   Patch,
   Post,
-<<<<<<< HEAD
   Query,
-=======
->>>>>>> main-development
   Res,
   UploadedFile,
   UseGuards,
@@ -125,12 +122,8 @@ export class GatewayController {
 
   @ApiBody({ type: CreateOrderDto })
   @HttpCode(HttpStatus.CREATED)
-<<<<<<< HEAD
-  // @Roles(Role.CLIENT)
-=======
   @Roles(Role.CLIENT)
   @UseGuards(JwtAuthGuard)
->>>>>>> main-development
   @Post('/orders')
   createOrder(@CurrentUser() user: User, @Body() createOrderDto: CreateOrderDto) {
     return this.gatewayService.createOrder(user, createOrderDto);
@@ -343,12 +336,8 @@ export class GatewayController {
 
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.RESTAURATEUR)
-<<<<<<< HEAD
-  @Delete('/restaurants/:restaurantId/items/:itemId')
-=======
   @UseGuards(JwtAuthGuard)
-  @Delete('/:restaurantId/items/:itemId')
->>>>>>> main-development
+  @Delete('/restaurants/:restaurantId/items/:itemId')
   deleteItem(
     @CurrentUser() user: User,
     @Param('restaurantId') restaurantId: string,
@@ -413,12 +402,8 @@ export class GatewayController {
 
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.RESTAURATEUR)
-<<<<<<< HEAD
-  @Delete('/restaurants/:restaurantId/menus/:menuId')
-=======
   @UseGuards(JwtAuthGuard)
-  @Delete('/:restaurantId/menus/:menuId')
->>>>>>> main-development
+  @Delete('/restaurants/:restaurantId/menus/:menuId')
   deleteMenu(
     @CurrentUser() user: User,
     @Param('restaurantId') restaurantId: string,
