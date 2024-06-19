@@ -21,7 +21,7 @@ export enum ErrorsMessages {
   ORDER_STATUS_ALREADY_ACCEPTED = 'La commande est déjà acceptée.',
   ORDER_NOT_AVAILABLE = 'La commande est indisponible.',
   DELIVERY_NOT_FOUND = 'Livraison introuvable.',
-  USER_IS_NOT_DELIVERER = "Cet utilisateur n'est pas livreur.",
+  USER_IS_NOT_DELIVERER = "Cet utilisateur n'est pas le livreur.",
   ONE_OR_MORE_ITEMS_NOT_FOUND = 'Un ou plusieurs articles introuvables.',
   ONE_OR_MORE_MENUS_NOT_FOUND = 'Un ou plusieurs menus introuvables.',
   NO_ITEMS_OR_MENUS = 'Aucun article ou menu.',
