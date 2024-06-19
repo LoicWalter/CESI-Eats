@@ -24,7 +24,6 @@ import {
   OrderMessage,
   CreateOrderMessage,
   // EditOrderMessage,
-  GetOrderMessage,
   // DeleteOrderMessage,
   DeliveryMessage,
   GetReceivedOrderMessage,
@@ -34,6 +33,7 @@ import {
   GetDeliveryOrderMessage,
   GetAllDeliveryOrdersMessage,
   CreateDeliveryMessage,
+  GetClientOrderMessage,
 } from 'libs/common';
 import {
   CreateDeliveryDto,
@@ -112,10 +112,15 @@ export class GatewayService {
   //   }
   // }
 
-  async getClientOrder(userId: string, orderId: string) {
+  async getClientOrder(user: User, orderId: string) {
     try {
+      console.log('user', user);
+      console.log('orderId', orderId);
       const res = await firstValueFrom(
-        this.ordersService.send(OrderMessage.GET_ORDER, new GetOrderMessage(userId, orderId)),
+        this.ordersService.send(
+          OrderMessage.GET_CLIENT_ORDER,
+          new GetClientOrderMessage(user, orderId),
+        ),
       );
       return res;
     } catch (error) {
@@ -125,7 +130,9 @@ export class GatewayService {
 
   async getAllClientOrders(userId: string) {
     try {
-      const res = await firstValueFrom(this.ordersService.send(OrderMessage.GET_ORDERS, userId));
+      const res = await firstValueFrom(
+        this.ordersService.send(OrderMessage.GET_CLIENT_ORDERS, userId),
+      );
       return res;
     } catch (error) {
       this.errorManagement(error);
@@ -174,14 +181,32 @@ export class GatewayService {
     }
   }
 
+  async getOrder(orderId: string) {
+    try {
+      const res = await firstValueFrom(this.ordersService.send(OrderMessage.GET_ORDER, orderId));
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
+  }
+
+  async getAllOrders() {
+    try {
+      const res = await firstValueFrom(this.ordersService.send(OrderMessage.GET_ORDERS, {}));
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
+  }
+
   //----------------------------------Deliveries----------------------------------
 
-  async createDelivery(createDeliveryDto: CreateDeliveryDto) {
+  async createDelivery(user: User, createDeliveryDto: CreateDeliveryDto) {
     try {
       const res = await firstValueFrom(
         this.deliveriesService.send(
           DeliveryMessage.CREATE_DELIVERY,
-          new CreateDeliveryMessage(createDeliveryDto),
+          new CreateDeliveryMessage(user, createDeliveryDto),
         ),
       );
       return res;

@@ -6,7 +6,7 @@ import {
   DeleteOrderMessage,
   EditOrderMessage,
   EditOrderStatusMessage,
-  GetOrderMessage,
+  GetClientOrderMessage,
   GetReceivedOrderMessage,
   GetReceivedOrdersMessage,
   OrderMessage,
@@ -37,15 +37,15 @@ export class OrdersController {
   // }
 
   @UseFilters(new UnprocessableEntityExceptionFilter())
-  @MessagePattern(OrderMessage.GET_ORDER)
-  handleOrderGot(data: GetOrderMessage) {
-    return this.ordersService.getOrder(data);
+  @MessagePattern(OrderMessage.GET_CLIENT_ORDER)
+  handleClientOrderGot(data: GetClientOrderMessage) {
+    return this.ordersService.getClientOrder(data);
   }
 
   @UseFilters(new UnprocessableEntityExceptionFilter())
-  @MessagePattern(OrderMessage.GET_ORDERS)
-  handleOrdersGot(userId: string) {
-    return this.ordersService.getOrders(userId);
+  @MessagePattern(OrderMessage.GET_CLIENT_ORDERS)
+  handleClientOrdersGot(userId: string) {
+    return this.ordersService.getClientOrders(userId);
   }
 
   @UseFilters(new UnprocessableEntityExceptionFilter())
@@ -64,5 +64,17 @@ export class OrdersController {
   @MessagePattern(OrderMessage.GET_RECEIVED_ORDERS)
   handleReceivedOrdersGot(data: GetReceivedOrdersMessage) {
     return this.ordersService.getReceivedOrders(data);
+  }
+
+  @UseFilters(new UnprocessableEntityExceptionFilter())
+  @MessagePattern(OrderMessage.GET_ORDER)
+  handleOrderGot(orderId: string) {
+    return this.ordersService.getOrder(orderId);
+  }
+
+  @UseFilters(new UnprocessableEntityExceptionFilter())
+  @MessagePattern(OrderMessage.GET_ORDERS)
+  handleOrdersGot() {
+    return this.ordersService.getOrders();
   }
 }

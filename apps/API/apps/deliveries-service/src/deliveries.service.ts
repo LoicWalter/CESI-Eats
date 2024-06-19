@@ -6,8 +6,8 @@ import {
   EditDeliveryStatusMessage,
   ErrorsMessages,
   GetAllDeliveryOrdersMessage,
+  GetClientOrderMessage,
   GetDeliveryOrderMessage,
-  GetOrderMessage,
   Microservices,
   OrderMessage,
 } from 'libs/common';
@@ -24,7 +24,7 @@ export class DeliveriesService {
     const order = await firstValueFrom(
       this.ordersService.send(
         OrderMessage.GET_ORDER,
-        new GetOrderMessage(data.dto.client, data.dto.order),
+        new GetClientOrderMessage(data.user, data.dto.order),
       ),
     );
     const alreadyExist = await this.prisma.delivery.findFirst({

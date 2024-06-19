@@ -16,7 +16,7 @@ export * from './get-menu.message';
 export * from './create-order.message';
 export * from './edit-order.message';
 export * from './delete-order.message';
-export * from './get-order.message';
+export * from './get-client-order.message';
 export * from './get-received-order.message';
 export * from './get-received-orders.message';
 export * from './edit-order-status.message';

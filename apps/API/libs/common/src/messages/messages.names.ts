@@ -17,6 +17,8 @@ export enum OrderMessage {
   CREATE_ORDER = 'create_order',
   GET_ORDERS = 'get_orders',
   GET_ORDER = 'get_order',
+  GET_CLIENT_ORDER = 'get_client_order',
+  GET_CLIENT_ORDERS = 'get_client_orders',
   GET_RECEIVED_ORDER = 'get_received_order',
   GET_RECEIVED_ORDERS = 'get_received_orders',
   EDIT_ORDER = 'edit_order',

@@ -12,15 +12,6 @@ export class CreateDeliveryDto {
   order: string;
 
   @ApiProperty({
-    description: 'Client ID',
-    example: 'Client 1',
-    type: String,
-  })
-  @IsString()
-  @IsNotEmpty()
-  client: string;
-
-  @ApiProperty({
     description: 'Delivery address',
     example: '1 rue de la Paix, Paris',
     type: String,

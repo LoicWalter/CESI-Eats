@@ -122,8 +122,8 @@ export class GatewayController {
 
   @ApiBody({ type: CreateOrderDto })
   @HttpCode(HttpStatus.CREATED)
-  @Roles(Role.CLIENT)
-  @UseGuards(JwtAuthGuard)
+  // @Roles(Role.CLIENT)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @Post('/orders')
   createOrder(@CurrentUser() user: User, @Body() createOrderDto: CreateOrderDto) {
     return this.gatewayService.createOrder(user, createOrderDto);
@@ -150,13 +150,15 @@ export class GatewayController {
 
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.CLIENT)
-  @Get('/order/:id')
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('/orders/:id')
   getClientOrder(@CurrentUser() user: User, @Param('id') id: string) {
-    return this.gatewayService.getClientOrder(user.id, id);
+    return this.gatewayService.getClientOrder(user, id);
   }
 
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.CLIENT)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @Get('/orders')
   getAllClientOrders(@CurrentUser() user: User) {
     return this.gatewayService.getAllClientOrders(user.id);
@@ -164,6 +166,7 @@ export class GatewayController {
 
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.RESTAURATEUR)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @Patch('/restaurants/:restaurantId/orders/:orderId')
   editOrderStatus(
     @CurrentUser() user: User,
@@ -179,6 +182,7 @@ export class GatewayController {
 
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.RESTAURATEUR)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @Get('/restaurants/:restaurantId/orders/:orderId')
   getReceivedOrder(
     @CurrentUser() user: User,
@@ -190,22 +194,41 @@ export class GatewayController {
 
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.RESTAURATEUR)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @Get('/restaurants/:restaurantId/orders')
   getAllReceivedOrders(@CurrentUser() user: User, @Param('restaurantId') restaurantId: string) {
     return this.gatewayService.getAllReceivedOrders(user, restaurantId);
   }
 
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.ADMIN)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('admin/orders/:orderId')
+  getOrder(@Param('orderId') orderId: string) {
+    return this.gatewayService.getOrder(orderId);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.ADMIN)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('admin/orders')
+  getAllOrders() {
+    return this.gatewayService.getAllOrders();
+  }
+
   //-------------------------------Delivery--------------------------------
 
   @HttpCode(HttpStatus.CREATED)
-  // @Roles(Role.LIVREUR)
+  // @Roles(Role.CLIENT)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @Post('/deliveries')
-  createDelivery(@Body() createDeliveryDto: CreateDeliveryDto) {
-    return this.gatewayService.createDelivery(createDeliveryDto);
+  createDelivery(@CurrentUser() user: User, @Body() createDeliveryDto: CreateDeliveryDto) {
+    return this.gatewayService.createDelivery(user, createDeliveryDto);
   }
 
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.LIVREUR)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @Patch('/deliveries/:deliveryId')
   editDeliveryStatus(
     @CurrentUser() user: User,
@@ -222,6 +245,7 @@ export class GatewayController {
 
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.LIVREUR)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @Get('/deliveries/:deliveryId')
   getDeliveryOrder(@CurrentUser() user: User, @Param('deliveryId') deliveryId: string) {
     return this.gatewayService.getDeliveryOrder(user, deliveryId);
@@ -229,6 +253,7 @@ export class GatewayController {
 
   @HttpCode(HttpStatus.OK)
   // @Roles(Role.LIVREUR)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
   @Get('/deliveries')
   getAllDeliveryOrders(@CurrentUser() user: User, @Query('type') type: string) {
     return this.gatewayService.getAllDeliveryOrders(user, type);

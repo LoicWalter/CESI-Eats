@@ -12,15 +12,6 @@ export class CreateOrderDto {
   restaurant: string;
 
   @ApiProperty({
-    description: 'Client ID',
-    example: 'Client 1',
-    type: String,
-  })
-  @IsString()
-  @IsNotEmpty()
-  client: string;
-
-  @ApiProperty({
     description: 'Items ordered',
     example: '[Burger, Fries, Drink]',
     type: [String],

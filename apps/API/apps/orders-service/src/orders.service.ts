@@ -6,7 +6,7 @@ import {
   EditOrderMessage,
   EditOrderStatusMessage,
   ErrorsMessages,
-  GetOrderMessage,
+  GetClientOrderMessage,
   GetReceivedOrderMessage,
   GetReceivedOrdersMessage,
   Microservices,
@@ -14,7 +14,6 @@ import {
 } from 'libs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { User } from '@gen/client/users';
 import { OrderStatus } from '@gen/client/orders';
 
 @Injectable()
@@ -114,9 +113,10 @@ export class OrdersService {
   //   });
   // }
 
-  async getOrder(data: GetOrderMessage) {
+  async getClientOrder(data: GetClientOrderMessage) {
+    console.log('Client :', data);
     const order = await this.prisma.order.findUnique({
-      where: { id: data.orderId, client: data.userId },
+      where: { id: data.orderId, client: data.user.id },
     });
     console.log('Order :', order);
     if (!order) {
@@ -126,7 +126,7 @@ export class OrdersService {
     return order;
   }
 
-  getOrders(userId: string) {
+  getClientOrders(userId: string) {
     console.log('Getting orders from user :', userId);
     return this.prisma.order.findMany({
       where: { client: userId },
@@ -192,5 +192,22 @@ export class OrdersService {
     return this.prisma.order.findMany({
       where: { restaurant: data.restaurantId },
     });
+  }
+
+  async getOrder(orderId: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+    });
+    if (!order) {
+      throw new RpcException(ErrorsMessages.ORDER_NOT_FOUND);
+    }
+
+    console.log('Getting order :', orderId);
+    return order;
+  }
+
+  async getOrders() {
+    console.log('Getting all orders');
+    return this.prisma.order.findMany();
   }
 }
