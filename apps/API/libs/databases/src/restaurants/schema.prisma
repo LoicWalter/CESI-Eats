@@ -10,17 +10,18 @@ datasource db {
 }
 
 model restaurant {
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
   name              String?
   owner             String
   priceRange        String?
-  phone             String? @unique
-  address           String? @unique
-  siret             String? @unique
+  phone             String?  @unique
+  address           String?  @unique
+  siret             String?  @unique
   category          String?
   restaurantPicture String?
   items             item[]
   menus             menu[]
+  orders            String[]
 }
 
 model item {

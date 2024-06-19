@@ -67,6 +67,22 @@ services:
     networks:
       - api
 
+  deliveries-service:
+    build:
+      context: .
+      dockerfile: ./apps/deliveries-service/Dockerfile
+      target: development
+    command: pnpm run start:dev deliveries-service
+    env_file:
+      - ./.docker.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - rabbitmq
+    networks:
+      - api
+
   rabbitmq:
     image: rabbitmq
     ports:

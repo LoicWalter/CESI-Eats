@@ -21,18 +21,34 @@ import {
   DeleteRestaurantMessage,
   DeleteMenuMessage,
   GetMenuMessage,
+  OrderMessage,
+  CreateOrderMessage,
+  // EditOrderMessage,
+  GetOrderMessage,
+  // DeleteOrderMessage,
+  DeliveryMessage,
+  GetReceivedOrderMessage,
+  GetReceivedOrdersMessage,
+  EditOrderStatusMessage,
+  EditDeliveryStatusMessage,
+  GetDeliveryOrderMessage,
+  GetAllDeliveryOrdersMessage,
+  CreateDeliveryMessage,
 } from 'libs/common';
-import { OrderEvent, CreateOrderEvent } from '@app/common/events';
 import {
+  CreateDeliveryDto,
   CreateItemDto,
   CreateMenuDto,
   CreateOrderDto,
   CreateRestaurantDto,
   EditItemDto,
   EditMenuDto,
+  // EditOrderDto,
   EditRestaurantDto,
 } from './dto';
 import { User } from '@gen/client/users';
+import { OrderStatus } from '@gen/client/orders';
+import { DeliveryStatus } from '@gen/client/deliveries';
 import { firstValueFrom, of } from 'rxjs';
 import { join } from 'path';
 
@@ -43,17 +59,177 @@ export class GatewayService {
     @Inject(Microservices.RESTAURANTS) private readonly restaurantsService: ClientProxy,
     @Inject(Microservices.RESTAURANTS) private readonly itemsService: ClientProxy,
     @Inject(Microservices.RESTAURANTS) private readonly menusService: ClientProxy,
+    @Inject(Microservices.DELIVERIES) private readonly deliveriesService: ClientProxy,
   ) {}
+
+  errorManagement(error: any) {
+    if (error.status === 422) {
+      console.log('error', error);
+      throw new UnprocessableEntityException(error.message);
+    }
+    console.log(error);
+    throw new InternalServerErrorException(error.message);
+  }
 
   //----------------------------------Orders----------------------------------
 
-  createOrder(createOrderDto: CreateOrderDto) {
-    return firstValueFrom(
-      this.ordersService.emit(
-        OrderEvent.CREATE_ORDER,
-        new CreateOrderEvent(createOrderDto.name, createOrderDto.price, createOrderDto.email),
-      ),
-    );
+  async createOrder(user: User, createOrderDto: CreateOrderDto) {
+    try {
+      const res = await firstValueFrom(
+        this.ordersService.send(
+          OrderMessage.CREATE_ORDER,
+          new CreateOrderMessage(user, createOrderDto),
+        ),
+      );
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
+  }
+
+  // async editOrder(user: User, orderId: string, editOrderDto: EditOrderDto) {
+  //   try {
+  //     const res = await firstValueFrom(
+  //       this.ordersService.send(
+  //         OrderMessage.EDIT_ORDER,
+  //         new EditOrderMessage(user, orderId, editOrderDto),
+  //       ),
+  //     );
+  //     return res;
+  //   } catch (error) {
+  //     this.errorManagement(error);
+  //   }
+  // }
+
+  // async deleteOrder(user: User, orderId: string) {
+  //   try {
+  //     const res = await firstValueFrom(
+  //       this.ordersService.send(OrderMessage.DELETE_ORDER, new DeleteOrderMessage(user, orderId)),
+  //     );
+  //     return res;
+  //   } catch (error) {
+  //     this.errorManagement(error);
+  //   }
+  // }
+
+  async getClientOrder(userId: string, orderId: string) {
+    try {
+      const res = await firstValueFrom(
+        this.ordersService.send(OrderMessage.GET_ORDER, new GetOrderMessage(userId, orderId)),
+      );
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
+  }
+
+  async getAllClientOrders(userId: string) {
+    try {
+      const res = await firstValueFrom(this.ordersService.send(OrderMessage.GET_ORDERS, userId));
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
+  }
+
+  async editOrderStatus(user: User, restaurantId: string, orderId: string, status: OrderStatus) {
+    try {
+      const res = await firstValueFrom(
+        this.ordersService.send(
+          OrderMessage.EDIT_ORDER_STATUS,
+          new EditOrderStatusMessage(user, restaurantId, orderId, status),
+        ),
+      );
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
+  }
+
+  async getReceivedOrder(user: User, restaurantId: string, orderId: string) {
+    try {
+      const res = await firstValueFrom(
+        this.ordersService.send(
+          OrderMessage.GET_RECEIVED_ORDER,
+          new GetReceivedOrderMessage(user, restaurantId, orderId),
+        ),
+      );
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
+  }
+
+  async getAllReceivedOrders(user: User, restaurantId: string) {
+    try {
+      const res = await firstValueFrom(
+        this.ordersService.send(
+          OrderMessage.GET_RECEIVED_ORDERS,
+          new GetReceivedOrdersMessage(user, restaurantId),
+        ),
+      );
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
+  }
+
+  //----------------------------------Deliveries----------------------------------
+
+  async createDelivery(createDeliveryDto: CreateDeliveryDto) {
+    try {
+      const res = await firstValueFrom(
+        this.deliveriesService.send(
+          DeliveryMessage.CREATE_DELIVERY,
+          new CreateDeliveryMessage(createDeliveryDto),
+        ),
+      );
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
+  }
+
+  async editDeliveryStatus(user: User, deliveryId: string, status: DeliveryStatus, type: string) {
+    try {
+      const res = await firstValueFrom(
+        this.deliveriesService.send(
+          DeliveryMessage.EDIT_DELIVERY_STATUS,
+          new EditDeliveryStatusMessage(user, deliveryId, type, status),
+        ),
+      );
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
+  }
+
+  async getDeliveryOrder(user: User, deliveryId: string) {
+    try {
+      const res = await firstValueFrom(
+        this.deliveriesService.send(
+          DeliveryMessage.GET_DELIVERY_ORDER,
+          new GetDeliveryOrderMessage(user, deliveryId),
+        ),
+      );
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
+  }
+
+  async getAllDeliveryOrders(user: User, type: string) {
+    try {
+      const res = await firstValueFrom(
+        this.deliveriesService.send(
+          DeliveryMessage.GET_DELIVERY_ORDERS,
+          new GetAllDeliveryOrdersMessage(user, type),
+        ),
+      );
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
   }
 
   //----------------------------------Restaurants----------------------------------
@@ -72,8 +248,7 @@ export class GatewayService {
       );
       return res;
     } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException(error.message);
+      this.errorManagement(error);
     }
   }
 
@@ -92,12 +267,7 @@ export class GatewayService {
       );
       return res;
     } catch (error) {
-      if (error.status === 422) {
-        console.log('error', error);
-        throw new UnprocessableEntityException(error.message);
-      }
-      console.log(error.message);
-      throw new InternalServerErrorException(error.message);
+      this.errorManagement(error);
     }
   }
 
@@ -111,12 +281,7 @@ export class GatewayService {
       );
       return res;
     } catch (error) {
-      if (error.status === 422) {
-        console.log('error', error);
-        throw new UnprocessableEntityException(error.message);
-      }
-      console.log(error.message);
-      throw new InternalServerErrorException(error.message);
+      this.errorManagement(error);
     }
   }
 
@@ -127,12 +292,7 @@ export class GatewayService {
       );
       return res;
     } catch (error) {
-      if (error.status === 422) {
-        console.log('error', error);
-        throw new UnprocessableEntityException(error.message);
-      }
-      console.log(error.message);
-      throw new InternalServerErrorException(error.message);
+      this.errorManagement(error);
     }
   }
 
@@ -143,12 +303,7 @@ export class GatewayService {
       );
       return res;
     } catch (error) {
-      if (error.status === 422) {
-        console.log('error', error);
-        throw new UnprocessableEntityException(error.message);
-      }
-      console.log(error.message);
-      throw new InternalServerErrorException(error.message);
+      this.errorManagement(error);
     }
   }
 
@@ -159,12 +314,7 @@ export class GatewayService {
       );
       return res;
     } catch (error) {
-      if (error.status === 422) {
-        console.log('error', error);
-        throw new UnprocessableEntityException(error.message);
-      }
-      console.log(error.message);
-      throw new InternalServerErrorException(error.message);
+      this.errorManagement(error);
     }
   }
 
@@ -189,12 +339,7 @@ export class GatewayService {
       );
       return res;
     } catch (error) {
-      if (error.status === 422) {
-        console.log('error', error);
-        throw new UnprocessableEntityException(error.message);
-      }
-      console.log(error.message);
-      throw new InternalServerErrorException(error.message);
+      this.errorManagement(error);
     }
   }
 
@@ -214,12 +359,7 @@ export class GatewayService {
       );
       return res;
     } catch (error) {
-      if (error.status === 422) {
-        console.log('error', error);
-        throw new UnprocessableEntityException(error.message);
-      }
-      console.log(error.message);
-      throw new InternalServerErrorException(error.message);
+      this.errorManagement(error);
     }
   }
 
@@ -233,12 +373,7 @@ export class GatewayService {
       );
       return res;
     } catch (error) {
-      if (error.status === 422) {
-        console.log('error', error);
-        throw new UnprocessableEntityException(error.message);
-      }
-      console.log(error.message);
-      throw new InternalServerErrorException(error.message);
+      this.errorManagement(error);
     }
   }
 
@@ -249,12 +384,7 @@ export class GatewayService {
       );
       return res;
     } catch (error) {
-      if (error.status === 422) {
-        console.log('error', error);
-        throw new UnprocessableEntityException(error.message);
-      }
-      console.log(error.message);
-      throw new InternalServerErrorException(error.message);
+      this.errorManagement(error);
     }
   }
 
@@ -263,12 +393,7 @@ export class GatewayService {
       const res = await firstValueFrom(this.itemsService.send(ItemMessage.GET_ITEMS, restaurantId));
       return res;
     } catch (error) {
-      if (error.status === 422) {
-        console.log('error', error);
-        throw new UnprocessableEntityException(error.message);
-      }
-      console.log(error.message);
-      throw new InternalServerErrorException(error.message);
+      this.errorManagement(error);
     }
   }
 
@@ -293,12 +418,7 @@ export class GatewayService {
       );
       return res;
     } catch (error) {
-      if (error.status === 422) {
-        console.log('error', error);
-        throw new UnprocessableEntityException(error.message);
-      }
-      console.log(error.message);
-      throw new InternalServerErrorException(error.message);
+      this.errorManagement(error);
     }
   }
 
@@ -318,12 +438,7 @@ export class GatewayService {
       );
       return res;
     } catch (error) {
-      if (error.status === 422) {
-        console.log('error', error);
-        throw new UnprocessableEntityException(error.message);
-      }
-      console.log(error.message);
-      throw new InternalServerErrorException(error.message);
+      this.errorManagement(error);
     }
   }
 
@@ -337,12 +452,7 @@ export class GatewayService {
       );
       return res;
     } catch (error) {
-      if (error.status === 422) {
-        console.log('error', error);
-        throw new UnprocessableEntityException(error.message);
-      }
-      console.log(error.message);
-      throw new InternalServerErrorException(error.message);
+      this.errorManagement(error);
     }
   }
 
@@ -353,12 +463,7 @@ export class GatewayService {
       );
       return res;
     } catch (error) {
-      if (error.status === 422) {
-        console.log('error', error);
-        throw new UnprocessableEntityException(error.message);
-      }
-      console.log(error.message);
-      throw new InternalServerErrorException(error.message);
+      this.errorManagement(error);
     }
   }
 
@@ -367,12 +472,7 @@ export class GatewayService {
       const res = await firstValueFrom(this.menusService.send(MenuMessage.GET_MENUS, restaurantId));
       return res;
     } catch (error) {
-      if (error.status === 422) {
-        console.log('error', error);
-        throw new UnprocessableEntityException(error.message);
-      }
-      console.log(error.message);
-      throw new InternalServerErrorException(error.message);
+      this.errorManagement(error);
     }
   }
 

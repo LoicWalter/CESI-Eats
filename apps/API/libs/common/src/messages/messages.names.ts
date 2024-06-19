@@ -10,6 +10,25 @@ export enum UserMessage {
   GET_USER = 'get_user',
 }
 
+export enum OrderMessage {
+  CREATE_ORDER = 'create_order',
+  GET_ORDERS = 'get_orders',
+  GET_ORDER = 'get_order',
+  GET_RECEIVED_ORDER = 'get_received_order',
+  GET_RECEIVED_ORDERS = 'get_received_orders',
+  EDIT_ORDER = 'edit_order',
+  EDIT_ORDER_STATUS = 'edit_order_status',
+  DELETE_ORDER = 'delete_order',
+}
+
+export enum DeliveryMessage {
+  CREATE_DELIVERY = 'create_delivery',
+  ACCEPT_DELIVERY = 'accept_delivery',
+  GET_DELIVERY_ORDER = 'get_delivery_order',
+  GET_DELIVERY_ORDERS = 'get_delivery_orders',
+  EDIT_DELIVERY_STATUS = 'edit_delivery_status',
+}
+
 export enum RestaurantMessage {
   CREATE_RESTAURANT = 'create_restaurant',
   GET_RESTAURANTS = 'get_restaurants',

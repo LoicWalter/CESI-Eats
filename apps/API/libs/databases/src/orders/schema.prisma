@@ -9,9 +9,20 @@ datasource db {
   url      = env("DATABASE_URL_ORDERS")
 }
 
+enum OrderStatus {
+  COMMANDE_PASSEE      @map("Commande passée")
+  COMMANDE_ACCEPTEE    @map("Commande acceptée")
+  PREPARATION_EN_COURS @map("Préparation en cours")
+  COMMANDE_PRETE       @map("Commande prête")
+}
+
 model Order {
-  id    String  @id @default(auto()) @map("_id") @db.ObjectId
-  name  String?
-  price Float?
-  email String?
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  restaurant String
+  client     String
+  delivery   String?
+  items      String[]
+  menus      String[]
+  price      Float
+  status     OrderStatus
 }
