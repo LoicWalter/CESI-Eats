@@ -23,7 +23,7 @@ export class DeliveriesService {
   async createDelivery(data: CreateDeliveryMessage) {
     const order = await firstValueFrom(
       this.ordersService.send(
-        OrderMessage.GET_ORDER,
+        OrderMessage.GET_CLIENT_ORDER,
         new GetClientOrderMessage(data.user, data.dto.order),
       ),
     );
@@ -33,10 +33,6 @@ export class DeliveriesService {
     if (!order) {
       throw new RpcException(ErrorsMessages.ORDER_NOT_FOUND);
     }
-    if (order.status === 'COMMANDE_PASSEE') {
-      throw new RpcException(ErrorsMessages.ORDER_NOT_AVAILABLE);
-    }
-
     if (alreadyExist) {
       throw new RpcException(ErrorsMessages.DELIVERY_ALREADY_EXIST);
     }
@@ -82,6 +78,17 @@ export class DeliveriesService {
       if (delivery.status) {
         throw new RpcException(ErrorsMessages.DELIVERY_NOT_AVAILABLE);
       }
+
+      const order = await firstValueFrom(
+        this.ordersService.send(
+          OrderMessage.GET_CLIENT_ORDER,
+          new GetClientOrderMessage(data.user, delivery.order),
+        ),
+      );
+      if (order.status === 'COMMANDE_PASSEE') {
+        throw new RpcException(ErrorsMessages.ORDER_NOT_AVAILABLE);
+      }
+
       console.log('Accepting delivery :', data.deliveryId);
       return this.prisma.delivery.update({
         where: { id: data.deliveryId },
@@ -101,10 +108,11 @@ export class DeliveriesService {
     const isDeliverer = await this.prisma.delivery.findUnique({
       where: { id: data.deliveryId, deliverer: data.user.id },
     });
+    console.log('Getting deliverer:', delivery);
     if (!delivery) {
       throw new RpcException(ErrorsMessages.DELIVERY_NOT_FOUND);
     }
-    if (!isDeliverer) {
+    if (!isDeliverer && delivery.deliverer !== null) {
       throw new RpcException(ErrorsMessages.USER_IS_NOT_DELIVERER);
     }
     return delivery;
