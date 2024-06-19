@@ -19,7 +19,7 @@ enum DeliveryStatus {
 
 model Delivery {
   id              String          @id @default(auto()) @map("_id") @db.ObjectId
-  deliverer       String          @default("Aucun livreur attribué")
+  deliverer       String?
   order           String
   deliveryAddress String
   deliveryTime    DateTime?

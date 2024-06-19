@@ -82,7 +82,7 @@ export const menuStorage = {
 };
 
 @Controller()
-@UseGuards(RolesGuard)
+// @UseGuards(RolesGuard)
 @ApiTags('Gateway')
 export class GatewayController {
   constructor(private readonly gatewayService: GatewayService) {}
@@ -118,6 +118,37 @@ export class GatewayController {
         throw new Error(`Invalid status value: ${status}`);
     }
   }
+
+  //-------------------------------Statistic--------------------------------
+
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.ADMIN)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('admin/statistics/orders')
+  getOrdersStatistics() {
+    return this.gatewayService.getOrdersStatistics();
+  }
+
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.ADMIN)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('admin/statistics/deliveries')
+  getDeliveriesStatistics() {
+    const type = 'all';
+    return this.gatewayService.getDeliveriesStatistics(type);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.RESTAURATEUR)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('restaurants/:restaurantId/statistics/orders')
+  getRestaurantOrdersStatistics(
+    @CurrentUser() user: User,
+    @Param('restaurantId') restaurantId: string,
+  ) {
+    return this.gatewayService.getRestaurantOrdersStatistics(user, restaurantId);
+  }
+
   //-------------------------------Order--------------------------------
 
   @ApiBody({ type: CreateOrderDto })

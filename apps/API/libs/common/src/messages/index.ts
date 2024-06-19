@@ -24,3 +24,4 @@ export * from './create-delivery.message';
 export * from './edit-delivery-status.message';
 export * from './get-delivery-order.message';
 export * from './get-delivery-orders.message';
+export * from './get-restaurant-orders-stats.message';
