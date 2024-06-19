@@ -80,6 +80,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/deliveries-service/tsconfig.app.json"
       }
+    },
+    "statistics-service": {
+      "type": "application",
+      "root": "apps/statistics-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/statistics-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/statistics-service/tsconfig.app.json"
+      }
     }
   }
 }
