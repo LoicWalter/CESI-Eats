@@ -4,4 +4,5 @@ export enum Microservices {
   ORDERS = 'ORDERS',
   RESTAURANTS = 'RESTAURANTS',
   DELIVERIES = 'DELIVERIES',
+  STATISTICS = 'STATISTICS',
 }
