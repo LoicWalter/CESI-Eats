@@ -188,7 +188,7 @@ export default function OrderDetails({ params }: { params: { id: string } }) {
                   </Typography>
                   <div className="flex flex-col w-full mb-4 md:flex-row">
                     <ImageWithDefaultOnError
-                      src={`${process.env.NEXT_PUBLIC_API_URL}/restaurant-picture/${fullRestaurant.restaurantPicture}`}
+                      src={`${process.env.NEXT_PUBLIC_API_URL}/restaurants/${fullRestaurant.restaurantPicture}/picture`}
                       alt={fullRestaurant.name || ''}
                       width={300}
                       height={300}

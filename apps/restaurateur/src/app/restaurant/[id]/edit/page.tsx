@@ -9,15 +9,17 @@ import {
   categories,
   ClickableImageInput,
   HelperText,
+  ImageWithDefaultOnError,
   PhoneInput,
   StyledButton,
   StyledOutlinedButton,
   StyledSlider,
   StyledTextField,
+  useRestaurant,
 } from '@repo/ui';
 import { InsertPhotoOutlined } from '@mui/icons-material';
-import { createRestaurant } from '@repo/ui/actions/create-restaurant.ts';
 import Link from 'next/link';
+import { editRestaurant } from '@repo/ui/actions/edit-restaurant.ts';
 
 interface RestaurantFormValues {
   name: string;
@@ -43,8 +45,18 @@ const schema = Yup.object().shape({
   category: Yup.string().required('La catégorie est requise.'),
 });
 
-export default function page(): JSX.Element {
-  const [state, formAction] = useFormState(createRestaurant, { error: '' });
+const extractValueFromPriceRange = (priceRange: string): [number, number] => {
+  const [min, max] = priceRange
+    .replace('€', '')
+    .split('-')
+    .map((value) => parseInt(value, 10));
+  return [min, max];
+};
+
+export default function EditRestaurant({ params }: { params: { id: string } }): JSX.Element {
+  const [state, formAction] = useFormState(editRestaurant, { error: '' });
+  const { id } = params;
+  const restaurant = useRestaurant();
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full gap-4">
@@ -52,7 +64,7 @@ export default function page(): JSX.Element {
         variant="h4"
         className="font-bold"
       >
-        Créer un restaurant
+        Modifier un restaurant
       </Typography>
       {state.error && (
         <Alert
@@ -64,12 +76,12 @@ export default function page(): JSX.Element {
       )}
       <Formik
         initialValues={{
-          name: '',
-          priceRange: [0, 50],
-          address: '',
-          phone: '',
-          siret: '',
-          category: '',
+          name: restaurant?.name || '',
+          priceRange: extractValueFromPriceRange(restaurant?.priceRange || '0€-50€'),
+          address: restaurant?.address || '',
+          phone: restaurant?.phone || '',
+          siret: restaurant?.siret || '',
+          category: restaurant?.category || '',
           'restaurant-picture': null,
         }}
         validationSchema={schema}
@@ -84,7 +96,10 @@ export default function page(): JSX.Element {
             }
             formData.append(key, value);
           });
-          formAction(formData);
+          formAction({
+            restaurantId: id,
+            formData,
+          });
         }}
         enableReinitialize
       >
@@ -102,7 +117,17 @@ export default function page(): JSX.Element {
             <ClickableImageInput
               name="restaurant-picture"
               handleFile={(file) => setFieldValue('restaurant-picture', file)}
-              defaultValue={<InsertPhotoOutlined />}
+              defaultValue={
+                <ImageWithDefaultOnError
+                  src={`${process.env.NEXT_PUBLIC_API_URL}/restaurants/${restaurant.restaurantPicture}/picture`}
+                  alt="menu-picture"
+                  className="w-32 h-32 rounded-full"
+                  defaultReactNode={<InsertPhotoOutlined fontSize="large" />}
+                  forceDefault={!restaurant?.restaurantPicture}
+                  width={128}
+                  height={128}
+                />
+              }
             />
             <StyledTextField
               fullWidth

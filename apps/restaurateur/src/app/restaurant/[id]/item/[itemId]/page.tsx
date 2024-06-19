@@ -8,6 +8,8 @@ import { Formik } from 'formik';
 import {
   ClickableImageInput,
   ImageWithDefaultOnError,
+  itemCategory,
+  itemRegime,
   StyledButton,
   StyledOutlinedButton,
   StyledTextField,
@@ -49,7 +51,7 @@ export default function EditItem({
         variant="h4"
         className="font-bold"
       >
-        Ajouter un article
+        Modifier un article
       </Typography>
       {state.error && (
         <Alert
@@ -94,7 +96,7 @@ export default function EditItem({
               handleFile={(file) => setFieldValue('item-picture', file)}
               defaultValue={
                 <ImageWithDefaultOnError
-                  src={`${process.env.NEXT_PUBLIC_API_URL}/item-picture/${item?.itemPicture}`}
+                  src={`${process.env.NEXT_PUBLIC_API_URL}/item/${item?.itemPicture}/picture`}
                   alt="menu-picture"
                   className="w-32 h-32 rounded-full"
                   defaultReactNode={<InsertPhotoOutlined fontSize="large" />}
@@ -148,10 +150,14 @@ export default function EditItem({
                 className: `${errors.regime && touched.regime ? 'bg-red-100' : ''}`,
               }}
             >
-              <MenuItem value="vegan">Vegan</MenuItem>
-              <MenuItem value="vegetarien">Végétarien</MenuItem>
-              <MenuItem value="Poisson">Poisson</MenuItem>
-              <MenuItem value="viande">Viande</MenuItem>
+              {itemRegime.map((regime) => (
+                <MenuItem
+                  key={regime.value}
+                  value={regime.value}
+                >
+                  {regime.label}
+                </MenuItem>
+              ))}
             </StyledTextField>
 
             <StyledTextField
@@ -169,11 +175,14 @@ export default function EditItem({
                 className: `${errors.category && touched.category ? 'bg-red-100' : ''}`,
               }}
             >
-              <MenuItem value="entree">Entrée</MenuItem>
-              <MenuItem value="plat">Plat</MenuItem>
-              <MenuItem value="dessert">Dessert</MenuItem>
-              <MenuItem value="boisson">Boisson</MenuItem>
-              <MenuItem value="autres">Autres</MenuItem>
+              {itemCategory.map((category) => (
+                <MenuItem
+                  key={category.value}
+                  value={category.value}
+                >
+                  {category.label}
+                </MenuItem>
+              ))}
             </StyledTextField>
             <StyledTextField
               fullWidth
