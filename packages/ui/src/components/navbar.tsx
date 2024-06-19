@@ -35,7 +35,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
               <NavItem
                 icon={icon}
                 href={href}
-                isActive={pathname === href}
+                isActive={href === '/' ? pathname === href : pathname.startsWith(href)}
               />
               <Divider
                 className="ui-border-gray-4 ui-my-2 ui-rounded"
@@ -65,7 +65,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
               />
             }
             href={!user.id ? '/auth/login' : '/profil'}
-            isActive={pathname === '/profil'}
+            isActive={pathname.startsWith('/profil')}
           />
         </div>
       </div>
@@ -89,7 +89,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
                 key={id}
                 text={text}
                 href={href}
-                isActive={pathname === href}
+                isActive={href === '/' ? pathname === href : pathname.startsWith(href)}
               />
             ))}
           </div>
@@ -100,7 +100,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
                 icon={<Logout />}
                 text={'Deconnexion'}
                 href={'/auth/logout'}
-                isActive={pathname === '/auth/logout'}
+                isActive={false}
               />
             )}
 
@@ -127,7 +127,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
               text={user?.name ?? 'Se connecter'}
               href={!user.id ? '/auth/login' : '/profil'}
               noSidePadding
-              isActive={pathname === '/profil'}
+              isActive={pathname.startsWith('/profil')}
             />
           </div>
         </div>
