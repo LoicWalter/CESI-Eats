@@ -6,6 +6,7 @@ import { Divider } from '@mui/material';
 import { useOnHover } from '../hooks/useOnHover';
 import Link from 'next/link';
 import { ImageWithDefaultOnError, useUser } from '../utils';
+import { usePathname } from 'next/navigation';
 
 interface Item {
   icon: JSX.Element;
@@ -22,6 +23,7 @@ interface NavbarProps {
 export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
   const [hovered, bind] = useOnHover();
   const user = useUser();
+  const pathname = usePathname();
 
   return (
     <>
@@ -33,6 +35,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
               <NavItem
                 icon={icon}
                 href={href}
+                isActive={pathname === href}
               />
               <Divider
                 className="ui-border-gray-4 ui-my-2 ui-rounded"
@@ -62,6 +65,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
               />
             }
             href={!user.id ? '/auth/login' : '/profil'}
+            isActive={pathname === '/profil'}
           />
         </div>
       </div>
@@ -85,6 +89,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
                 key={id}
                 text={text}
                 href={href}
+                isActive={pathname === href}
               />
             ))}
           </div>
@@ -95,6 +100,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
                 icon={<Logout />}
                 text={'Deconnexion'}
                 href={'/auth/logout'}
+                isActive={pathname === '/auth/logout'}
               />
             )}
 
@@ -121,6 +127,7 @@ export function Navbar({ logo, items: iconArray }: NavbarProps): JSX.Element {
               text={user?.name ?? 'Se connecter'}
               href={!user.id ? '/auth/login' : '/profil'}
               noSidePadding
+              isActive={pathname === '/profil'}
             />
           </div>
         </div>
@@ -135,6 +142,7 @@ interface NavItemProps {
   text?: string;
   hovered?: boolean;
   noSidePadding?: boolean;
+  isActive?: boolean;
 }
 
 function NavItem({
@@ -143,13 +151,14 @@ function NavItem({
   text = '',
   hovered = false,
   noSidePadding = false,
+  isActive = false,
 }: NavItemProps): JSX.Element {
   return (
     <Link
       href={href}
-      className={`ui-flex ui-w-full ui-items-center ui-justify-center ui-py-5 md:ui-justify-start ${noSidePadding ? 'md:ui-pl-4' : 'md:ui-pl-5'} hover:ui-bg-primary hover:ui-text-gray-5 active:ui-bg-secondary active:ui-text-gray-5 active:ui-shadow-[inset_0.125rem_0.125rem_0.25rem_0_rgba(0,0,0,0.4)]`}
+      className={`ui-flex ui-w-full ui-items-center ui-justify-center ui-py-5 md:ui-justify-start ${noSidePadding ? 'md:ui-pl-4' : 'md:ui-pl-5'} ${isActive ? 'ui-text-primary' : 'ui-text-gray-3'} hover:ui-bg-primary hover:ui-text-gray-5 active:ui-bg-secondary active:ui-text-gray-5 active:ui-shadow-[inset_0.125rem_0.125rem_0.25rem_0_rgba(0,0,0,0.4)]`}
     >
-      <div className="ui-w-8 ui-h-8">{icon}</div>
+      <div className="ui-w-8 ui-h-8 focus:ui-text-primary">{icon}</div>
       {text !== '' && (
         <div
           className={`ui-text-sm ui-transition-all ui-whitespace-nowrap ${hovered ? 'ui-pl-4 ui-opacity-100 ui-whitespace-nowrap ui-overflow-hidden' : 'ui-w-0 ui-opacity-0 ui-pointer-events-none'}`}
