@@ -29,4 +29,22 @@ export class CreateItemDto {
   @IsNumber()
   @IsNotEmpty()
   price: number;
+
+  @ApiProperty({
+    description: 'Régime',
+    example: 'Vegan',
+    type: String,
+  })
+  @IsString()
+  @IsNotEmpty()
+  regime: string;
+
+  @ApiProperty({
+    description: 'Category',
+    example: 'Desserts',
+    type: String,
+  })
+  @IsString()
+  @IsNotEmpty()
+  category: string;
 }

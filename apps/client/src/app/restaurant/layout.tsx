@@ -3,8 +3,8 @@ import BgImage from '../../assets/repas-de-famille.jpg';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
-  title: 'Client auth page',
-  description: 'Client auth page',
+  title: 'Client profil page',
+  description: 'Client profil page',
 };
 
 export default function RestaurantLayout({ children }: { children: React.ReactNode }): JSX.Element {
@@ -17,7 +17,7 @@ export default function RestaurantLayout({ children }: { children: React.ReactNo
         objectFit="cover"
         objectPosition="center"
       />
-      <div className="bg-white px-12 py-6 sm:rounded-xl xl:w-4/6 lg:w-5/6 md:w-5/6 z-20 sm:full w-full overflow-auto mb-12 md:mb-0">
+      <div className="z-20 w-full h-full px-12 py-6 mb-12 overflow-auto bg-white sm:rounded-xl xl:w-4/6 lg:w-5/6 md:w-5/6 sm:full md:mb-0">
         {children}
       </div>
     </div>

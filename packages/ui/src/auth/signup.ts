@@ -21,7 +21,6 @@ const createUser = (userType: UserTypes) => async (_: any, data: FormData) => {
   if (!res.ok) {
     return { error: getErrorMessage(parsedRes) };
   }
-  console.log('User created:', parsedRes);
   redirect(defaultWebRoutes.LOGIN);
 };
 

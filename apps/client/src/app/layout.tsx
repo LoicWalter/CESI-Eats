@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 const items = [
-  { icon: <HomeOutlined />, text: 'Accueil', id: '1', href: '/home' },
+  { icon: <HomeOutlined />, text: 'Accueil', id: '1', href: '/' },
   { icon: <FavoriteBorderOutlined />, text: 'Historique', id: '2', href: '/historique' },
   { icon: <ExploreOutlined />, text: 'Recherche', id: '3', href: '/commande' },
   { icon: <ShoppingBagOutlined />, text: 'Panier', id: '4', href: '/panier' },
@@ -48,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
                 }
               />
 
-              <div className="flex-1 overflow-y-auto overflow-x-hidden mb-12 md:mb-0">
+              <div className="flex-1 mb-12 overflow-x-hidden overflow-y-auto md:mb-0">
                 {children}
               </div>
             </body>

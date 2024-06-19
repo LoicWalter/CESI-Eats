@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Typography, MenuItem } from '@mui/material';
+import { Typography, MenuItem, Checkbox, ListItemText, Alert } from '@mui/material';
 import { useFormState } from 'react-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -10,57 +10,57 @@ import {
   StyledButton,
   StyledOutlinedButton,
   StyledTextField,
-  redirectTo,
+  useRestaurant,
 } from '@repo/ui';
 import { InsertPhotoOutlined } from '@mui/icons-material';
 import Link from 'next/link';
+import { createMenu } from '@repo/ui/actions/create-menu.ts';
 
 interface ArticleFormValues {
   name: string;
   description: string;
-  regime: string;
+  items: string[];
   price: number;
-  category: string;
-  picture: File | null;
+  'menu-picture': File | null;
 }
 
-interface CreateArticlePageProps {
-  action: (
-    _: any,
-    data: FormData,
-  ) => Promise<{
-    error: string;
-  }>;
-}
-
-export default function page({ action }: CreateArticlePageProps): JSX.Element {
-  const [state, formAction] = useFormState(action, { error: '' });
+export default function page({ params }: { params: { id: string } }): JSX.Element {
+  const [state, formAction] = useFormState(createMenu, { error: '' });
+  const restaurant = useRestaurant();
+  const { id } = params;
 
   const schema = Yup.object().shape({
     name: Yup.string().required('Le nom est requis.'),
     description: Yup.string().required('La description est requise'),
-    regime: Yup.string().required('Le régime est requis.'),
-    category: Yup.string().required("La catégorie d'article est requise."),
+    items: Yup.array()
+      .min(1, 'Au moins un article est requis')
+      .required('Les articles sont requis.'),
     price: Yup.string().required('Le prix est requise.'),
   });
 
   return (
-    <div className="w-full flex flex-col justify-center items-center gap-4">
+    <div className="flex flex-col items-center justify-center w-full h-full gap-4">
       <Typography
         variant="h4"
         className="font-bold"
       >
-        Ajouter un article
+        Ajouter un menu
       </Typography>
-      {state?.error ? <p>{state.error}</p> : null}
+      {state.error && (
+        <Alert
+          severity="error"
+          className="w-full"
+        >
+          {state.error}
+        </Alert>
+      )}
       <Formik
         initialValues={{
           name: '',
           description: '',
-          regime: '',
+          items: [],
           price: 0,
-          category: '',
-          picture: null,
+          'menu-picture': null,
         }}
         validationSchema={schema}
         onSubmit={(values: ArticleFormValues) => {
@@ -68,19 +68,28 @@ export default function page({ action }: CreateArticlePageProps): JSX.Element {
           const formData = new FormData();
 
           Object.entries(values).forEach(([key, value]) => {
+            if (key === 'items') {
+              value.forEach((item: string) => {
+                formData.append('itemIDs', item);
+              });
+              return;
+            }
             formData.append(key, value);
           });
-          //formAction(formData);
+          formAction({
+            restaurantId: id,
+            formData,
+          });
         }}
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue }) => (
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col gap-4 w-full justify-center items-center"
+            className="flex flex-col items-center justify-center w-full gap-4"
           >
             <ClickableImageInput
-              name="articlePicture"
-              handleFile={(file) => setFieldValue('articlePicture', file)}
+              name="menu-picture"
+              handleFile={(file) => setFieldValue('menu-picture', file)}
               defaultValue={<InsertPhotoOutlined />}
             />
             <StyledTextField
@@ -114,48 +123,43 @@ export default function page({ action }: CreateArticlePageProps): JSX.Element {
             <StyledTextField
               fullWidth
               variant="outlined"
-              label="Régime"
-              name="regime"
-              select
-              value={values.regime}
+              label="Articles"
+              name="items"
               onChange={handleChange}
-              onBlur={handleBlur}
-              error={Boolean(errors.regime && touched.regime)}
-              helperText={errors.regime && touched.regime ? errors.regime : ''}
+              select
+              SelectProps={{
+                multiple: true,
+                value: values.items,
+                onBlur: handleBlur,
+                renderValue: (selected) =>
+                  (selected as string[])
+                    .map((value) => {
+                      const item = restaurant?.items?.find((i) => i.id === value);
+                      return item?.name;
+                    })
+                    .join(', '),
+              }}
+              error={Boolean(errors.items && touched.items)}
+              helperText={errors.items && touched.items ? errors.items : ''}
               InputProps={{
-                className: `${errors.regime && touched.regime ? 'bg-red-100' : ''}`,
+                className: `${errors.items && touched.items ? 'bg-red-100' : ''}`,
               }}
             >
-              <MenuItem value="vegan">Vegan</MenuItem>
-              <MenuItem value="vegetarien">Végétarien</MenuItem>
-              <MenuItem value="sans-gluten">Sans gluten</MenuItem>
-              <MenuItem value="halal">Halal</MenuItem>
-              <MenuItem value="casher">Poisson</MenuItem>
-              <MenuItem value="viande">Kasher</MenuItem>
-              <MenuItem value="viande">Viande</MenuItem>
+              {restaurant?.items ? (
+                restaurant.items.map((item) => (
+                  <MenuItem
+                    key={item.id}
+                    value={item.id}
+                  >
+                    <Checkbox checked={values.items.indexOf(item.id) > -1} />
+                    <ListItemText primary={item.name} />
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem disabled>Aucun article</MenuItem>
+              )}
             </StyledTextField>
 
-            <StyledTextField
-              label="Catégorie"
-              name="category"
-              fullWidth
-              select
-              variant="outlined"
-              value={values.category}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={Boolean(errors.category && touched.category)}
-              helperText={errors.category && touched.category ? errors.category : ''}
-              InputProps={{
-                className: `${errors.category && touched.category ? 'bg-red-100' : ''}`,
-              }}
-            >
-              <MenuItem value="entree">Entrée</MenuItem>
-              <MenuItem value="plat">Plat</MenuItem>
-              <MenuItem value="dessert">Dessert</MenuItem>
-              <MenuItem value="boisson">Boisson</MenuItem>
-              <MenuItem value="autres">Autres</MenuItem>
-            </StyledTextField>
             <StyledTextField
               fullWidth
               variant="outlined"
@@ -172,7 +176,7 @@ export default function page({ action }: CreateArticlePageProps): JSX.Element {
                 className: `${errors.price && touched.price ? 'bg-red-100' : ''}`,
               }}
             />
-            <div className="flex flex-row w-full justify-between gap-4 items-center mt-6">
+            <div className="flex flex-row items-center justify-between w-full gap-4 mt-6">
               <Link
                 href="/restaurant/management"
                 className="w-1/2"
@@ -187,7 +191,7 @@ export default function page({ action }: CreateArticlePageProps): JSX.Element {
               </Link>
               <StyledButton
                 type="submit"
-                className="w-1/2 bg-primary text-white rounded-xl"
+                className="w-1/2 text-white bg-primary rounded-xl"
                 variant="contained"
               >
                 Enregistrer
