@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function HomeLayout({ children }: { children: React.ReactNode }): JSX.Element {
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center">
+    <div className="w-full h-screen overflow-hidden flex flex-col justify-center items-center">
       <Image
         src={BgImage}
         alt="Repas de famille"
@@ -17,7 +17,7 @@ export default function HomeLayout({ children }: { children: React.ReactNode }):
         objectFit="cover"
         objectPosition="center"
       />
-      <div className="w-full bg-white md:px-12 md:py-6 lg:px-12 lg:py-6 xl:px-12 xl:py-6 md:rounded-xl xl:w-1/2 lg:w-2/3 md:w-5/6 z-20">
+      <div className="w-full overflow-auto bg-white sm:rounded-xl xl:w-4/6 lg:w-5/6 md:w-5/6 z-20 sm:full mb-12 md:mb-0">
         {children}
       </div>
     </div>
