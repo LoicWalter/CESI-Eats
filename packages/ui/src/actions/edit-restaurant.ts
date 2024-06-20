@@ -1,18 +1,18 @@
 'use server';
 
 import { PrismaRestaurants } from '@api/cesieats';
-import { getErrorMessage, post } from '../utils';
+import { getErrorMessage, patch } from '../utils';
 import { redirect } from 'next/navigation';
 
-export const createItem = async (
+export const editRestaurant = async (
   _: any,
   data: {
     restaurantId: string;
     formData: FormData;
   },
 ) => {
-  const response = await post<PrismaRestaurants.item>(
-    `/restaurants/${data.restaurantId}/items`,
+  const response = await patch<PrismaRestaurants.restaurant>(
+    `/restaurants/${data.restaurantId}`,
     {
       body: data.formData,
     },
