@@ -11,6 +11,7 @@ import {
   livreurSteps,
   RestaurantContextType,
   StyledButton,
+  translateStatus,
   useDeliveries,
   UserContextType,
 } from '@repo/ui';
@@ -107,7 +108,7 @@ export default function page({ params }: { params: { id: string } }) {
             variant="body1"
             className="items-center"
           >
-            Statut: {delivery?.status}
+            Statut: {translateStatus(delivery?.status || '')}
           </Typography>
         </div>
       </div>
