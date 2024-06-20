@@ -166,7 +166,7 @@ export function Profil({ page }: ProfilProps): JSX.Element {
           onSubmit={formik.handleSubmit}
           className="ui-flex ui-w-full"
         >
-          <div className="ui-flex ui-flex-col ui-w-full ui-gap-12 ui-p-12">
+          <div className="ui-flex ui-flex-col ui-h-full ui-w-full ui-gap-12">
             <div className="ui-justify-center ui-align-center ui-flex">
               <ClickableImageInput
                 name="profilePicture"
@@ -457,25 +457,25 @@ export function Profil({ page }: ProfilProps): JSX.Element {
                   <div className="ui-flex ui-flex-row ui-items-center ui-gap-2 ui-w-full">
                     <StyledOutlinedButton
                       variant="outlined"
-                      className="ui-text-primary hover:ui-text-secondary ui-w-full ui-border-primary ui-rounded-lg hover:ui-border-secondary "
+                      className="ui-min-w-28 ui-text-primary hover:ui-text-secondary ui-w-full ui-border-primary ui-rounded-lg hover:ui-border-secondary "
                     >
                       Annuler
                     </StyledOutlinedButton>
                     <StyledButton
                       type="submit"
                       variant="contained"
-                      className="ui-bg-primary hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary ui-w-full"
+                      className="ui-min-w-28 ui-bg-primary hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary ui-w-full"
                     >
                       Enregistrer
                     </StyledButton>
                   </div>
                 </div>
               </div>
-              <Divider />
-              <div className="ui-flex ui-flex-col ui-gap-6 ui-w-96">
+              <Divider className="ui-pt-4" />
+              <div className="ui-flex ui-flex-col ui-gap-4 ui-max-w-96 ui-pt-4">
                 <Typography variant="h5">Actions supplémentaires</Typography>
-                <div className="ui-flex ui-flex-col ui-gap-4">
-                  {user?.roles?.includes(PrismaUsers.Role.CLIENT) && (
+                {user?.roles?.includes(PrismaUsers.Role.CLIENT) && (
+                  <div className="ui-flex ui-flex-col ui-gap-4">
                     <div className="ui-flex ui-flex-row ui-gap-2 ui-items-center">
                       <CopyToClipboard
                         text={user?.apiKey || ''}
@@ -498,17 +498,16 @@ export function Profil({ page }: ProfilProps): JSX.Element {
                         </Typography>
                       )}
                     </div>
-                  )}
-
-                  <StyledButton
-                    onClick={() => deleteUser()}
-                    variant="contained"
-                    type="button"
-                    className="ui-bg-red-500 ui-text-white hover:ui-bg-red-700 ui-rounded-lg ui-border-red-500 hover:ui-border-red-700"
-                  >
-                    Supprimer le compte
-                  </StyledButton>
-                </div>
+                  </div>
+                )}
+                <div className="ui-flex ui-flex-row ui-items-center ui-gap-2 ui-w-full ui-h-full"></div>
+                <StyledButton
+                  onClick={() => deleteUser()}
+                  variant="contained"
+                  className="ui-bg-primary hover:ui-bg-secondary ui-rounded-lg ui-border-primary hover:ui-border-secondary ui-w-full"
+                >
+                  Supprimer le compte
+                </StyledButton>
               </div>
             </div>
           </div>
