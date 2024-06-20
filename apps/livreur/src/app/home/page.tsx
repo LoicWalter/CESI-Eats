@@ -1,5 +1,5 @@
 import React from 'react';
-import { AllRestaurants } from '@repo/ui';
+import { AllDeliveries } from '@repo/ui';
 
 // A remplacer par les données réelles #TODO
 const restaurants = [
@@ -15,11 +15,7 @@ const restaurants = [
 export default function Page(): JSX.Element {
   return (
     <div className="flex flex-col items-center justify-between h-screen">
-      <AllRestaurants
-        restaurants={restaurants}
-        buttonNeeded={true}
-        shoppingBag={true}
-      />
+      <AllDeliveries deliveries={restaurants} />
     </div>
   );
 }
