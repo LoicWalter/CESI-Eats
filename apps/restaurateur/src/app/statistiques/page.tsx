@@ -3,6 +3,10 @@ import { LatestOrders, CardStatisticsNumber, TotalProfit } from '@repo/ui';
 import dayjs from 'dayjs';
 import {
   CheckOutlined,
+  CurrencyExchangeOutlined,
+  DoneAllOutlined,
+  EuroOutlined,
+  LoopOutlined,
   ReceiptOutlined,
   RoomServiceOutlined,
   SummarizeOutlined,
@@ -25,8 +29,8 @@ export default function page() {
             diff={16}
             trend="down"
             value="1.6k"
-            title="Passation de commandes"
-            icon={<SummarizeOutlined />}
+            title="Commande terminée"
+            icon={<DoneAllOutlined />}
           />
         </Grid>
         <Grid
@@ -39,22 +43,8 @@ export default function page() {
             diff={16}
             trend="down"
             value="2.3k"
-            title="Acceptation de commandes"
-            icon={<CheckOutlined />}
-          />
-        </Grid>
-        <Grid
-          xl={2}
-          lg={3}
-          sm={5}
-          xs={12}
-        >
-          <CardStatisticsNumber
-            diff={16}
-            trend="down"
-            value="2.3k"
-            title="Acquittement de livraison"
-            icon={<RoomServiceOutlined />}
+            title="Commande en cours"
+            icon={<LoopOutlined />}
           />
         </Grid>
         <Grid
@@ -65,8 +55,8 @@ export default function page() {
         >
           <TotalProfit
             value="$15k"
-            title="Chiffre d'affaires global"
-            icon={<ReceiptOutlined />}
+            title="Chiffre d'affaires"
+            icon={<EuroOutlined />}
           />
         </Grid>
       </Grid>
