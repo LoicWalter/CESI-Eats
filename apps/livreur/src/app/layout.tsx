@@ -24,39 +24,37 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
   return (
     <html lang="en">
       <UserProvider>
-        <DeliveriesProvider>
-          <body
-            className={`${inter.className} flex md:flex-row w-screen min-h-screen overflow-hidden border-0 font-display`}
-          >
-            <Navbar
-              items={items}
-              logo={
-                <Image
-                  alt="Logo"
-                  height={80}
-                  src={Logo}
-                  width={64}
-                  className="w-16 h-20"
-                />
-              }
-            />
-            <div className="flex-1 overflow-y-auto overflow-x-hidden">
-              <div className="w-full h-screen overflow-hidden flex flex-col justify-center items-center">
-                <Image
-                  src={BgImage}
-                  alt="Repas de famille"
-                  layout="fill"
-                  objectFit="cover"
-                  objectPosition="center"
-                />
-                <div className="w-full overflow-auto bg-white sm:rounded-xl xl:w-4/6 lg:w-5/6 md:w-5/6 z-20 sm:full mb-12 md:mb-0">
-                  {children}
-                </div>
+        <body
+          className={`${inter.className} flex md:flex-row w-screen min-h-screen overflow-hidden border-0 font-display`}
+        >
+          <Navbar
+            items={items}
+            logo={
+              <Image
+                alt="Logo"
+                height={80}
+                src={Logo}
+                width={64}
+                className="w-16 h-20"
+              />
+            }
+          />
+          <div className="flex-1 overflow-y-auto overflow-x-hidden">
+            <div className="w-full h-screen overflow-hidden flex flex-col justify-center items-center -z-10">
+              <Image
+                src={BgImage}
+                alt="Repas de famille"
+                layout="fill"
+                objectFit="cover"
+                objectPosition="center"
+              />
+              <div className="w-full overflow-auto bg-white sm:rounded-xl xl:w-4/6 lg:w-5/6 md:w-5/6 z-20 sm:full mb-12 md:mb-0">
+                {children}
               </div>
-              );
             </div>
-          </body>
-        </DeliveriesProvider>
+            );
+          </div>
+        </body>
       </UserProvider>
     </html>
   );

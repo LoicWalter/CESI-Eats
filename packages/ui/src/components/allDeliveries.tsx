@@ -33,6 +33,12 @@ export function AllDeliveries(): JSX.Element {
 }
 
 export function Delivery({ deliveryId, deliveryName, address }: DeliveryProps): JSX.Element {
+  const [show, setShow] = React.useState(true);
+
+  if (!show) {
+    return <></>;
+  }
+
   return (
     <div className="ui-relative ui-w-full ui-min-h-[20%] ui-overflow-hidden ui-border-b-gray-1 ui-border-b-[0.0625rem]">
       <div className="ui-flex ui-justify-center ui-w-full ui-h-full ui-bg-blue-100  ui-select-none"></div>
@@ -71,7 +77,10 @@ export function Delivery({ deliveryId, deliveryName, address }: DeliveryProps): 
         >
           <TaskAltRounded className="ui-text-green-600 active:ui-text-green-900 ui-w-full ui-h-full" />
         </button>
-        <button className="ui-w-8 ui-h-full ui-mr-0.5">
+        <button
+          className="ui-w-8 ui-h-full ui-mr-0.5"
+          onClick={() => setShow(false)}
+        >
           <HighlightOffRounded className="ui-text-red-600 active:ui-text-red-900 ui-w-full ui-h-full" />
         </button>
       </div>
