@@ -6,6 +6,8 @@
 # Build dependencies
 dist.do
 node_modules
+dist
+.next
 
 # Environment (contains sensitive data)
 *.env*

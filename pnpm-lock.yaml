@@ -223,9 +223,6 @@ importers:
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
-      dayjs:
-        specifier: ^1.11.11
-        version: 1.11.11
       formik:
         specifier: ^2.4.6
         version: 2.4.6(react@18.3.1)
@@ -238,9 +235,6 @@ importers:
       react:
         specifier: ^18.2.0
         version: 18.3.1
-      react-dayjs:
-        specifier: ^0.3.2
-        version: 0.3.2(dayjs@1.11.11)(react@18.3.1)
       react-dom:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
@@ -475,6 +469,9 @@ importers:
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      dayjs:
+        specifier: ^1.11.11
+        version: 1.11.11
       formik:
         specifier: ^2.4.6
         version: 2.4.6(react@18.3.1)
@@ -487,6 +484,9 @@ importers:
       react:
         specifier: ^18.2.0
         version: 18.3.1
+      react-dayjs:
+        specifier: ^0.3.2
+        version: 0.3.2(dayjs@1.11.11)(react@18.3.1)
       react-dom:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
@@ -589,6 +589,9 @@ importers:
       '@mui/styles':
         specifier: ^5.15.19
         version: 5.15.19(@types/react@18.3.3)(react@18.3.1)
+      dayjs:
+        specifier: ^1.11.11
+        version: 1.11.11
       formik:
         specifier: ^2.4.6
         version: 2.4.6(react@18.3.1)
@@ -604,6 +607,9 @@ importers:
       react:
         specifier: ^18.2.0
         version: 18.3.1
+      react-dayjs:
+        specifier: ^0.3.2
+        version: 0.3.2(dayjs@1.11.11)(react@18.3.1)
       react-dom:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)

@@ -13,12 +13,12 @@ export interface TotalProfitProps {
   icon?: React.ReactNode;
 }
 
-export default function TotalProfit({ value, title, icon }: TotalProfitProps): React.JSX.Element {
+export function TotalProfit({ value, title, icon }: TotalProfitProps): React.JSX.Element {
   return (
-    <Card className="w-full h-full">
+    <Card className="ui-w-full ui-h-full">
       <CardContent>
         <Stack
-          className="flex justify-between items-center w-full flex-row gap-3"
+          className="ui-flex ui-justify-between ui-items-center ui-w-full ui-flex-row ui-gap-3"
           spacing={3}
         >
           <Stack spacing={1}>
@@ -30,7 +30,7 @@ export default function TotalProfit({ value, title, icon }: TotalProfitProps): R
             </Typography>
             <Typography variant="h4">{value}</Typography>
           </Stack>
-          <Avatar className="bg-primary">{{ icon } ? icon : <ReceiptOutlined />}</Avatar>
+          <Avatar className="ui-bg-primary">{{ icon } ? icon : <ReceiptOutlined />}</Avatar>
         </Stack>
       </CardContent>
     </Card>

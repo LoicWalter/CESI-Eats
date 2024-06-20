@@ -178,7 +178,7 @@ export default function page({ params }: { params: { id: string } }): JSX.Elemen
             />
             <div className="flex flex-row items-center justify-between w-full gap-4 mt-6">
               <Link
-                href="/restaurant/management"
+                href={`/restaurant/${id}`}
                 className="w-1/2"
               >
                 <StyledOutlinedButton
