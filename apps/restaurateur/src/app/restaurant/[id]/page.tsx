@@ -133,15 +133,16 @@ export default function Page(): JSX.Element {
               </div>
             ))}
           </div>
-          <Link href={`/restaurant/${restaurant.id}/historique`}>
-            <StyledButton
-              type="button"
-              className="mt-4"
-            >
-              Accéder aux commandes
-            </StyledButton>
-          </Link>
+
           <div className="flex justify-start flex-row gap-2">
+            <Link href={`/restaurant/${restaurant.id}/historique`}>
+              <StyledButton
+                type="button"
+                className="mt-4"
+              >
+                Accéder aux commandes
+              </StyledButton>
+            </Link>
             <Link href={`/restaurant/${restaurant.id}/menu`}>
               <StyledButton
                 type="button"
