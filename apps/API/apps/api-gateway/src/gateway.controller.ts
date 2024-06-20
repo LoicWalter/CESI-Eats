@@ -290,6 +290,42 @@ export class GatewayController {
     return this.gatewayService.getAllDeliveryOrders(user, type);
   }
 
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.CLIENT)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('/clients/deliveries/:deliveryId')
+  getClientDelivery(@CurrentUser() user: User, @Param('deliveryId') deliveryId: string) {
+    return this.gatewayService.getClientDelivery(user, deliveryId);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.CLIENT)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('/clients/deliveries')
+  getClientDeliveries(@CurrentUser() user: User) {
+    return this.gatewayService.getAllClientDeliveries(user);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.RESTAURATEUR)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('/restaurants/:restaurantId/deliveries/:deliveryId')
+  getRestaurantDelivery(
+    @CurrentUser() user: User,
+    @Param('restaurantId') restaurantId: string,
+    @Param('deliveryId') deliveryId: string,
+  ) {
+    return this.gatewayService.getRestaurantDelivery(user, restaurantId, deliveryId);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  // @Roles(Role.RESTAURATEUR)
+  @UseGuards(ApiKeyGuard, JwtAuthGuard)
+  @Get('/restaurants/:restaurantId/deliveries')
+  getRestaurantDeliveries(@CurrentUser() user: User, @Param('restaurantId') restaurantId: string) {
+    return this.gatewayService.getAllRestaurantDeliveries(user, restaurantId);
+  }
+
   //-------------------------------Restaurant--------------------------------
 
   @ApiBody({ type: CreateRestaurantDto })

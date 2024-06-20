@@ -7,8 +7,11 @@ import {
   DeliveryMessage,
   EditDeliveryStatusMessage,
   GetAllDeliveryOrdersMessage,
-  GetDeliveryOrderMessage,
+  GetDeliveryMessage,
+  GetRestaurantDeliveriesMessage,
+  GetRestaurantDeliveryMessage,
 } from 'libs/common';
+import { User } from '@gen/client/users';
 
 @Controller()
 export class DeliveriesController {
@@ -28,7 +31,7 @@ export class DeliveriesController {
 
   @UseFilters(new UnprocessableEntityExceptionFilter())
   @MessagePattern(DeliveryMessage.GET_DELIVERY_ORDER)
-  handleDeliveryOrderGot(data: GetDeliveryOrderMessage) {
+  handleDeliveryOrderGot(data: GetDeliveryMessage) {
     return this.deliveriesService.getDeliveryOrder(data);
   }
 
@@ -36,5 +39,29 @@ export class DeliveriesController {
   @MessagePattern(DeliveryMessage.GET_DELIVERY_ORDERS)
   handleDeliveredOrdersGot(data: GetAllDeliveryOrdersMessage) {
     return this.deliveriesService.getAllDeliveredOrders(data);
+  }
+
+  @UseFilters(new UnprocessableEntityExceptionFilter())
+  @MessagePattern(DeliveryMessage.GET_CLIENT_DELIVERY)
+  handleClientDeliveryGot(data: GetDeliveryMessage) {
+    return this.deliveriesService.getClientDelivery(data);
+  }
+
+  @UseFilters(new UnprocessableEntityExceptionFilter())
+  @MessagePattern(DeliveryMessage.GET_CLIENT_DELIVERIES)
+  handleClientDeliveriesGot(user: User) {
+    return this.deliveriesService.getAllClientDeliveries(user);
+  }
+
+  @UseFilters(new UnprocessableEntityExceptionFilter())
+  @MessagePattern(DeliveryMessage.GET_RESTAURANT_DELIVERY)
+  handleRestaurantDeliveryGot(data: GetRestaurantDeliveryMessage) {
+    return this.deliveriesService.getRestaurantDelivery(data);
+  }
+
+  @UseFilters(new UnprocessableEntityExceptionFilter())
+  @MessagePattern(DeliveryMessage.GET_RESTAURANT_DELIVERIES)
+  handleRestaurantDeliveriesGot(data: GetRestaurantDeliveriesMessage) {
+    return this.deliveriesService.getRestaurantDeliveries(data);
   }
 }
