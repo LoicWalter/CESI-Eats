@@ -1,4 +1,5 @@
 export * from './addressAutocomplete';
+export * from './allDeliveries';
 export * from './allRestaurants';
 export * from './cardCarousel';
 export * from './circularAddButton';
@@ -6,6 +7,7 @@ export * from './circularArrowBackButton';
 export * from './circularEditButton';
 export * from './circularSearchButton';
 export * from './clickableImageInput';
+export * from './deliveryButtons';
 export * from './dietsIcons';
 export * from './helperText';
 export * from './loginPage';
