@@ -99,6 +99,22 @@ services:
     networks:
       - api
 
+  notifications-service:
+    build:
+      context: .
+      dockerfile: ./apps/notifications-service/Dockerfile
+      target: development
+    command: pnpm run start:dev notifications-service
+    env_file:
+      - ./.docker.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - rabbitmq
+    networks:
+      - api
+
   rabbitmq:
     image: rabbitmq
     ports:

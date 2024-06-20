@@ -87,6 +87,20 @@ services:
     networks:
       - api
 
+  notifications-service:
+    container_name: notifications-service
+    build:
+      context: .
+      dockerfile: ./apps/notifications-service/Dockerfile
+    env_file:
+      - ./.prod.env
+    depends_on:
+      - rabbitmq
+      - gateway
+    restart: always
+    networks:
+      - api
+
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq

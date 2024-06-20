@@ -16,6 +16,7 @@ import { AuthGatewayModule } from './auth-gateway/auth-gateway.module';
     RmqModule.register({ name: Microservices.DELIVERIES }),
     RmqModule.register({ name: Microservices.AUTH }),
     RmqModule.register({ name: Microservices.STATISTICS }),
+    RmqModule.register({ name: Microservices.NOTIFICATIONS }),
     AuthModule,
     AuthGatewayModule,
   ],

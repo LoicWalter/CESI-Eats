@@ -65,6 +65,7 @@ export class GatewayService {
     @Inject(Microservices.RESTAURANTS) private readonly menusService: ClientProxy,
     @Inject(Microservices.DELIVERIES) private readonly deliveriesService: ClientProxy,
     @Inject(Microservices.STATISTICS) private readonly statisticsService: ClientProxy,
+    @Inject(Microservices.NOTIFICATIONS) private readonly notificationsService: ClientProxy,
   ) {}
 
   errorManagement(error: any) {
