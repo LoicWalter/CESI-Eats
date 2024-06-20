@@ -8,8 +8,8 @@ export default function HomePage() {
   const [search, setSearch] = useState('');
   return (
     <SearchWrapper setSearch={setSearch}>
-      <div className="flex flex-col gap-8 w-full">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+      <div className="flex flex-col w-full gap-8">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5">
           {restaurants
             .filter((restaurant) => restaurant.name?.includes(search))
             .map((restaurant) => (

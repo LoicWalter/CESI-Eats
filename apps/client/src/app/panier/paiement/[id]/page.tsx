@@ -28,9 +28,9 @@ import {
 } from '@repo/ui';
 import { Cancel, Check, CheckCircle, Close, CreditCard, Edit } from '@mui/icons-material';
 import { getRestaurant } from '@repo/ui/actions/get-restaurants.ts';
-import { submitOrder } from '@repo/ui/actions/submit-order.ts';
 import Link from 'next/link';
 import { useFormState } from 'react-dom';
+import { createOrderDelivery } from '@repo/ui/actions/create-orderDelivery.ts';
 
 const card = (
   cardOwner: string | null,
@@ -95,7 +95,7 @@ type CommandeFormik = {
 
 export default function OrderDetails({ params }: { params: { id: string } }) {
   const { id } = params;
-  const [state, formAction] = useFormState(submitOrder, { state: '' });
+  const [state, formAction] = useFormState(createOrderDelivery, { state: '' });
   const [fullRestaurant, setFullRestaurant] = React.useState<RestaurantsContextType>({});
   const [openConfirmationModal, setOpenConfirmationModal] = React.useState(false);
   const { cartFromRestaurant, getTotalPrice, deleteRestaurantCart } = useCart(id);
@@ -135,18 +135,18 @@ export default function OrderDetails({ params }: { params: { id: string } }) {
         validationSchema={schema}
         onSubmit={(values: CommandeFormik) => {
           setOpenConfirmationModal(true);
+          if (!cartFromRestaurant) return;
           const dataOrder = {
             restaurant: id,
-            client: user.id || '',
             price: getTotalPrice(id) + 2,
-            items: cartFromRestaurant?.reduce((acc, { object, quantity, type }) => {
+            items: cartFromRestaurant.reduce((acc, { object, quantity, type }) => {
               if (type === 'menu') return acc;
               for (let i = 0; i < quantity; i++) {
                 acc.push(object.id);
               }
               return acc;
             }, [] as string[]),
-            menus: cartFromRestaurant?.reduce((acc, { object, quantity, type }) => {
+            menus: cartFromRestaurant.reduce((acc, { object, quantity, type }) => {
               if (type === 'item') return acc;
               for (let i = 0; i < quantity; i++) {
                 acc.push(object.id);
@@ -167,94 +167,80 @@ export default function OrderDetails({ params }: { params: { id: string } }) {
             onSubmit={formik.handleSubmit}
             className="flex w-full"
           >
-            <div className="flex flex-col items-center justify-center w-full h-full md:h-screen md:overflow-hidden">
-              <Image
-                src={BgImage}
-                alt="Repas de famille"
-                layout="fill"
-                objectFit="cover"
-                objectPosition="center"
-              />
-              <Container
-                maxWidth="md"
-                className="z-20 flex justify-center h-full overflow-auto bg-white item-center"
+            <div className="flex flex-col w-full h-full gap-12 p-6 md:p-12 item-center md:justify-between">
+              <Typography
+                variant="h3"
+                className="mb-2 font-bold md:mb-6"
               >
-                <div className="flex flex-col w-full gap-12 px-6 mt-2 md:p-12 item-center md:justify-between">
-                  <Typography
-                    variant="h3"
-                    className="mb-2 font-bold md:mb-6"
-                  >
-                    <div className="text-2xl md:text-4xl sm:text-3xl">Détails de la livraison</div>
-                  </Typography>
-                  <div className="flex flex-col w-full mb-4 md:flex-row">
-                    <ImageWithDefaultOnError
-                      src={`${process.env.NEXT_PUBLIC_API_URL}/restaurant-picture/${fullRestaurant.restaurantPicture}`}
+                <div className="text-2xl md:text-4xl sm:text-3xl">Détails de la livraison</div>
+              </Typography>
+              <div className="flex flex-col w-full mb-4 md:flex-row">
+                <ImageWithDefaultOnError
+                  src={`${process.env.NEXT_PUBLIC_API_URL}/restaurant/${fullRestaurant.restaurantPicture}/picture`}
+                  alt={fullRestaurant.name || ''}
+                  width={300}
+                  height={300}
+                  defaultReactNode={
+                    <img
+                      src={'https://via.placeholder.com/300'}
                       alt={fullRestaurant.name || ''}
-                      width={300}
-                      height={300}
-                      defaultReactNode={
-                        <img
-                          src={'https://via.placeholder.com/300'}
-                          alt={fullRestaurant.name || ''}
-                          className="object-cover object-center rounded"
-                        />
-                      }
-                      forceDefault={!fullRestaurant.restaurantPicture}
+                      className="object-cover object-center rounded"
                     />
-                    <div className="flex flex-col w-full gap-3 mt-2 md:ml-8 md:mt-0">
-                      <div className="flex flex-col gap-1">
-                        <Typography
-                          variant="h5"
-                          className="font-bold"
-                        >
-                          <div className="text-lg md:text-2xl sm:text-xl">
-                            {fullRestaurant.name}
-                          </div>
-                        </Typography>
-                        <Typography variant="h5">
-                          <div className="text-sm md:text-base">{fullRestaurant.address}</div>
-                        </Typography>
-                      </div>
-                      <div className="flex flex-col w-full gap-2">
-                        <div className="flex flex-col w-full gap-2">
+                  }
+                  forceDefault={!fullRestaurant.restaurantPicture}
+                />
+                <div className="flex flex-col w-full gap-3 mt-2 md:ml-8 md:mt-0">
+                  <div className="flex flex-col gap-1">
+                    <Typography
+                      variant="h5"
+                      className="font-bold"
+                    >
+                      <div className="text-lg md:text-2xl sm:text-xl">{fullRestaurant.name}</div>
+                    </Typography>
+                    <Typography variant="h5">
+                      <div className="text-sm md:text-base">{fullRestaurant.address}</div>
+                    </Typography>
+                  </div>
+                  <div className="flex flex-col w-full gap-2">
+                    <div className="flex flex-col w-full gap-2">
+                      <Typography
+                        variant="h6"
+                        className="font-bold"
+                      >
+                        <div className="text-base md:text-xl">Adresse de livraison</div>
+                      </Typography>
+                      <StyledTextField
+                        fullWidth
+                        variant="standard"
+                        name="deliveryAddress"
+                        value={formik.values.deliveryAddress}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={Boolean(
+                          formik.errors.deliveryAddress && formik.touched.deliveryAddress,
+                        )}
+                        helperText={
+                          formik.errors.deliveryAddress && formik.touched.deliveryAddress
+                            ? formik.errors.deliveryAddress
+                            : ''
+                        }
+                        InputProps={{
+                          className: `${formik.errors.deliveryAddress && formik.touched.deliveryAddress ? 'bg-red-100' : ''}`,
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <FormControl fullWidth>
+                        <div className="flex flex-col gap-2">
                           <Typography
                             variant="h6"
                             className="font-bold"
                           >
-                            <div className="text-base md:text-xl">Adresse de livraison</div>
+                            <div className="text-base md:text-xl">Carte banquaire</div>
                           </Typography>
-                          <StyledTextField
-                            fullWidth
-                            variant="standard"
-                            name="deliveryAddress"
-                            value={formik.values.deliveryAddress}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={Boolean(
-                              formik.errors.deliveryAddress && formik.touched.deliveryAddress,
-                            )}
-                            helperText={
-                              formik.errors.deliveryAddress && formik.touched.deliveryAddress
-                                ? formik.errors.deliveryAddress
-                                : ''
-                            }
-                            InputProps={{
-                              className: `${formik.errors.deliveryAddress && formik.touched.deliveryAddress ? 'bg-red-100' : ''}`,
-                            }}
-                          />
-                        </div>
-                        <div>
-                          <FormControl fullWidth>
-                            <div className="flex flex-col gap-2">
-                              <Typography
-                                variant="h6"
-                                className="font-bold"
-                              >
-                                <div className="text-base md:text-xl">Carte banquaire</div>
-                              </Typography>
-                              <div className="flex flex-row items-center gap-2">
-                                <div
-                                  className={`flex flex-row justify-between items-center w-full
+                          <div className="flex flex-row items-center gap-2">
+                            <div
+                              className={`flex flex-row justify-between items-center w-full
                                   ${
                                     (formik.errors.cardOwner && formik.touched.cardOwner) ||
                                     (formik.errors.cardNumber && formik.touched.cardNumber) ||
@@ -264,134 +250,131 @@ export default function OrderDetails({ params }: { params: { id: string } }) {
                                       ? 'bg-red-100'
                                       : ''
                                   }`}
-                                >
-                                  <div className="flex flex-row items-center gap-2">
-                                    <CreditCard className="opacity-55" />
-                                    <Typography variant="body1">
-                                      {card(
-                                        formik.values.cardOwner,
-                                        formik.values.cardNumber,
-                                        formik.values.cardExpiration,
-                                        formik.values.cardCvc,
-                                      )}
-                                    </Typography>
-                                  </div>
-                                  <IconButton
-                                    className="p-0"
-                                    onClick={handleClickOpen}
-                                  >
-                                    <Edit />
-                                  </IconButton>
-                                  <Modal
-                                    open={open}
-                                    onClose={handleClose}
-                                    className="flex items-center justify-center"
-                                    title="Ajouter une carte banquaire"
-                                  >
-                                    <div className="relative p-8 m-8 rounded-lg bg-gray-5">
-                                      <IconButton
-                                        className="absolute top-4 right-4"
-                                        onClick={handleClose}
-                                      >
-                                        <Close />
-                                      </IconButton>
-                                      <PaymentForm formik={formik} />
-                                      <StyledButton
-                                        variant="contained"
-                                        className="w-full py-2 mt-8 text-white rounded-lg bg-primary hover:bg-secondary border-primary hover:border-secondary"
-                                        onClick={handleClose}
-                                      >
-                                        Enregistrer
-                                      </StyledButton>
-                                    </div>
-                                  </Modal>
-                                </div>
+                            >
+                              <div className="flex flex-row items-center gap-2">
+                                <CreditCard className="opacity-55" />
+                                <Typography variant="body1">
+                                  {card(
+                                    formik.values.cardOwner,
+                                    formik.values.cardNumber,
+                                    formik.values.cardExpiration,
+                                    formik.values.cardCvc,
+                                  )}
+                                </Typography>
                               </div>
-                              <Divider />
+                              <IconButton
+                                className="p-0"
+                                onClick={handleClickOpen}
+                              >
+                                <Edit />
+                              </IconButton>
+                              <Modal
+                                open={open}
+                                onClose={handleClose}
+                                className="flex items-center justify-center"
+                                title="Ajouter une carte banquaire"
+                              >
+                                <div className="relative p-8 m-8 rounded-lg bg-gray-5">
+                                  <IconButton
+                                    className="absolute top-4 right-4"
+                                    onClick={handleClose}
+                                  >
+                                    <Close />
+                                  </IconButton>
+                                  <PaymentForm formik={formik} />
+                                  <StyledButton
+                                    variant="contained"
+                                    className="w-full py-2 mt-8 text-white rounded-lg bg-primary hover:bg-secondary border-primary hover:border-secondary"
+                                    onClick={handleClose}
+                                  >
+                                    Enregistrer
+                                  </StyledButton>
+                                </div>
+                              </Modal>
                             </div>
-                          </FormControl>
+                          </div>
+                          <Divider />
                         </div>
-                      </div>
+                      </FormControl>
                     </div>
                   </div>
-                  <div className="w-full">
-                    <Paper
-                      className="p-4"
-                      elevation={3}
-                    >
-                      <div className="flex flex-col gap-4">
-                        <div className="flex flex-col gap-2">
-                          <Suspense fallback={<div>Loading...</div>}>
-                            {cartFromRestaurant?.map(({ object, quantity }) => (
-                              <div
-                                className="flex flex-row justify-between w-full"
-                                key={object.id}
-                              >
-                                <Typography variant="body1">
-                                  {object.name} x {quantity}
-                                </Typography>
-                                <Typography
-                                  variant="body1"
-                                  className="flex items-center justify-center text-right"
-                                >
-                                  {quantity} x {object.price || 0}€ ={' '}
-                                  {(object.price || 0) * quantity}€
-                                </Typography>
-                              </div>
-                            ))}
-                          </Suspense>
-                          <div className="flex flex-row justify-between w-full">
-                            <Typography variant="body1">Frais de livraison</Typography>
+                </div>
+              </div>
+              <div className="w-full">
+                <Paper
+                  className="p-4"
+                  elevation={3}
+                >
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-2">
+                      <Suspense fallback={<div>Loading...</div>}>
+                        {cartFromRestaurant?.map(({ object, quantity }) => (
+                          <div
+                            className="flex flex-row justify-between w-full"
+                            key={object.id}
+                          >
+                            <Typography variant="body1">
+                              {object.name} x {quantity}
+                            </Typography>
                             <Typography
                               variant="body1"
                               className="flex items-center justify-center text-right"
                             >
-                              2€
+                              {quantity} x {object.price || 0}€ = {(object.price || 0) * quantity}€
                             </Typography>
                           </div>
-                        </div>
-                        <Divider />
-                        <div className="flex flex-row justify-between w-full">
-                          <Typography
-                            variant="body1"
-                            className="font-bold"
-                          >
-                            Total :
-                          </Typography>
-                          <Typography
-                            variant="body1"
-                            className="flex items-center justify-center font-bold text-right"
-                          >
-                            {getTotalPrice(id) + 2}€
-                          </Typography>
-                        </div>
-                      </div>
-                    </Paper>
-                  </div>
-                  <div className="flex justify-between w-full mt-6">
-                    <div className="flex flex-row items-center justify-end w-full gap-4 pb-4 md:pb-0">
-                      <Link
-                        href={`/panier`}
-                        className="w-full md:w-1/3"
-                      >
-                        <StyledOutlinedButton
-                          variant="outlined"
-                          className="w-full rounded-lg text-primary hover:text-secondary border-primary hover:border-secondary"
+                        ))}
+                      </Suspense>
+                      <div className="flex flex-row justify-between w-full">
+                        <Typography variant="body1">Frais de livraison</Typography>
+                        <Typography
+                          variant="body1"
+                          className="flex items-center justify-center text-right"
                         >
-                          Annuler
-                        </StyledOutlinedButton>
-                      </Link>
-                      <StyledButton
-                        variant="contained"
-                        type="submit"
-                        className="w-full text-white rounded-lg bg-primary hover:bg-secondary border-primary hover:border-secondary md:w-1/3"
+                          2€
+                        </Typography>
+                      </div>
+                    </div>
+                    <Divider />
+                    <div className="flex flex-row justify-between w-full">
+                      <Typography
+                        variant="body1"
+                        className="font-bold"
                       >
-                        Commander
-                      </StyledButton>
+                        Total :
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        className="flex items-center justify-center font-bold text-right"
+                      >
+                        {getTotalPrice(id) + 2}€
+                      </Typography>
                     </div>
                   </div>
+                </Paper>
+              </div>
+              <div className="flex justify-between w-full pt-6">
+                <div className="flex flex-row items-center justify-end w-full gap-4 pb-4 md:pb-0">
+                  <Link
+                    href={`/panier`}
+                    className="w-full md:w-1/3"
+                  >
+                    <StyledOutlinedButton
+                      variant="outlined"
+                      className="w-full rounded-lg text-primary hover:text-secondary border-primary hover:border-secondary"
+                    >
+                      Annuler
+                    </StyledOutlinedButton>
+                  </Link>
+                  <StyledButton
+                    variant="contained"
+                    type="submit"
+                    className="w-full text-white rounded-lg bg-primary hover:bg-secondary border-primary hover:border-secondary md:w-1/3"
+                  >
+                    Commander
+                  </StyledButton>
                 </div>
-              </Container>
+              </div>
             </div>
           </form>
         )}
@@ -420,21 +403,20 @@ export default function OrderDetails({ params }: { params: { id: string } }) {
                   ? "Une erreur est survenue lors de l'enregistrement de votre commande"
                   : 'Veuillez patienter...'}
             </Typography>
-            {state.state === 'success' ||
-              (state.state === 'error' && (
-                <Link
-                  href="/"
-                  className="w-full"
+            {state.state === 'success' || state.state === 'error' ? (
+              <Link
+                href="/"
+                className="w-full"
+              >
+                <StyledButton
+                  variant="contained"
+                  className="w-full py-2 text-white rounded-lg bg-primary hover:bg-secondary border-primary hover:border-secondary"
+                  onClick={handleClose}
                 >
-                  <StyledButton
-                    variant="contained"
-                    className="w-full py-2 text-white rounded-lg bg-primary hover:bg-secondary border-primary hover:border-secondary"
-                    onClick={handleClose}
-                  >
-                    Retour à l'accueil
-                  </StyledButton>
-                </Link>
-              ))}
+                  Retour à l'accueil
+                </StyledButton>
+              </Link>
+            ) : null}
           </div>
         </div>
       </Modal>

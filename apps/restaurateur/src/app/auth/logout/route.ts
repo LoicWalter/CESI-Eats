@@ -10,7 +10,7 @@ export async function GET() {
       cookies().delete(cookie.name);
     });
   revalidateTag(Tags.ME);
-  redirect(defaultWebRoutes.RESTAURATEUR);
+  redirect(defaultWebRoutes.RESTAURATEUR + '/' + defaultWebRoutes.LOGIN);
 }
 
 export async function POST() {
@@ -20,5 +20,5 @@ export async function POST() {
       cookies().delete(cookie.name);
     });
   revalidateTag(Tags.ME);
-  redirect(defaultWebRoutes.RESTAURATEUR);
+  redirect(defaultWebRoutes.RESTAURATEUR + '/' + defaultWebRoutes.LOGIN);
 }

@@ -11,7 +11,7 @@ function Panier() {
   const { cart, getTotalPrice, deleteRestaurantCart } = useCart();
   const restaurants = useRestaurants();
   return (
-    <div className="flex flex-col gap-12 p-12">
+    <div className="flex flex-col gap-12 md:p-12">
       <Typography
         variant="h3"
         textAlign={'center'}

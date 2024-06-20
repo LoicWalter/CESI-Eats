@@ -18,6 +18,8 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import {
   IconWithTooltip,
   ImageWithDefaultOnError,
+  itemCategory,
+  itemRegime,
   RestaurantsContextType,
   useCart,
 } from '@repo/ui';
@@ -36,37 +38,6 @@ type MenuWithItems = PrismaRestaurants.Prisma.menuGetPayload<{
   };
 }>;
 type Item = PrismaRestaurants.Prisma.itemGetPayload<{}>;
-
-const itemCategory = [
-  { value: 'entree', label: 'Entrée' },
-  { value: 'plat', label: 'Plat' },
-  { value: 'dessert', label: 'Dessert' },
-  { value: 'boisson', label: 'Boisson' },
-  { value: 'autres', label: 'Autres' },
-];
-
-const itemRegime = [
-  {
-    value: 'vegan',
-    label: 'Vegan',
-    image: Vegan,
-  },
-  {
-    value: 'vegetarien',
-    label: 'Végétarien',
-    image: Vegetarien,
-  },
-  {
-    value: 'Poisson',
-    label: 'Poisson',
-    image: Poisson,
-  },
-  {
-    value: 'viande',
-    label: 'Viande',
-    image: Viande,
-  },
-];
 
 export default function Page({ params }: { params: { id: string } }) {
   const [fullRestaurant, setFullRestaurant] = useState<RestaurantsContextType>(
@@ -146,7 +117,7 @@ export default function Page({ params }: { params: { id: string } }) {
                 <ListItem key={item.id}>
                   <ListItemAvatar>
                     <ImageWithDefaultOnError
-                      src={`${process.env.NEXT_PUBLIC_API_URL}/item-picture/${item.itemPicture}`}
+                      src={`${process.env.NEXT_PUBLIC_API_URL}/item/${item.itemPicture}/picture`}
                       alt={item.name}
                       width={48}
                       height={48}
@@ -185,7 +156,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
       <Box className="flex flex-col gap-4 mb-2 md:flex-row">
         <ImageWithDefaultOnError
-          src={`${process.env.NEXT_PUBLIC_API_URL}/restaurant-picture/${fullRestaurant.restaurantPicture}`}
+          src={`${process.env.NEXT_PUBLIC_API_URL}/restaurant/${fullRestaurant.restaurantPicture}/picture`}
           alt={fullRestaurant.name || ''}
           width={300}
           height={300}
@@ -299,7 +270,7 @@ export default function Page({ params }: { params: { id: string } }) {
                   onClick={() => setModal({ open: true, menu })}
                 >
                   <ImageWithDefaultOnError
-                    src={`${process.env.NEXT_PUBLIC_API_URL}/menu-picture/${menu.menuPicture}`}
+                    src={`${process.env.NEXT_PUBLIC_API_URL}/menu/${menu.menuPicture}/picture`}
                     alt={menu.name!}
                     width={48}
                     height={48}
@@ -421,7 +392,7 @@ export default function Page({ params }: { params: { id: string } }) {
                       >
                         <Paper className="flex flex-col items-start h-full p-4">
                           <ImageWithDefaultOnError
-                            src={`${process.env.NEXT_PUBLIC_API_URL}/item-picture/${item.itemPicture}`}
+                            src={`${process.env.NEXT_PUBLIC_API_URL}/item/${item.itemPicture}/picture`}
                             alt={item.name}
                             width={48}
                             height={48}
