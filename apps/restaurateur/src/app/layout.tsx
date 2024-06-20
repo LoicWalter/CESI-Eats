@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 const items = [
   { icon: <HomeOutlined />, text: 'Accueil', id: '1', href: '/' },
-  { icon: <RestaurantOutlined />, text: 'Gestion', id: '2', href: '/restaurant' },
+  { icon: <RestaurantOutlined />, text: 'Commandes', id: '2', href: '/historique' },
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {

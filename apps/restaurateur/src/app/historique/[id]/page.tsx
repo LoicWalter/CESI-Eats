@@ -5,17 +5,38 @@ import animationCooking from '../../../assets/animationCooking.gif';
 import animationDeliveryBoy from '../../../assets/animationDeliveryBoy.gif';
 import animationIsReady from '../../../assets/animationIsReady.gif';
 import animationThumbsUp from '../../../assets/animationThumbsUp.gif';
-import { Button, Step, StepButton, StepLabel, Stepper, Typography } from '@mui/material';
+import {
+  Button,
+  Step,
+  StepButton,
+  StepContent,
+  StepLabel,
+  Stepper,
+  Typography,
+} from '@mui/material';
 import Image from 'next/image';
 
 const steps = [
-  { key: 1, label: 'Vous avez acceptée la commande, cette dernière est en préparation !' },
+  {
+    key: 1,
+    label: 'Vous avez acceptée la commande, cette dernière est en préparation !',
+    description: 'Vous avez acceptée la commande, cette dernière est en préparation !',
+  },
   {
     key: 2,
-    label: 'Vous avez terminez de préparer la commande, un livreur va venir la récupérer.',
+    label: 'La commande est préparée',
+    description: 'Vous avez terminez de préparer la commande, un livreur va venir la récupérer.',
   },
-  { key: 3, label: 'La commande a été remise à un livreur !' },
-  { key: 4, label: 'Bravo ! La commande a été remise au client !' },
+  {
+    key: 3,
+    label: 'La commande a été remise à un livreur',
+    description: 'La commande a été remise à un livreur !',
+  },
+  {
+    key: 4,
+    label: 'Le client a récupéré sa commande',
+    description: 'Bravo ! La commande a été remise au client !',
+  },
 ];
 
 export default function page() {
@@ -68,20 +89,20 @@ export default function page() {
 
   return (
     <div className="flex w-full flex-col">
-      <Stepper
-        activeStep={activeStep}
-        alternativeLabel
-      >
-        {steps.map((step, index) => (
-          <Step
-            key={step.key}
-            completed={completed[index]}
-          >
-            <StepLabel>{step.label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
       <div>
+        <div className="w-full flex sm:hidden">
+          <StepperResponsive
+            orientation="vertical"
+            activeStep={activeStep}
+            completed={completed}
+          />
+        </div>
+        <div className="w-full sm:flex hidden">
+          <StepperResponsive
+            activeStep={activeStep}
+            completed={completed}
+          />
+        </div>
         {activeStep === 1 && (
           <div className="w-full flex flex-col items-center justify-center">
             <Image
@@ -146,5 +167,40 @@ export default function page() {
         )}
       </div>
     </div>
+  );
+}
+
+interface StepperResponsiveProps {
+  orientation?: 'horizontal' | 'vertical';
+  activeStep: number;
+  completed: { [k: number]: boolean };
+}
+
+function StepperResponsive({ orientation, activeStep, completed }: StepperResponsiveProps) {
+  return (
+    <Stepper
+      activeStep={activeStep}
+      {...(orientation === 'vertical' ? { alternativeLabel: false } : { alternativeLabel: true })}
+      orientation={orientation}
+      className="w-full flex "
+    >
+      {steps.map((step, index) => (
+        <Step
+          key={step.key}
+          completed={completed[index]}
+        >
+          {orientation === 'vertical' ? (
+            <>
+              <StepLabel>{step.label}</StepLabel>
+              <StepContent>
+                <Typography>{step.description}</Typography>
+              </StepContent>
+            </>
+          ) : (
+            <StepLabel>{step.description}</StepLabel>
+          )}
+        </Step>
+      ))}
+    </Stepper>
   );
 }

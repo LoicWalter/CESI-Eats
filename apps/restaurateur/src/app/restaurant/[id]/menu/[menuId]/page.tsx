@@ -50,7 +50,7 @@ export default function EditMenu({
         variant="h4"
         className="font-bold"
       >
-        Ajouter un menu
+        Modifier un menu
       </Typography>
       {state.error && (
         <Alert
@@ -100,7 +100,7 @@ export default function EditMenu({
               handleFile={(file) => setFieldValue('menu-picture', file)}
               defaultValue={
                 <ImageWithDefaultOnError
-                  src={`${process.env.NEXT_PUBLIC_API_URL}/menu-picture/${menu?.menuPicture}`}
+                  src={`${process.env.NEXT_PUBLIC_API_URL}/menu/${menu?.menuPicture}/picture`}
                   alt="menu-picture"
                   className="w-32 h-32 rounded-full"
                   defaultReactNode={<InsertPhotoOutlined fontSize="large" />}

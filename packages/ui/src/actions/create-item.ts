@@ -12,7 +12,7 @@ export const createItem = async (
   },
 ) => {
   const response = await post<PrismaRestaurants.item>(
-    `/${data.restaurantId}/items`,
+    `/restaurants/${data.restaurantId}/items`,
     {
       body: data.formData,
     },
