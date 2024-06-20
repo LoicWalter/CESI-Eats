@@ -2,32 +2,26 @@
 
 import React from 'react';
 import { Typography, Box, Paper, List, ListItem, ListItemText, Divider } from '@mui/material';
-import { useCommandes, useRestaurants, useDeliveries, translateStatus } from '@repo/ui';
+import { useRestaurant, useDeliveries, translateStatus, useCommandesRestaurant } from '@repo/ui';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 export default function page() {
-  const commandes = useCommandes();
-  const deliveries = useDeliveries();
-  const restaurants = useRestaurants();
-
   const pathname = usePathname();
-
+  const commandes = useCommandesRestaurant();
+  const deliveries = useDeliveries();
+  const restaurant = useRestaurant();
   return (
-    <div className="flex flex-col gap-12 md:p-8">
+    <div className="w-full h-full flex flex-col justify-center items-center gap-4">
       <Typography
         variant="h4"
         className="font-bold"
       >
         Historique des commandes
       </Typography>
-      <Paper
-        className="w-full p-4"
-        elevation={3}
-      >
+      <Paper className="p-4 w-full">
         <List>
           {commandes.map((commande, index) => {
-            const restaurant = restaurants.find((r) => r.id === commande.restaurant);
             const delivery = deliveries.find((d) => d.id === commande.delivery);
             return (
               <Box key={commande.id}>
@@ -35,7 +29,7 @@ export default function page() {
                   <ListItem className="flex flex-col items-center justify-center w-full flex-start">
                     <ListItemText
                       className="w-full"
-                      primary={restaurant?.name}
+                      primary={commande.id}
                       secondary={
                         <>
                           <Typography
@@ -48,8 +42,15 @@ export default function page() {
                           <Typography
                             component="span"
                             variant="body2"
+                            className="font-bold"
                           >
-                            {`${delivery?.deliveryTime ?? 'Pas encore récupéré'}`}
+                            {restaurant?.name}
+                          </Typography>
+                          <Typography
+                            component="span"
+                            variant="body2"
+                          >
+                            {` — ${delivery?.deliveryTime ?? 'Pas encore récupéré'}`}
                           </Typography>
                         </>
                       }

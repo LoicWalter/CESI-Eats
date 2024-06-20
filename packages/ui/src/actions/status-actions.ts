@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidateTag } from 'next/cache';
 import {
   COMMANDE_ACCEPTEE,
   COMMANDE_PASSEE,
@@ -10,7 +11,9 @@ import {
   COMMANDE_RECUPEREE,
   LIVREUR_EN_ROUTE_VERS_CLIENT,
   COMMANDE_LIVREE,
+  Tags,
 } from '../constants';
+import { getErrorMessage, patch } from '../utils';
 
 export const restaurantAcceptOrder = async () => {
   //COMMANDE_PASSEE -> COMMANDE_ACCEPTEE
@@ -39,5 +42,16 @@ export const deliveryPickUpOrder = async () => {
 
 export const deliveryDeliverOrder = async () => {
   //COMMANDE_RECUPEREE -> COMMANDE_LIVREE
+  return;
+};
+
+export const editOrderStatus = async (status: string, restaurantId: string, orderId: string) => {
+  const response = await patch(`/restaurants/${restaurantId}/orders/${orderId}`, {
+    body: JSON.stringify({ status }),
+  });
+  if (!response.res.ok) {
+    return { error: getErrorMessage(response.parsedRes) };
+  }
+  revalidateTag(Tags.RESTO_COMMANDS);
   return;
 };

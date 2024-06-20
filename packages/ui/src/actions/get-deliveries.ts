@@ -1,6 +1,7 @@
 'use server';
 
 import { DeliveriesContextType } from '../context/deliveriesContext';
+import { DeliveriesRestaurantContextType } from '../context/deliveriesRestaurantContext';
 import { getErrorMessage, get } from '../utils';
 
 export const getDeliveries = async () => {

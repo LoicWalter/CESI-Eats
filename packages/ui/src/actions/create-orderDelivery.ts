@@ -28,6 +28,8 @@ export const createOrderDelivery = async (
     };
   }
 
+  console.log(response.parsedRes);
+
   const orderId = response.parsedRes.id;
   data.dataDelivery.order = orderId;
 

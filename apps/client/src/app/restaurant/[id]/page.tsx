@@ -156,7 +156,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
       <Box className="flex flex-col gap-4 mb-2 md:flex-row">
         <ImageWithDefaultOnError
-          src={`${process.env.NEXT_PUBLIC_API_URL}/restaurants/${fullRestaurant.restaurantPicture}/picture`}
+          src={`${process.env.NEXT_PUBLIC_API_URL}/restaurant/${fullRestaurant.restaurantPicture}/picture`}
           alt={fullRestaurant.name || ''}
           width={300}
           height={300}

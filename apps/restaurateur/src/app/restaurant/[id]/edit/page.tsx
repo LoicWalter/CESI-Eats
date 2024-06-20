@@ -119,7 +119,7 @@ export default function EditRestaurant({ params }: { params: { id: string } }): 
               handleFile={(file) => setFieldValue('restaurant-picture', file)}
               defaultValue={
                 <ImageWithDefaultOnError
-                  src={`${process.env.NEXT_PUBLIC_API_URL}/restaurants/${restaurant.restaurantPicture}/picture`}
+                  src={`${process.env.NEXT_PUBLIC_API_URL}/restaurant/${restaurant.restaurantPicture}/picture`}
                   alt="menu-picture"
                   className="w-32 h-32 rounded-full"
                   defaultReactNode={<InsertPhotoOutlined fontSize="large" />}
