@@ -26,3 +26,12 @@ export const getCommandesRestaurant = async (id: string) => {
   }
   return response.parsedRes;
 };
+
+export const getCommandesAdmin = async () => {
+  const response = await get<CommandeContextType[]>(`/admin/orders`, {});
+  if (!response.res.ok) {
+    console.error(response.res);
+    return getErrorMessage(response.parsedRes);
+  }
+  return response.parsedRes;
+};

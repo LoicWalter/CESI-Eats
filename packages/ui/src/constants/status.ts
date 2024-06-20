@@ -70,7 +70,7 @@ export const userSteps = [
   },
   {
     key: 3,
-    status: [COMMANDE_PRETE, LIVREUR_EN_ROUTE_VERS_RESTAURANT],
+    status: [COMMANDE_PRETE, LIVRAISON_ACCEPTEE, LIVREUR_EN_ROUTE_VERS_RESTAURANT],
     label: 'Votre commande est prête',
   },
   {
@@ -80,4 +80,20 @@ export const userSteps = [
   },
 
   { key: 5, status: [COMMANDE_LIVREE], label: 'La commande a été livrée' },
+];
+
+export const livreurSteps = [
+  { key: 0, status: LIVRAISON_ACCEPTEE, label: 'La commande a été acceptée' },
+  {
+    key: 1,
+    status: LIVREUR_EN_ROUTE_VERS_RESTAURANT,
+    label: 'Vous êtes en route vers le restaurant',
+  },
+  { key: 2, status: COMMANDE_RECUPEREE, label: 'Vous avez récupéré la commande' },
+  {
+    key: 3,
+    status: LIVREUR_EN_ROUTE_VERS_CLIENT,
+    label: 'Vous êtes en route vers le client',
+  },
+  { key: 4, status: COMMANDE_LIVREE, label: 'La commande a été livrée' },
 ];

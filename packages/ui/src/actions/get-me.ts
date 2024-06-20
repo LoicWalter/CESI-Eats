@@ -30,3 +30,14 @@ const setUserCookie = (user: UserContextType) => {
     expires: 7 * 24 * 60 * 60,
   });
 };
+
+export const getUser = async (id: string) => {
+  const response = await get<UserContextType>(`/auth/users/${id}`, {});
+
+  if (!response.res.ok) {
+    console.error(response.res);
+    return;
+  }
+
+  return response.parsedRes;
+};

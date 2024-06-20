@@ -121,6 +121,12 @@ export default function page({ params }: { params: { orderId: string } }) {
             >
               {userSteps[activeStep].label}
             </Typography>
+            <Typography
+              variant="body1"
+              className="font-bold"
+            >
+              Mon code de livraison: {delivery?.id?.slice(-2)}
+            </Typography>
             <div className="flex flex-col w-full">
               <Listing
                 menuByQuantity={menuByQuantity!}
