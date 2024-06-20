@@ -57,9 +57,18 @@ export const editOrderStatus = async (status: string, restaurantId: string, orde
 };
 
 export const editDeliveryStatus = async (status: string, deliveryId: string) => {
-  const response = await patch(`/deliveries/${deliveryId}`, {
+  const response = await patch(`/deliveries/${deliveryId}?type=status`, {
     body: JSON.stringify({ status }),
   });
+  if (!response.res.ok) {
+    return { error: getErrorMessage(response.parsedRes) };
+  }
+  revalidateTag(Tags.RESTO_COMMANDS);
+  return;
+};
+
+export const assignDelivery = async (deliveryId: string) => {
+  const response = await patch(`/deliveries/${deliveryId}?type=accept`, {});
   if (!response.res.ok) {
     return { error: getErrorMessage(response.parsedRes) };
   }
