@@ -13,7 +13,7 @@ export const editItem = async (
   },
 ) => {
   const response = await patch<PrismaRestaurants.item>(
-    `/${data.restaurantId}/items/${data.itemId}`,
+    `/restaurants/${data.restaurantId}/items/${data.itemId}`,
     {
       body: data.formData,
     },
@@ -22,5 +22,5 @@ export const editItem = async (
   if (!response.res.ok) {
     return { error: getErrorMessage(response.parsedRes) };
   }
-  redirect(`/restaurant/${data.restaurantId}/management`);
+  redirect(`/restaurant`);
 };

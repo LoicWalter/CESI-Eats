@@ -30,12 +30,14 @@ import {
   GetReceivedOrdersMessage,
   EditOrderStatusMessage,
   EditDeliveryStatusMessage,
-  GetDeliveryOrderMessage,
   GetAllDeliveryOrdersMessage,
   CreateDeliveryMessage,
   GetClientOrderMessage,
   StatisticsMessage,
   GetRestaurantOrdersStatsMessage,
+  GetDeliveryMessage,
+  GetRestaurantDeliveryMessage,
+  GetRestaurantDeliveriesMessage,
 } from 'libs/common';
 import {
   CreateDeliveryDto,
@@ -275,7 +277,7 @@ export class GatewayService {
       const res = await firstValueFrom(
         this.deliveriesService.send(
           DeliveryMessage.GET_DELIVERY_ORDER,
-          new GetDeliveryOrderMessage(user, deliveryId),
+          new GetDeliveryMessage(user, deliveryId),
         ),
       );
       return res;
@@ -290,6 +292,59 @@ export class GatewayService {
         this.deliveriesService.send(
           DeliveryMessage.GET_DELIVERY_ORDERS,
           new GetAllDeliveryOrdersMessage(user, type),
+        ),
+      );
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
+  }
+
+  async getClientDelivery(user: User, deliveryId: string) {
+    try {
+      const res = await firstValueFrom(
+        this.deliveriesService.send(
+          DeliveryMessage.GET_CLIENT_DELIVERY,
+          new GetDeliveryMessage(user, deliveryId),
+        ),
+      );
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
+  }
+
+  async getAllClientDeliveries(user: User) {
+    try {
+      const res = await firstValueFrom(
+        this.deliveriesService.send(DeliveryMessage.GET_CLIENT_DELIVERIES, user),
+      );
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
+  }
+
+  async getRestaurantDelivery(user: User, restaurantId: string, deliveryId: string) {
+    try {
+      const res = await firstValueFrom(
+        this.deliveriesService.send(
+          DeliveryMessage.GET_RESTAURANT_DELIVERY,
+          new GetRestaurantDeliveryMessage(user, restaurantId, deliveryId),
+        ),
+      );
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
+  }
+
+  async getAllRestaurantDeliveries(user: User, restaurantId: string) {
+    try {
+      const res = await firstValueFrom(
+        this.deliveriesService.send(
+          DeliveryMessage.GET_RESTAURANT_DELIVERIES,
+          new GetRestaurantDeliveriesMessage(user, restaurantId),
         ),
       );
       return res;

@@ -13,7 +13,7 @@ export const editMenu = async (
   },
 ) => {
   const response = await patch<PrismaRestaurants.item>(
-    `/${data.restaurantId}/menus/${data.menuId}`,
+    `/restaurants/${data.restaurantId}/menus/${data.menuId}`,
     {
       body: data.formData,
     },
@@ -22,5 +22,5 @@ export const editMenu = async (
   if (!response.res.ok) {
     return { error: getErrorMessage(response.parsedRes) };
   }
-  redirect(`/restaurant/${data.restaurantId}/management`);
+  redirect(`/restaurant`);
 };

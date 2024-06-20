@@ -2,7 +2,7 @@ FROM node:alpine As development
 
 WORKDIR /usr/src/app
 
-RUN npm install -g pnpm@9.1.2 @nestjs/cli
+RUN npm install -g pnpm@9.1.2 @nestjs/cli ts-node typescript '@types/node'
 
 COPY . .
 
@@ -19,7 +19,7 @@ ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /usr/src/app
 
-RUN npm install -g pnpm@9.1.2 @nestjs/cli
+RUN npm install -g pnpm@9.1.2 @nestjs/cli ts-node typescript '@types/node'
 
 COPY package*.json ./
 
@@ -30,6 +30,5 @@ COPY . .
 COPY --from=development /usr/src/app/dist ./dist
 
 RUN pnpm run generate
-
 
 CMD ["node", "dist/apps/auth-service/main"]

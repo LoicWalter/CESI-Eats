@@ -3,11 +3,19 @@
 import { PrismaOrders } from '@api/cesieats';
 import { post } from '../utils';
 
-export const submitOrder = async (
+export const createOrderDelivery = async (
   _: any,
   data: {
-    dataOrder: Record<string, any>;
-    dataDelivery: Record<string, any>;
+    dataOrder: {
+      restaurant: string;
+      items: string[];
+      menus: string[];
+      price: number;
+    };
+    dataDelivery: {
+      order?: string;
+      deliveryAddress: string;
+    };
   },
 ) => {
   const response = await post<PrismaOrders.Order>('/orders', {
@@ -20,12 +28,14 @@ export const submitOrder = async (
     };
   }
 
+  console.log(response.parsedRes);
+
   const orderId = response.parsedRes.id;
+  data.dataDelivery.order = orderId;
 
   const responseDelivery = await post('/deliveries', {
     body: JSON.stringify({
       ...data.dataDelivery,
-      orderId,
     }),
   });
 
