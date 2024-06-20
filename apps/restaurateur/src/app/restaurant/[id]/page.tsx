@@ -67,7 +67,7 @@ export default function Page(): JSX.Element {
 
   return (
     <div className="flex flex-col items-center justify-between h-full">
-      <div className="relative w-full h-[20%] mb-6 overflow-hidden border-b-gray-4 border-b-[0.0625rem] shadow-[0_0.125rem_0.25rem_0_rgba(204,209,212,0.4)] select-none">
+      <div className="relative w-full h-1/5 mb-6 overflow-hidden border-b-gray-4 border-b-[0.0625rem] shadow-[0_0.125rem_0.25rem_0_rgba(204,209,212,0.4)] select-none">
         <div className="flex justify-center w-full h-full bg-secondary">
           <ImageWithDefaultOnError
             src={`${process.env.NEXT_PUBLIC_API_URL}/restaurant/${restaurant.restaurantPicture}/picture`}
@@ -90,7 +90,7 @@ export default function Page(): JSX.Element {
           <CircularEditButton />
         </Link>
       </div>
-      <div className="flex flex-col items-center w-[92%] md:w-[70%] h-[80%]">
+      <div className="flex flex-col items-center w-full h-4/5 gap-4">
         <div className="flex flex-col items-start w-full md:w-full">
           <Typography
             variant="h4"
@@ -214,7 +214,7 @@ export default function Page(): JSX.Element {
             </List>
           </div>
         </Modal>
-        <div className="flex items-center w-full">
+        <div className="flex w-full flex-col gap-4">
           {restaurant.menus && restaurant.menus.length > 0 && (
             <div className="flex flex-col gap-4">
               <Typography
@@ -298,10 +298,10 @@ export default function Page(): JSX.Element {
               </Grid>
             </div>
           )}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 w-full mb-4">
             <Grid
               container
-              spacing={4}
+              spacing={2}
             >
               {itemCategory.map((category) => {
                 const items = restaurant.items?.filter((item) => item.category === category.value);
@@ -312,6 +312,9 @@ export default function Page(): JSX.Element {
                   <Grid
                     item
                     xs={12}
+                    md={6}
+                    lg={4}
+                    className="min-w-full"
                     key={category.value}
                   >
                     <Typography
