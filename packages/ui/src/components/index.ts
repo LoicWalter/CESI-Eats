@@ -1,4 +1,5 @@
 export * from './addressAutocomplete';
+export * from './allRestaurants';
 export * from './cardCarousel';
 export * from './circularAddButton';
 export * from './circularArrowBackButton';

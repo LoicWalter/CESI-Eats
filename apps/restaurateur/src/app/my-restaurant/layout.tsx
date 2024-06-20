@@ -3,11 +3,15 @@ import BgImage from '../../assets/repas-de-famille.jpg';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
-  title: 'Restaurant page',
-  description: 'Restaurant page',
+  title: 'My Restaurant page',
+  description: 'My Restaurant page',
 };
 
-export default function RestaurantLayout({ children }: { children: React.ReactNode }): JSX.Element {
+export default function MyRestaurantLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}): JSX.Element {
   return (
     <div className="w-full h-screen overflow-hidden flex flex-col justify-center items-center">
       <Image
