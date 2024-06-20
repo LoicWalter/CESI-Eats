@@ -88,10 +88,7 @@ export class DeliveriesService {
       }
 
       const order = await firstValueFrom(
-        this.ordersService.send(
-          OrderMessage.GET_CLIENT_ORDER,
-          new GetClientOrderMessage(data.user, delivery.order),
-        ),
+        this.ordersService.send(OrderMessage.GET_ORDER, delivery.order),
       );
       if (order.status === 'COMMANDE_PASSEE') {
         throw new RpcException(ErrorsMessages.ORDER_NOT_AVAILABLE);
