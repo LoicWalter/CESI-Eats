@@ -15,7 +15,11 @@ const restaurants = [
 export default function Page(): JSX.Element {
   return (
     <div className="flex flex-col items-center justify-between h-screen">
-      <AllRestaurants restaurants={restaurants} />
+      <AllRestaurants
+        restaurants={restaurants}
+        buttonNeeded={true}
+        shoppingBag={true}
+      />
     </div>
   );
 }
