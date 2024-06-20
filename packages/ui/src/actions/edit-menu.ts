@@ -13,7 +13,7 @@ export const editMenu = async (
   },
 ) => {
   const response = await patch<PrismaRestaurants.item>(
-    `/${data.restaurantId}/menus/${data.menuId}`,
+    `/restaurants/${data.restaurantId}/menus/${data.menuId}`,
     {
       body: data.formData,
     },

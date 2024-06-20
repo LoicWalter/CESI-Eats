@@ -15,7 +15,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
     >
       <Card className="ui-mx-4 ui-w-full ui-h-full ui-flex ui-justify-between ui-flex-col">
         <ImageWithDefaultOnError
-          src={`${process.env.NEXT_PUBLIC_API_URL}/restaurant-picture/${restaurant.restaurantPicture}`}
+          src={`${process.env.NEXT_PUBLIC_API_URL}/restaurant/${restaurant.restaurantPicture}/picture`}
           alt="restaurant"
           width="300"
           height="300"
