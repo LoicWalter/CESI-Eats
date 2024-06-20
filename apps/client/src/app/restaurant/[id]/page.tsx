@@ -20,6 +20,7 @@ import {
   ImageWithDefaultOnError,
   itemCategory,
   itemRegime,
+  RestaurantContextType,
   RestaurantsContextType,
   useCart,
 } from '@repo/ui';
@@ -27,11 +28,6 @@ import { getRestaurant } from '@repo/ui/actions/get-restaurants.ts';
 import { PrismaRestaurants } from '@api/cesieats';
 import { RemoveCircleOutline } from '@mui/icons-material';
 import Image from 'next/image';
-import Viande from '../../../assets/viande.png';
-import Poisson from '../../../assets/poisson.png';
-import Vegan from '../../../assets/Vegan-Transparent.png';
-import Vegetarien from '../../../assets/Vegetarian Mark.png';
-
 type MenuWithItems = PrismaRestaurants.Prisma.menuGetPayload<{
   include: {
     items: true;
@@ -40,8 +36,8 @@ type MenuWithItems = PrismaRestaurants.Prisma.menuGetPayload<{
 type Item = PrismaRestaurants.Prisma.itemGetPayload<{}>;
 
 export default function Page({ params }: { params: { id: string } }) {
-  const [fullRestaurant, setFullRestaurant] = useState<RestaurantsContextType>(
-    {} as RestaurantsContextType,
+  const [fullRestaurant, setFullRestaurant] = useState<RestaurantContextType>(
+    {} as RestaurantContextType,
   );
   const [modal, setModal] = useState<{
     open: boolean;
