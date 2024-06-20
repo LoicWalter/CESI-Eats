@@ -33,12 +33,12 @@ export interface LatestOrdersProps {
   title: string;
 }
 
-export default function LatestOrders({ orders = [], title }: LatestOrdersProps): React.JSX.Element {
+export function LatestOrders({ orders = [], title }: LatestOrdersProps): React.JSX.Element {
   return (
-    <Card className="w-full">
+    <Card className="ui-w-full">
       <CardHeader title={title} />
       <Divider />
-      <div className="overflow-x-auto">
+      <div className="ui-overflow-x-auto">
         <Table sx={{ minWidth: 800 }}>
           <TableHead>
             <TableRow>
