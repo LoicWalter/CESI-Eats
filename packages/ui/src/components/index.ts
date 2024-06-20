@@ -11,7 +11,6 @@ export * from './deliveryButtons';
 export * from './dietsIcons';
 export * from './helperText';
 export * from './loginPage';
-export * from './mealCard';
 export * from './navbar';
 export * from './helperText';
 export * from './payement';

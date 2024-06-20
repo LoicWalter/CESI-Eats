@@ -2,7 +2,6 @@
 
 import React, { useMemo, useState } from 'react';
 import {
-  MealCard,
   DietsIcons,
   CircularArrowBackButton,
   CircularEditButton,

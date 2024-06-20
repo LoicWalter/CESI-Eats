@@ -33,6 +33,8 @@ export const createOrderDelivery = async (
   const orderId = response.parsedRes.id;
   data.dataDelivery.order = orderId;
 
+  console.log(data.dataDelivery);
+
   const responseDelivery = await post('/deliveries', {
     body: JSON.stringify({
       ...data.dataDelivery,
