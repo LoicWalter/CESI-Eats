@@ -15,5 +15,5 @@ export const createRestaurant = async (_: any, data: FormData) => {
   if (!response.res.ok) {
     return { error: getErrorMessage(response.parsedRes) };
   }
-  redirect(`/restaurant/${response.parsedRes.id}/management`);
+  redirect(`/restaurant/${response.parsedRes.id}`);
 };

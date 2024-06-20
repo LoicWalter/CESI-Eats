@@ -21,5 +21,5 @@ export const createItem = async (
   if (!response.res.ok) {
     return { error: getErrorMessage(response.parsedRes) };
   }
-  redirect(`/restaurant/${data.restaurantId}/management`);
+  redirect(`/restaurant/${data.restaurantId}`);
 };

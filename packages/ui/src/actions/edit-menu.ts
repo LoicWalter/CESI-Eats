@@ -22,5 +22,5 @@ export const editMenu = async (
   if (!response.res.ok) {
     return { error: getErrorMessage(response.parsedRes) };
   }
-  redirect(`/restaurant/${data.restaurantId}/management`);
+  redirect(`/restaurant`);
 };
