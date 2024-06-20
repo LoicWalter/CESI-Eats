@@ -5,7 +5,6 @@ import defaultRestaurantPic from '../assets/default-restaurant-pic.png';
 import Link from 'next/link';
 import { ImageWithDefaultOnError, RestaurantsContextType } from '../utils';
 
-
 interface AllRestaurantsProps {
   restaurants: RestaurantsContextType[];
 }
@@ -53,7 +52,7 @@ export function Restaurant({ restaurant }: RestaurantProps): JSX.Element {
           <Typography
             variant="h6"
             component="h1"
-            className="ui-font-display ui-font-bold ui-mx-2 ui-mt-1 ui-mb-0 hover:ui-text-gray-5 active:ui-text-gray-5"
+            className="ui-font-display ui-font-bold ui-mx-2 ui-mt-1 ui-mb-0 hover:ui-text-gray-5 active:ui-text-gray-5 ui-truncate"
           >
             {restaurant.name}
           </Typography>
