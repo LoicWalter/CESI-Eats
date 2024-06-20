@@ -20,7 +20,7 @@
     "clean": {
       "cache": false
     },
-    "generate": {
+    "generating": {
       "cache": false
     }
   }
