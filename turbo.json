@@ -3,7 +3,7 @@
   "globalDependencies": ["**/.env.*local", "**/.env", "**/.env.*"],
   "pipeline": {
     "build": {
-      "dependsOn": ["^generate"],
+      "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
       "env": ["NEXT_PUBLIC_*"]
     },
