@@ -27,4 +27,6 @@ export enum ErrorsMessages {
   NO_ITEMS_OR_MENUS = 'Aucun article ou menu.',
   DELIVERY_NOT_AVAILABLE = 'La livraison est indisponible.',
   DELIVERY_ALREADY_EXIST = 'La livraison existe déjà.',
+  RESTAURANT_NOT_CONCERNED = 'Ce restaurant ne concerne pas cette commande.',
+  CLIENT_NOT_CONCERNED = 'Ce client ne concerne pas cette commande.',
 }

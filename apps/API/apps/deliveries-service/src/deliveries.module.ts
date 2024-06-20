@@ -20,6 +20,7 @@ import { Microservices, RmqModule } from 'libs/common';
     }),
     RmqModule,
     RmqModule.register({ name: Microservices.ORDERS }),
+    RmqModule.register({ name: Microservices.RESTAURANTS }),
     PrismaDeliveriesModule,
   ],
   controllers: [DeliveriesController],

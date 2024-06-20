@@ -31,6 +31,10 @@ export enum DeliveryMessage {
   ACCEPT_DELIVERY = 'accept_delivery',
   GET_DELIVERY_ORDER = 'get_delivery_order',
   GET_DELIVERY_ORDERS = 'get_delivery_orders',
+  GET_CLIENT_DELIVERY = 'get_client_delivery',
+  GET_CLIENT_DELIVERIES = 'get_client_deliveries',
+  GET_RESTAURANT_DELIVERY = 'get_restaurant_delivery',
+  GET_RESTAURANT_DELIVERIES = 'get_restaurant_deliveries',
   EDIT_DELIVERY_STATUS = 'edit_delivery_status',
 }
 
