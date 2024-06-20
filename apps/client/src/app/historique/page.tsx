@@ -1,116 +1,77 @@
+'use client';
+
 import React from 'react';
-import {
-  Container,
-  Typography,
-  Box,
-  Paper,
-  Grid,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-  Button,
-  ListItemButton,
-} from '@mui/material';
-
-interface HistoryItem {
-  title: string;
-  date: string;
-  restaurant: string;
-  description: string;
-  price: number;
-}
-
-const historyData: HistoryItem[] = [
-  {
-    title: 'Commande 12345',
-    date: '2024-06-18',
-    restaurant: 'McDonalds',
-    description: 'Super Famous Bacon Burger, Double Cheeseburger',
-    price: 12.5,
-  },
-  {
-    title: 'Commande 12344',
-    date: '2024-06-17',
-    restaurant: 'Burger King',
-    description: 'Classic Burger, Vegan Burger',
-    price: 10.5,
-  },
-  {
-    title: 'Commande 12343',
-    date: '2024-06-16',
-    restaurant: 'Quick',
-    description:
-      'Classic Burger, Double Cheeseburger, Classic Burger, Double Cheeseburger, Classic Burger, Double Cheeseburger, Classic Burger, Double Cheeseburger',
-    price: 150.5,
-  },
-  {
-    title: 'Commande 12342',
-    date: '2024-06-15',
-    restaurant: 'KFC',
-    description: 'Super Famous Bacon Burger, Vegan Burger',
-    price: 12.5,
-  },
-];
+import { Typography, Box, Paper, List, ListItem, ListItemText, Divider } from '@mui/material';
+import { useCommandes, useRestaurants, useDeliveries, translateStatus } from '@repo/ui';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function page() {
+  const commandes = useCommandes();
+  const deliveries = useDeliveries();
+  const restaurants = useRestaurants();
+
+  const pathname = usePathname();
+
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center gap-4">
+    <div className="flex flex-col gap-12 md:p-8">
       <Typography
         variant="h4"
         className="font-bold"
       >
         Historique des commandes
       </Typography>
-      <Paper className="p-4 w-full">
+      <Paper
+        className="w-full p-4"
+        elevation={3}
+      >
         <List>
-          {historyData.map((item, index) => (
-            <Box key={index}>
-              <ListItem className="flex-start justify-center flex items-center w-full flex-col">
-                <ListItemText
-                  className="w-full"
-                  primary={item.title}
-                  secondary={
-                    <>
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        color="textPrimary"
-                      >
-                        {`${item.date} — `}
-                      </Typography>
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        className="font-bold"
-                      >
-                        {item.restaurant}
-                      </Typography>
-                      <Typography
-                        component="span"
-                        variant="body2"
-                      >
-                        {` — ${item.description}`}
-                      </Typography>
-                    </>
-                  }
-                />
-                <ListItemText
-                  className="w-full"
-                  secondary={
-                    <Typography
-                      component="span"
-                      variant="body2"
-                      className="font-bold"
-                    >
-                      {`${item.price} €`}
-                    </Typography>
-                  }
-                />
-              </ListItem>
-              {index < historyData.length - 1 && <Divider component="li" />}
-            </Box>
-          ))}
+          {commandes.map((commande, index) => {
+            const restaurant = restaurants.find((r) => r.id === commande.restaurant);
+            const delivery = deliveries.find((d) => d.id === commande.delivery);
+            return (
+              <Box key={commande.id}>
+                <Link href={`${pathname}/${commande.id}`}>
+                  <ListItem className="flex flex-col items-center justify-center w-full flex-start">
+                    <ListItemText
+                      className="w-full"
+                      primary={restaurant?.name}
+                      secondary={
+                        <>
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            color="textPrimary"
+                          >
+                            {`${translateStatus(commande.status || '')} — `}
+                          </Typography>
+                          <Typography
+                            component="span"
+                            variant="body2"
+                          >
+                            {`${delivery?.deliveryTime ?? 'Pas encore récupéré'}`}
+                          </Typography>
+                        </>
+                      }
+                    />
+                    <ListItemText
+                      className="w-full"
+                      secondary={
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          className="font-bold"
+                        >
+                          {`${commande.price} €`}
+                        </Typography>
+                      }
+                    />
+                  </ListItem>
+                  {index < commandes.length - 1 && <Divider component="li" />}
+                </Link>
+              </Box>
+            );
+          })}
         </List>
       </Paper>
     </div>

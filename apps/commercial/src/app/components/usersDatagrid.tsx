@@ -11,7 +11,7 @@ import {
   StyledButton,
 } from '@repo/ui';
 import { Alert, Button } from '@mui/material';
-import { editUserDatagrid } from '@repo/ui/actions/edit-user.js';
+import { editUserDatagrid } from '@repo/ui/actions/edit-user.ts';
 
 interface UsersDatagridProps {
   data: PrismaUsers.User[];

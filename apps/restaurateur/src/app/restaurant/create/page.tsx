@@ -6,6 +6,7 @@ import { useFormState } from 'react-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import {
+  categories,
   ClickableImageInput,
   HelperText,
   PhoneInput,
@@ -46,7 +47,7 @@ export default function page(): JSX.Element {
   const [state, formAction] = useFormState(createRestaurant, { error: '' });
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full gap-4">
+    <div className="flex flex-col items-center justify-center w-full gap-4">
       <Typography
         variant="h4"
         className="font-bold"
@@ -125,8 +126,11 @@ export default function page(): JSX.Element {
                 onChange={(_, newValue) => setFieldValue('priceRange', newValue)}
                 onBlur={handleBlur}
                 min={0}
-                max={50}
+                max={100}
+                step={10}
                 valueLabelDisplay="auto"
+                valueLabelFormat={(value) => `${value}€`}
+                shiftStep={10}
               />
               <HelperText error={Boolean(errors.priceRange && touched.priceRange)}>
                 {errors.priceRange && touched.priceRange ? errors.priceRange : ''}
@@ -187,21 +191,14 @@ export default function page(): JSX.Element {
                 className: `${errors.category && touched.category ? 'bg-red-100' : ''}`,
               }}
             >
-              <MenuItem value="café">Café</MenuItem>
-              <MenuItem value="bar">Bar</MenuItem>
-              <MenuItem value="brasserie">Brasserie</MenuItem>
-              <MenuItem value="fast-food">Fast food</MenuItem>
-              <MenuItem value="mexicain">Restaurant mexicain</MenuItem>
-              <MenuItem value="sushis">Restaurant de sushis</MenuItem>
-              <MenuItem value="boulangerie">Boulangerie</MenuItem>
-              <MenuItem value="pizzeria">Pizzeria</MenuItem>
-              <MenuItem value="italien">Restaurant italien</MenuItem>
-              <MenuItem value="chinois">Restaurant chinois</MenuItem>
-              <MenuItem value="indien">Restaurant indien</MenuItem>
-              <MenuItem value="thaïlandais">Restaurant thaïlandais</MenuItem>
-              <MenuItem value="végétarien">Restaurant végétarien</MenuItem>
-              <MenuItem value="libanais">Restaurant libanais</MenuItem>
-              <MenuItem value="steakhouse">Steakhouse</MenuItem>
+              {categories.map((category) => (
+                <MenuItem
+                  key={category.value}
+                  value={category.value}
+                >
+                  {category.label}
+                </MenuItem>
+              ))}
             </StyledTextField>
             <div className="flex flex-row items-center justify-between w-full gap-4 mt-6">
               <Link

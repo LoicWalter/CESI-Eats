@@ -7,17 +7,24 @@ import {
   ErrorsMessages,
   GetAllDeliveryOrdersMessage,
   GetClientOrderMessage,
-  GetDeliveryOrderMessage,
+  GetDeliveryMessage,
+  GetReceivedOrderMessage,
+  GetReceivedOrdersMessage,
+  GetRestaurantDeliveriesMessage,
+  GetRestaurantDeliveryMessage,
   Microservices,
   OrderMessage,
+  RestaurantMessage,
 } from 'libs/common';
 import { firstValueFrom } from 'rxjs';
+import { User } from '@gen/client/users';
 
 @Injectable()
 export class DeliveriesService {
   constructor(
     private readonly prisma: PrismaDeliveriesService,
     @Inject(Microservices.ORDERS) private readonly ordersService: ClientProxy,
+    @Inject(Microservices.RESTAURANTS) private readonly restaurantsService: ClientProxy,
   ) {}
 
   async createDelivery(data: CreateDeliveryMessage) {
@@ -81,10 +88,7 @@ export class DeliveriesService {
       }
 
       const order = await firstValueFrom(
-        this.ordersService.send(
-          OrderMessage.GET_CLIENT_ORDER,
-          new GetClientOrderMessage(data.user, delivery.order),
-        ),
+        this.ordersService.send(OrderMessage.GET_ORDER, delivery.order),
       );
       if (order.status === 'COMMANDE_PASSEE') {
         throw new RpcException(ErrorsMessages.ORDER_NOT_AVAILABLE);
@@ -102,7 +106,8 @@ export class DeliveriesService {
     }
   }
 
-  async getDeliveryOrder(data: GetDeliveryOrderMessage) {
+  async getDeliveryOrder(data: GetDeliveryMessage) {
+    console.log('data:', data);
     const delivery = await this.prisma.delivery.findUnique({
       where: { id: data.deliveryId },
     });
@@ -130,5 +135,80 @@ export class DeliveriesService {
       console.log('Getting all orders');
       return this.prisma.delivery.findMany({});
     }
+  }
+
+  async getClientDelivery(data: GetDeliveryMessage) {
+    const delivery = await this.prisma.delivery.findUnique({
+      where: { id: data.deliveryId },
+    });
+    if (!delivery) {
+      throw new RpcException(ErrorsMessages.DELIVERY_NOT_FOUND);
+    }
+
+    const order = await firstValueFrom(
+      this.ordersService.send(
+        OrderMessage.GET_CLIENT_ORDER,
+        new GetClientOrderMessage(data.user, delivery.order),
+      ),
+    );
+    if (!order) {
+      throw new RpcException(ErrorsMessages.CLIENT_NOT_CONCERNED);
+    }
+    console.log('Getting client delivery :', delivery);
+    return delivery;
+  }
+
+  async getAllClientDeliveries(user: User) {
+    const orders = await firstValueFrom(
+      this.ordersService.send(OrderMessage.GET_CLIENT_ORDERS, user.id),
+    );
+    const deliveries = await this.prisma.delivery.findMany({
+      where: { order: { in: orders.map((order) => order.id) } },
+    });
+    console.log('Getting all client deliveries');
+    return deliveries;
+  }
+
+  async getRestaurantDelivery(data: GetRestaurantDeliveryMessage) {
+    const delivery = await this.prisma.delivery.findUnique({
+      where: { id: data.deliveryId },
+    });
+
+    if (!delivery) {
+      throw new RpcException(ErrorsMessages.DELIVERY_NOT_FOUND);
+    }
+
+    const order = await firstValueFrom(
+      this.ordersService.send(
+        OrderMessage.GET_RECEIVED_ORDER,
+        new GetReceivedOrderMessage(data.user, data.restaurantId, delivery.order),
+      ),
+    );
+
+    if (!order) {
+      throw new RpcException(ErrorsMessages.RESTAURANT_NOT_CONCERNED);
+    }
+    console.log('Getting restaurant delivery :', delivery);
+    return delivery;
+  }
+
+  async getRestaurantDeliveries(data: GetRestaurantDeliveriesMessage) {
+    const restaurant = await firstValueFrom(
+      this.restaurantsService.send(RestaurantMessage.GET_RESTAURANT, data.restaurantId),
+    );
+    if (restaurant.owner !== data.user.id) {
+      throw new RpcException(ErrorsMessages.USER_IS_NOT_OWNER);
+    }
+    const orders = await firstValueFrom(
+      this.ordersService.send(
+        OrderMessage.GET_RECEIVED_ORDERS,
+        new GetReceivedOrdersMessage(data.user, data.restaurantId),
+      ),
+    );
+    const deliveries = await this.prisma.delivery.findMany({
+      where: { order: { in: orders.map((order) => order.id) } },
+    });
+    console.log('Getting restaurant deliveries :', deliveries);
+    return deliveries;
   }
 }

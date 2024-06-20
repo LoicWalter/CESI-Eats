@@ -10,7 +10,8 @@ import {
   StyledButton,
   StyledOutlinedButton,
   StyledTextField,
-  redirectTo,
+  itemCategory,
+  itemRegime,
 } from '@repo/ui';
 import { InsertPhotoOutlined } from '@mui/icons-material';
 import Link from 'next/link';
@@ -37,7 +38,7 @@ export default function page({ params }: { params: { id: string } }): JSX.Elemen
   });
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full gap-4">
+    <div className="flex flex-col items-center justify-center w-full gap-4">
       <Typography
         variant="h4"
         className="font-bold"
@@ -128,10 +129,14 @@ export default function page({ params }: { params: { id: string } }): JSX.Elemen
                 className: `${errors.regime && touched.regime ? 'bg-red-100' : ''}`,
               }}
             >
-              <MenuItem value="vegan">Vegan</MenuItem>
-              <MenuItem value="vegetarien">Végétarien</MenuItem>
-              <MenuItem value="Poisson">Poisson</MenuItem>
-              <MenuItem value="viande">Viande</MenuItem>
+              {itemRegime.map((regime) => (
+                <MenuItem
+                  key={regime.value}
+                  value={regime.value}
+                >
+                  {regime.label}
+                </MenuItem>
+              ))}
             </StyledTextField>
 
             <StyledTextField
@@ -149,11 +154,14 @@ export default function page({ params }: { params: { id: string } }): JSX.Elemen
                 className: `${errors.category && touched.category ? 'bg-red-100' : ''}`,
               }}
             >
-              <MenuItem value="entree">Entrée</MenuItem>
-              <MenuItem value="plat">Plat</MenuItem>
-              <MenuItem value="dessert">Dessert</MenuItem>
-              <MenuItem value="boisson">Boisson</MenuItem>
-              <MenuItem value="autres">Autres</MenuItem>
+              {itemCategory.map((category) => (
+                <MenuItem
+                  key={category.value}
+                  value={category.value}
+                >
+                  {category.label}
+                </MenuItem>
+              ))}
             </StyledTextField>
             <StyledTextField
               fullWidth
@@ -173,7 +181,7 @@ export default function page({ params }: { params: { id: string } }): JSX.Elemen
             />
             <div className="flex flex-row items-center justify-between w-full gap-4 mt-6">
               <Link
-                href="/restaurant/management"
+                href={`/restaurant/${id}`}
                 className="w-1/2"
               >
                 <StyledOutlinedButton

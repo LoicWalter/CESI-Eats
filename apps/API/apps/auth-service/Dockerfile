@@ -31,5 +31,4 @@ COPY --from=development /usr/src/app/dist ./dist
 
 RUN pnpm run generate
 
-
 CMD ["node", "dist/apps/auth-service/main"]

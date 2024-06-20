@@ -1,8 +1,8 @@
 import { User } from '@gen/client/users';
 
-export class GetDeliveryOrderMessage {
+export class GetRestaurantDeliveriesMessage {
   constructor(
     public readonly user: User,
-    public readonly deliveryId: string,
+    public readonly restaurantId: string,
   ) {}
 }

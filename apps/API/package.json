@@ -22,6 +22,7 @@
     "generate:deliveries": "pnpm exec prisma generate --schema ./libs/databases/src/deliveries/schema.prisma",
     "generate:users": "pnpm exec prisma generate --schema ./libs/databases/src/users/schema.prisma",
     "generate": "pnpm run generate:orders && pnpm run generate:users && pnpm run generate:restaurants && pnpm run generate:deliveries",
+    "generating": "pnpm run generate",
     "push:orders": "pnpm exec prisma db push --schema ./libs/databases/src/orders/schema.prisma --accept-data-loss --skip-generate --force-reset",
     "push:restaurants": "pnpm exec prisma db push --schema ./libs/databases/src/restaurants/schema.prisma --accept-data-loss --skip-generate --force-reset",
     "push:deliveries": "pnpm exec prisma db push --schema ./libs/databases/src/deliveries/schema.prisma --accept-data-loss --skip-generate --force-reset",

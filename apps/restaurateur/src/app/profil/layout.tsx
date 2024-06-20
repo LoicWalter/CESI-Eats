@@ -3,8 +3,8 @@ import BgImage from '../../assets/repas-de-famille.jpg';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
-  title: 'Client profil page',
-  description: 'Client profil page',
+  title: 'Restaurant home page',
+  description: 'Restaurant home page',
 };
 
 export default function ProfilLayout({ children }: { children: React.ReactNode }): JSX.Element {

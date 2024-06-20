@@ -4,18 +4,7 @@ import { PrismaRestaurants } from '@api/cesieats';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { getRestaurants } from '../actions/get-restaurants';
 
-export type RestaurantsContextType = Partial<
-  PrismaRestaurants.Prisma.restaurantGetPayload<{
-    include: {
-      menus: {
-        include: {
-          items: true;
-        };
-      };
-      items: true;
-    };
-  }>
->;
+export type RestaurantsContextType = Partial<PrismaRestaurants.restaurant>;
 
 const RestaurantsContext = createContext<RestaurantsContextType[]>([]);
 
