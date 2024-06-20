@@ -34,6 +34,8 @@ import {
   GetAllDeliveryOrdersMessage,
   CreateDeliveryMessage,
   GetClientOrderMessage,
+  StatisticsMessage,
+  GetRestaurantOrdersStatsMessage,
 } from 'libs/common';
 import {
   CreateDeliveryDto,
@@ -60,6 +62,7 @@ export class GatewayService {
     @Inject(Microservices.RESTAURANTS) private readonly itemsService: ClientProxy,
     @Inject(Microservices.RESTAURANTS) private readonly menusService: ClientProxy,
     @Inject(Microservices.DELIVERIES) private readonly deliveriesService: ClientProxy,
+    @Inject(Microservices.STATISTICS) private readonly statisticsService: ClientProxy,
   ) {}
 
   errorManagement(error: any) {
@@ -69,6 +72,44 @@ export class GatewayService {
     }
     console.log(error);
     throw new InternalServerErrorException(error.message);
+  }
+
+  //----------------------------------Statistics----------------------------------
+
+  async getOrdersStatistics() {
+    try {
+      const res = await firstValueFrom(
+        this.statisticsService.send(StatisticsMessage.GET_ORDERS_STATS, {}),
+      );
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
+  }
+
+  async getDeliveriesStatistics(type: string) {
+    try {
+      const res = await firstValueFrom(
+        this.statisticsService.send(StatisticsMessage.GET_DELIVERIES_STATS, type),
+      );
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
+  }
+
+  async getRestaurantOrdersStatistics(user: User, restaurantId: string) {
+    try {
+      const res = await firstValueFrom(
+        this.statisticsService.send(
+          StatisticsMessage.GET_RESTAURANT_ORDERS_STATS,
+          new GetRestaurantOrdersStatsMessage(user, restaurantId),
+        ),
+      );
+      return res;
+    } catch (error) {
+      this.errorManagement(error);
+    }
   }
 
   //----------------------------------Orders----------------------------------

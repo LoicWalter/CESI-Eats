@@ -58,3 +58,9 @@ export enum MenuMessage {
   EDIT_MENU = 'edit_menu',
   DELETE_MENU = 'delete_menu',
 }
+
+export enum StatisticsMessage {
+  GET_ORDERS_STATS = 'get_orders_stats',
+  GET_DELIVERIES_STATS = 'get_deliveries_stats',
+  GET_RESTAURANT_ORDERS_STATS = 'get_restaurants_orders_stats',
+}
