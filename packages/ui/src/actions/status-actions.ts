@@ -55,3 +55,14 @@ export const editOrderStatus = async (status: string, restaurantId: string, orde
   revalidateTag(Tags.RESTO_COMMANDS);
   return;
 };
+
+export const editDeliveryStatus = async (status: string, deliveryId: string) => {
+  const response = await patch(`/deliveries/${deliveryId}`, {
+    body: JSON.stringify({ status }),
+  });
+  if (!response.res.ok) {
+    return { error: getErrorMessage(response.parsedRes) };
+  }
+  revalidateTag(Tags.RESTO_COMMANDS);
+  return;
+};

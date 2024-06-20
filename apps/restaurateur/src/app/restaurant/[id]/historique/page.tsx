@@ -19,7 +19,7 @@ export default function page() {
       >
         Historique des commandes
       </Typography>
-      <Paper className="p-4 w-full">
+      <Paper className="p-4 w-full overflow-auto">
         <List>
           {commandes.map((commande, index) => {
             const delivery = deliveries.find((d) => d.id === commande.delivery);

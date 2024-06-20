@@ -31,6 +31,7 @@ import { useRouter } from 'next/navigation';
 
 export default function page({ params }: { params: { orderId: string } }) {
   const commandes = useCommandesRestaurant();
+  console.log(commandes);
   const restaurant = useRestaurant();
   const commande = useMemo(
     () => commandes.find((c) => c.id === params.orderId),
@@ -69,7 +70,6 @@ export default function page({ params }: { params: { orderId: string } }) {
     );
   }, [commande, restaurant]);
 
-  console.log(commande);
   const [error, setError] = React.useState<string | null>(null);
   const [activeStep, setActiveStep] = React.useState(0);
   useEffect(() => {

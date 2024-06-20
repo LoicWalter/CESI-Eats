@@ -1,8 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "build": "dotenvx run --env-file=.env -- turbo build",
-    "dev": "dotenvx run --env-file=.env.dev -- turbo dev",
+    "build": "turbo build",
+    "dev": "turbo dev",
     "start:dev": "turbo start:dev",
     "lint": "turbo lint",
     "type-check": "turbo type-check",
