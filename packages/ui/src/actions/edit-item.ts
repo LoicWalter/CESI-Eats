@@ -22,5 +22,5 @@ export const editItem = async (
   if (!response.res.ok) {
     return { error: getErrorMessage(response.parsedRes) };
   }
-  redirect(`/restaurant`);
+  redirect(`/`);
 };

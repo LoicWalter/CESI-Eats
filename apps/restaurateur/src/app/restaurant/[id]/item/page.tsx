@@ -38,7 +38,7 @@ export default function page({ params }: { params: { id: string } }): JSX.Elemen
   });
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full gap-4">
+    <div className="flex flex-col items-center justify-center w-full gap-4">
       <Typography
         variant="h4"
         className="font-bold"
