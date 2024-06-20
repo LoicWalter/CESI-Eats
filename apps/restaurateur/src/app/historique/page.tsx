@@ -1,19 +1,19 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import {
-  Container,
   Typography,
-  Box,
   Paper,
-  Grid,
   List,
   ListItem,
   ListItemText,
   Divider,
-  Button,
-  ListItemButton,
   IconButton,
+  Modal,
 } from '@mui/material';
-import { CheckCircleOutline } from '@mui/icons-material';
+import { CheckCircleOutline, Close } from '@mui/icons-material';
+import { StyledButton } from '@repo/ui';
+import Link from 'next/link';
 
 interface HistoryItem {
   title: string;
@@ -21,6 +21,8 @@ interface HistoryItem {
   description: string;
   price: number;
 }
+
+const commandeId = 1;
 
 const historyData: HistoryItem[] = [
   {
@@ -51,8 +53,15 @@ const historyData: HistoryItem[] = [
 ];
 
 export default function page() {
+  const [open, setOpen] = useState(false);
+  const [modalData, setModalData] = useState<HistoryItem>({
+    title: '',
+    date: '',
+    description: '',
+    price: 0,
+  });
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center gap-4">
+    <div className="w-full flex flex-col justify-center items-center gap-4">
       <Typography
         variant="h4"
         className="font-bold"
@@ -62,7 +71,7 @@ export default function page() {
       <Paper className="p-4 w-full">
         <List>
           {historyData.map((item, index) => (
-            <Box key={index}>
+            <div key={index}>
               <div className="flex flex-row">
                 <ListItem className="flex-start justify-center flex items-center w-full flex-col">
                   <ListItemText
@@ -100,14 +109,65 @@ export default function page() {
                   />
                 </ListItem>
                 <div className="flex justify-center items-center">
-                  <IconButton className="flex text-success w-10 h-10">
+                  <IconButton
+                    className="flex text-success w-10 h-10"
+                    onClick={() => {
+                      setOpen(true);
+                      setModalData(item);
+                    }}
+                  >
                     <CheckCircleOutline />
                   </IconButton>
                 </div>
               </div>
               {index < historyData.length - 1 && <Divider component="li" />}
-            </Box>
+            </div>
           ))}
+          <Modal
+            open={open}
+            onClose={() => setOpen(false)}
+            className="flex items-center justify-center"
+            title="Valider la commande"
+          >
+            <div className="relative p-8 m-8 rounded-lg bg-gray-5">
+              <IconButton
+                className="absolute top-4 right-4"
+                onClick={() => setOpen(false)}
+              >
+                <Close />
+              </IconButton>
+              <Typography
+                variant="h4"
+                className="font-bold"
+              >
+                {modalData.title}
+              </Typography>
+              <Typography
+                variant="body2"
+                className="mt-4"
+              >
+                {modalData.description}
+              </Typography>
+              <Typography
+                variant="body2"
+                className="mt-4"
+              >
+                {`Total : ${modalData.price} €`}
+              </Typography>
+              <Link
+                href={`/historique/${commandeId}`}
+                className="hover:underline"
+              >
+                <StyledButton
+                  variant="contained"
+                  className="w-full py-2 mt-8 text-white rounded-lg bg-primary hover:bg-secondary border-primary hover:border-secondary"
+                  onClick={() => setOpen(false)}
+                >
+                  Valider la commande
+                </StyledButton>
+              </Link>
+            </div>
+          </Modal>
         </List>
       </Paper>
     </div>
