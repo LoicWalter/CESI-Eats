@@ -3,6 +3,7 @@ export * from './allDeliveries';
 export * from './allRestaurants';
 export * from './cardCarousel';
 export * from './circularAddButton';
+export * from './circularAddButton2';
 export * from './circularArrowBackButton';
 export * from './circularEditButton';
 export * from './circularSearchButton';

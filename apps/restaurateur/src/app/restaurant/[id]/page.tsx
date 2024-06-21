@@ -73,14 +73,14 @@ export default function Page(): JSX.Element {
             alt="restaurant"
             width="2000"
             height="2000"
-            className="ui-object-cover ui-object-center"
+            className="ui-object-cover ui-object-center ui-h-full"
             defaultReactNode={
               <Image
                 src={defaultRestaurantPic as StaticImageData}
                 alt="restaurant"
                 width={2000}
                 height={2000}
-                className="ui-object-cover ui-object-center"
+                className="ui-object-cover ui-object-center ui-h-full"
               />
             }
           />

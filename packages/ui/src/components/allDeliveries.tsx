@@ -41,7 +41,7 @@ export function Delivery({ deliveryId, deliveryName, address }: DeliveryProps): 
 
   return (
     <div className="ui-relative ui-w-full ui-min-h-[20%] ui-overflow-hidden ui-border-b-gray-1 ui-border-b-[0.0625rem]">
-      <div className="ui-flex ui-justify-center ui-w-full ui-h-full ui-bg-blue-100  ui-select-none"></div>
+      <div className="ui-flex ui-justify-center ui-w-full ui-h-full ui-bg-blue-100 ui-select-none"></div>
       <Link href={`/livraison/${deliveryId}`}>
         <button className="ui-absolute ui-top-0 ui-left-0 ui-flex ui-flex-row ui-w-[65%] ui-h-1/2 ui-mb-2 ui-mr-2 ui-bg-gray-5 ui-rounded-br-lg ui-border-b-gray-4 ui-border-b-[0.0625rem] ui-shadow-[0_0.125rem_0.25rem_0_rgba(204,209,212,0.4)] hover:ui-bg-primary hover:ui-text-gray-5 active:ui-bg-secondary active:ui-text-gray-5 active:ui-border-b-0 active:ui-shadow-[inset_0.125rem_0.125rem_0.25rem_0_rgba(0,0,0,0.4)]">
           <div className="ui-flex ui-flex-col ui-items-start ui-justify-start ui-w-full">

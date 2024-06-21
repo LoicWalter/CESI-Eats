@@ -21,7 +21,7 @@ function Panier() {
       </Typography>
 
       <Typography variant="h5">
-        Vous avez {Object.keys(cart).length} restaurant(s) dans votre panier.
+        Vous avez {Object.keys(cart).length} article(s) dans votre panier.
       </Typography>
 
       {Object.keys(cart).map((restaurantId) => {

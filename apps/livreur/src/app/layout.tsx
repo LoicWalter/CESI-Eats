@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 const items = [
-  { icon: <HomeOutlined />, text: 'Accueil', id: '1', href: '/home' },
+  { icon: <HomeOutlined />, text: 'Accueil', id: '1', href: '/' },
   { icon: <DeliveryDiningOutlined />, text: 'Livraison', id: '2', href: '/livraison' },
 ];
 
